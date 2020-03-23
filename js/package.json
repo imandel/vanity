@@ -1,0 +1,43 @@
+{
+  "name": "vanity",
+  "version": "0.1.0",
+  "description": "Video Analysis Ipython Toolkit yeah",
+  "author": "ilan mandel",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com//vanity.git"
+  },
+  "keywords": [
+    "jupyter",
+    "widgets",
+    "ipython",
+    "ipywidgets",
+    "jupyterlab-extension"
+  ],
+  "files": [
+    "lib/**/*.js",
+    "dist/*.js"
+  ],
+  "scripts": {
+    "clean": "rimraf dist/",
+    "prepublish": "webpack",
+    "build": "webpack",
+    "prepare": "webpack",
+    "watch": "watch 'npm run prepare' lib/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "webpack": "^3.5.5",
+    "rimraf": "^2.6.1",
+    "watch": "^1.0.2"
+  },
+  "dependencies": {
+    "@jupyter-widgets/base": "^1.1 || ^2",
+    "lodash": "^4.17.4",
+    "mediasync": "^0.3.0"
+  },
+  "jupyterlab": {
+    "extension": "lib/labplugin"
+  }
+}
