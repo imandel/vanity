@@ -1,5 +1,5 @@
 import ipywidgets as widgets
-from traitlets import Unicode
+from traitlets import Unicode, Float, List
 
 # See js/lib/example.js for the frontend counterpart to this file.
 
@@ -28,5 +28,6 @@ class HelloWorld(widgets.DOMWidget):
     # Widget properties are defined as traitlets. Any property tagged with `sync=True`
     # is automatically synced to the frontend *any* time it changes in Python.
     # It is synced back to Python from the frontend *any* time the model is touched.
-    value = Float(80.0).tag(sync=True)
+    value = Float(0.0).tag(sync=True)
     src= Unicode("").tag(sync=True)
+    data = List([1,2]).tag(sync=True)
