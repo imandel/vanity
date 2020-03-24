@@ -28,9 +28,9 @@ var HelloModel = widgets.DOMWidgetModel.extend({
         _view_module : 'vanity',
         _model_module_version : '0.1.0',
         _view_module_version : '0.1.0',
-        src: '',
-        value: 0.0,
-        data : []
+        _src: '',
+        _value: 0.0,
+        _keypoints : []
     })
 });
 
@@ -45,14 +45,16 @@ var HelloView = widgets.DOMWidgetView.extend({
         content.id= "content";
         var vid1 = document.createElement("video");
         vid1.width =400;
-        vid1.src= this.model.get('src');
+        vid1.muted = true;
+        vid1.src= this.model.get('_src');
         vid1.controls =false;
 
         ms.add(vid1);
 
         var vid2 = document.createElement("video");
         vid2.width =400;
-        vid2.src= this.model.get('src');
+        vid2.muted=true;
+        vid2.src= this.model.get('_src');
         vid2.controls =false;
         ms.add(vid2)
         
@@ -117,16 +119,12 @@ var HelloView = widgets.DOMWidgetView.extend({
         speedup.onclick = () => ms.to.update({velocity:3.0});
         speednormal.onclick = () => ms.to.update({velocity:1.0});
         marktime.onclick = () => {
-            var dt = this.model.get('data');
-            dt.push(ms.to.query().position);
-            this.model.set({'value':ms.to.query().position});
-            this.model.set({"data":dt});
+            console.log("this works!")
+            var keypoints= this.model.get("_keypoints").slice()
+            console.log(keypoints)
+            keypoints.push(ms.to.query().position)
+            this.model.set({"_keypoints": keypoints});
             this.touch();
-            this.model.save_changes()
-            console.log(dt);
-            console.log(this.model.get('data'))
-            console.log("save changes") 
-
         };
 
         vid1.onloadedmetadata = (event) => {seeker.max = vid1.duration;};

@@ -28,6 +28,6 @@ class HelloWorld(widgets.DOMWidget):
     # Widget properties are defined as traitlets. Any property tagged with `sync=True`
     # is automatically synced to the frontend *any* time it changes in Python.
     # It is synced back to Python from the frontend *any* time the model is touched.
-    value = Float(0.0).tag(sync=True)
-    src= Unicode("").tag(sync=True)
-    data = List([1,2]).tag(sync=True)
+    _value = Float(0.0).tag(sync=True)
+    _src= Unicode("").tag(sync=True)
+    _keypoints = List([]).tag(sync=True)
