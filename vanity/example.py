@@ -31,3 +31,4 @@ class HelloWorld(widgets.DOMWidget):
     _value = Float(0.0).tag(sync=True)
     _src= Unicode("").tag(sync=True)
     _keypoints = List([]).tag(sync=True)
+    _vids = List([]).tag(sync=True)

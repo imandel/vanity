@@ -30,7 +30,8 @@ var HelloModel = widgets.DOMWidgetModel.extend({
         _view_module_version : '0.1.0',
         _src: '',
         _value: 0.0,
-        _keypoints : []
+        _keypoints : [],
+        _vids: [],
     })
 });
 
@@ -56,11 +57,27 @@ var HelloView = widgets.DOMWidgetView.extend({
         vid2.muted=true;
         vid2.src= this.model.get('_src');
         vid2.controls =false;
-        ms.add(vid2)
+        ms.add(vid2);
         
         content.appendChild(vid1);
         content.appendChild(document.createElement('br'));
         content.appendChild(vid2)
+        content.appendChild(document.createElement('br'));
+
+
+        var vids= this.model.get('_vids').slice()
+
+        vids.forEach((vid_src)=> {
+            console.log(vid_src)
+            var vid = document.createElement('video');
+            vid.width=200;
+            vid.muted=true;
+            vid.src = vid_src;
+            vid.controls = false;
+            ms.add(vid);
+            content.appendChild(vid)
+            content.appendChild(document.createElement('br'));
+        });
 
         var controls =document.createElement("div");
         controls.id ='controlpanel'
