@@ -1,0 +1,40 @@
+.container { width:97% !important; }
+
+.outputContainer{
+	display: table;
+	width: 100%;
+
+}
+
+.mainCol {
+	display: table-cell;
+	width: 50%;
+}
+
+.sidebar{
+	display: table-cell;
+	width: 25%;
+
+}
+
+.dataView {
+	width: 100%;
+	padding: 10px;
+}
+
+#content {
+  /*background-color: blue;*/
+}
+
+#data_views {
+  background-color: whitesmoke;
+}
+
+#annotations {
+  /*background-color: red;*/
+}
+
+#mainVid{
+	width: 100%;
+	padding: 10px;
+}

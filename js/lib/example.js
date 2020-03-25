@@ -1,8 +1,8 @@
 let widgets = require('@jupyter-widgets/base');
 let _ = require('lodash');
 const MediaSync = require('mediasync').MediaSync
-
 let util=require('./util');
+require('./style.css')
 
 // See example.py for the kernel counterpart to this file.
 
@@ -46,9 +46,19 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         
         const ms= new MediaSync({duration: Infinity});
 
-        let content = Object.assign(document.createElement("div"), {id:'content'});
+        let output = Object.assign(document.createElement("div"), {id:'output', className: 'outputContainer'});
 
-        let vid1 = Object.assign(document.createElement("video"), {width: 400, muted: true, controls: false, src:this.model.get('_src')});
+        let content = Object.assign(document.createElement("div"), {id:'content', className: 'mainCol'});
+        let data_views = Object.assign( document.createElement('div'), {id: 'data_views', className: 'sidebar'});
+        let annotations = Object.assign( document.createElement('div'), {id: 'annotations', className: 'sidebar'});
+        content.appendChild(Object.assign(document.createElement('h4'), {innerText: 'content'}));
+        data_views.appendChild(Object.assign(document.createElement('h4'), {innerText: 'data views'}));
+        annotations.appendChild(Object.assign(document.createElement('h4'), {innerText: 'annotations'}));
+
+        let foot = Object.assign(document.createElement("div"), {id:'foot', className: 'foot'});
+        
+
+        let vid1 = Object.assign(document.createElement("video"), {id: "mainVid", muted: true, controls: false, src:this.model.get('_src')});
         
         ms.add(vid1);
 
@@ -57,10 +67,24 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         content.appendChild(vid1);
         content.appendChild(document.createElement('br'));
 
-        let data_views = Object.assign( document.createElement('div'), {id: 'data_views'});
+        var vids= this.model.get('_vids').slice()
+        vids.forEach((vid_src)=> {
+            console.log(vid_src)
+            var vid = document.createElement('video');
+            // vid.width=200;
+            vid.muted=true;
+            vid.src = vid_src;
+            vid.controls = false;
+            vid.className ="dataView"
+            ms.add(vid);
+            data_views.appendChild(vid)
+            data_views.appendChild(document.createElement('br'));
+        });
+
 
         let controls =  util.createControls(ms);//Object.assign(document.createElement("div"), {id:'controlpanel'});
-        
+        foot.appendChild(controls);
+
         let seeker= Object.assign(document.createElement('input'), {
             type:'range', 
             id:'seeker', 
@@ -102,7 +126,10 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         };
 
         let tagbox = document.createElement('div');
-        tagbox.id = 'tagbox'
+        foot.appendChild(tagbox);
+
+
+        tagbox.id = 'tagbox';
 
         let form = document.createElement('form');
         let key_start = util.createFormInput('start', {type: 'number', id: 'key_start', step:'any'});
@@ -153,16 +180,6 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
         form.appendChild(tags_container);
 
-        tagbox.appendChild(form);
-
-        let comments = Object.assign(document.createElement('label'), {innerText: "Comments\n"}).appendChild(
-            Object.assign(document.createElement('textarea'), {id: 'comments',rows:4, cols: 50,}));
-
-        form.appendChild(comments)
-
-        form.appendChild(document.createElement('br'));
-
-
         let marktime = document.createElement('button');
         marktime.innerHTML ='mark key point';
         form.appendChild(marktime);
@@ -180,9 +197,26 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             this.touch();
         };
 
-        this.el.appendChild(content); 
-        this.el.appendChild(controls);
-        this.el.appendChild(tagbox);
+        tagbox.appendChild(form);
+
+        let comments = Object.assign(document.createElement('label'), {innerText: "Comments\n"}).appendChild(
+            Object.assign(document.createElement('textarea'), {id: 'comments',rows:4, cols: 50,}));
+
+        form.appendChild(comments)
+
+        form.appendChild(document.createElement('br'));
+
+
+
+        content.appendChild(foot);
+        output.appendChild(content);
+        output.appendChild(data_views);
+        output.appendChild(annotations);
+
+
+        this.el.appendChild(output); 
+        // this.el.appendChild(annotations)
+        // this.el.appendChild(foot);
 
         // Observe changes in the value traitlet in Python, and define
         // a custom callback.
