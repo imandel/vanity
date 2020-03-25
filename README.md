@@ -24,8 +24,8 @@ To install for jupyterlab (*not tested in jupyterlab*)
 
 For a development installation (requires npm),
 
-    $ git clone https://github.com/cornell/VANITY.git
-    $ cd VANITY
+    $ git clone https://github.com/imandel/vanity.git
+    $ cd vanity
     $ cd js
     $ npm install
     $ cd .. 
@@ -64,5 +64,4 @@ This take a minute or so to get started, but then allows you to hot-reload your 
 To see a change, save your javascript, watch the terminal for an update.
 
 Note on first `jupyter lab --watch`, you may need to touch a file to get Jupyter Lab to open. -->
-
 
