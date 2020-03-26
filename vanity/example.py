@@ -1,5 +1,7 @@
 import ipywidgets as widgets
-from traitlets import Unicode, Float, List
+from traitlets import Unicode, Float, List, observe
+
+from pathlib import Path
 
 # See js/lib/example.js for the frontend counterpart to this file.
 
@@ -28,8 +30,20 @@ class Multiview(widgets.DOMWidget):
     # Widget properties are defined as traitlets. Any property tagged with `sync=True`
     # is automatically synced to the frontend *any* time it changes in Python.
     # It is synced back to Python from the frontend *any* time the model is touched.
-    _value = Float(0.0).tag(sync=True)
+    _value = Unicode("Hello WOrld").tag(sync=True)
     _src= Unicode("").tag(sync=True)
     _keypoints = List([]).tag(sync=True)
     _vids = List([]).tag(sync=True)
     _tags = List(["a", "b", "c"]).tag(sync=True)
+
+    # @observe('_vids')
+    # def _observe_vids(self, change):
+    #     return "thingy"
+    #     print(change['old'])
+    #     print(change['new'])
+
+    # def __init__(self, **kwargs):
+    #     super().__init__(**kwargs)
+    #     print(self._src)
+
+

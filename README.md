@@ -12,7 +12,7 @@ This is a tool to aid in tagging and analyzing video when presented in tandem wi
 Installation
 ------------
 
-To install use pip:
+<!--To install use pip:
 
     $ pip install vanity
     $ jupyter nbextension enable --py --sys-prefix vanity
@@ -21,7 +21,7 @@ To install use pip:
 To install for jupyterlab (*not tested in jupyterlab*)
 
     $ jupyter labextension install vanity
-
+-->
 For a development installation (requires npm),
 
     $ git clone https://github.com/imandel/vanity.git

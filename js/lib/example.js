@@ -31,7 +31,7 @@ let MultiviewModel = widgets.DOMWidgetModel.extend({
         _model_module_version : '0.1.0',
         _view_module_version : '0.1.0',
         _src: '',
-        _value: 0.0,
+        _value: 'Hello World',
         _keypoints : [],
         _vids: [],
         _tags: []
@@ -43,68 +43,50 @@ let MultiviewModel = widgets.DOMWidgetModel.extend({
 let MultiviewView = widgets.DOMWidgetView.extend({
     // Defines how the widget gets rendered into the DOM
     render: function() {
-        
+
+        // Sync and annotation utilitites 
         const ms= new MediaSync({duration: Infinity});
+        this.ms=ms
+        let curKeypoint= new util.Keypoint();
 
+        // DOM generation
         let output = Object.assign(document.createElement("div"), {id:'output', className: 'outputContainer'});
-
         let content = Object.assign(document.createElement("div"), {id:'content', className: 'mainCol'});
-        let data_views = Object.assign( document.createElement('div'), {id: 'data_views', className: 'sidebar'});
+        let data_views_container = Object.assign( document.createElement('div'), {id: 'data_views_container', className: 'sidebar'});
         let annotations = Object.assign( document.createElement('div'), {id: 'annotations', className: 'sidebar'});
+        let foot = Object.assign(document.createElement("div"), {id:'foot', className: 'foot'});
+
         content.appendChild(Object.assign(document.createElement('h4'), {innerText: 'content'}));
-        data_views.appendChild(Object.assign(document.createElement('h4'), {innerText: 'data views'}));
+        data_views_container.appendChild(Object.assign(document.createElement('h4'), {innerText: 'data views'}));
         annotations.appendChild(Object.assign(document.createElement('h4'), {innerText: 'annotations'}));
 
-        let foot = Object.assign(document.createElement("div"), {id:'foot', className: 'foot'});
-        
+        let data_views = Object.assign( document.createElement('div'), {id: 'data_views', className: 'sidebar'});
+        data_views.appendChild(util.createVidDataViews(ms, this.model.get("_vids").slice() ));
+        data_views_container.appendChild(data_views);
 
+        this.data_views = data_views;
+
+       
         let vid1 = Object.assign(document.createElement("video"), {id: "mainVid", muted: true, controls: false, src:this.model.get('_src')});
         
         ms.add(vid1);
-
-        curKeypoint= new util.Keypoint();
-        
         content.appendChild(vid1);
-        content.appendChild(document.createElement('br'));
-
-        var vids= this.model.get('_vids').slice()
-        vids.forEach((vid_src)=> {
-            console.log(vid_src)
-            var vid = document.createElement('video');
-            // vid.width=200;
-            vid.muted=true;
-            vid.src = vid_src;
-            vid.controls = false;
-            vid.className ="dataView"
-            ms.add(vid);
-            data_views.appendChild(vid)
-            data_views.appendChild(document.createElement('br'));
-        });
-
+       
+        
 
         let controls =  util.createControls(ms);//Object.assign(document.createElement("div"), {id:'controlpanel'});
         foot.appendChild(controls);
 
-        let seeker= Object.assign(document.createElement('input'), {
-            type:'range', 
-            id:'seeker', 
-            min: 0, 
-            max: 1000, 
-            value: 0, 
-            step: 0.001});
+        let seeker= Object.assign(document.createElement('input'), {type:'range', id:'seeker', min: 0, max: 1000, value: 0, step: 0.001});
 
-        seeker.style.width="400px";
-        seeker.style.margin="5px";
         seeker.addEventListener('mouseup', (event) => {ms.to.update({position: parseFloat(seeker.value), velocity: 1.0});});
         seeker.addEventListener('mousedown', (event) => {ms.to.update({velocity: 0.0});});
         seeker.addEventListener('input', (event) => {posTime.innerHTML = seeker.value;});
-
         controls.appendChild(seeker);
 
-        let pos= Object.assign(document.createElement('p'), {innerText:'Position: '});
+
         let posTime = Object.assign(document.createElement('span'), {innerText: '0.0', id:'posTime'});
-        pos.appendChild(posTime)
-        controls.appendChild(pos);
+        controls.appendChild(Object.assign(document.createElement('p'), {innerText:'time: '}).appendChild(posTime));
 
         ms.to.on("timeupdate", function () {
             let curPos= ms.to.query().position;
@@ -203,29 +185,32 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             Object.assign(document.createElement('textarea'), {id: 'comments',rows:4, cols: 50,}));
 
         form.appendChild(comments)
-
         form.appendChild(document.createElement('br'));
 
 
 
         content.appendChild(foot);
         output.appendChild(content);
-        output.appendChild(data_views);
+        output.appendChild(data_views_container);
         output.appendChild(annotations);
-
-
         this.el.appendChild(output); 
-        // this.el.appendChild(annotations)
-        // this.el.appendChild(foot);
 
-        // Observe changes in the value traitlet in Python, and define
-        // a custom callback.
-        // this.model.on('change:value', this.value_changed, this);
+        this.model.on("change:_vids", this.data_views_changed, this);
+
+        //Debug
+        // window.that=this;
     },
 
-    // value_changed: function() {
-    //     this.el.textContent = this.model.get('value');
-    // }
+    data_views_changed: function() {
+        console.log('changed data view')
+
+        let element = this.data_views
+            while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+
+        this.data_views.appendChild(util.createVidDataViews(this.ms, this.model.get("_vids").slice()));
+    }
 });
 
 

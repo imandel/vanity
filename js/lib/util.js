@@ -34,6 +34,17 @@ var createFormInput = function(name, options){
 	return label;
 }
 
+var createVidDataViews = function(ms, vids){
+	var frag = document.createDocumentFragment()
+	vids.forEach( (vid_src) => {
+	    var vid = Object.assign( document.createElement('video'), {className: "dataView", muted: true, controls: false, src: vid_src, className: 'dataView'});
+	    ms.add(vid);
+	    frag.appendChild(vid)
+	    frag.appendChild(document.createElement('br'));
+        });
+	return frag;
+}
+
 let Keypoint = class {
 	constructor(start, end, tags, comments){
 	this.start = start;
@@ -64,6 +75,7 @@ let Keypoint = class {
 var util = {
 	createFormInput: createFormInput,
 	createControls: createControls,
+	createVidDataViews: createVidDataViews,
 	Keypoint: Keypoint
 };
 
