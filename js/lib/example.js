@@ -46,47 +46,37 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
         // Sync and annotation utilitites 
         const ms= new MediaSync({duration: Infinity});
-        this.ms=ms
+        this.ms=ms;
+        this.time= Object.assign(document.createElement('span'), {innerText: '0.0', id:'posTime'});
+        this.playing = false;
+
         let curKeypoint= new util.Keypoint();
 
+        
         // DOM generation
-        let output = Object.assign(document.createElement("div"), {id:'output', className: 'outputContainer'});
-        let content = Object.assign(document.createElement("div"), {id:'content', className: 'mainCol'});
-        let data_views_container = Object.assign( document.createElement('div'), {id: 'data_views_container', className: 'sidebar'});
-        let annotations = Object.assign( document.createElement('div'), {id: 'annotations', className: 'sidebar'});
-        let foot = Object.assign(document.createElement("div"), {id:'foot', className: 'foot'});
-
-        content.appendChild(Object.assign(document.createElement('h4'), {innerText: 'content'}));
-        data_views_container.appendChild(Object.assign(document.createElement('h4'), {innerText: 'data views'}));
-        annotations.appendChild(Object.assign(document.createElement('h4'), {innerText: 'annotations'}));
-
-        let data_views = Object.assign( document.createElement('div'), {id: 'data_views', className: 'sidebar'});
-        data_views.appendChild(util.createVidDataViews(ms, this.model.get("_vids").slice() ));
-        data_views_container.appendChild(data_views);
+        let [output, content, data_views_container, annotations, foot, data_views] = util.createDOM(this);
 
         this.data_views = data_views;
-
-       
+        
         let vid1 = Object.assign(document.createElement("video"), {id: "mainVid", muted: true, controls: false, src:this.model.get('_src')});
         
         ms.add(vid1);
         content.appendChild(vid1);
        
-        
-
-        let controls =  util.createControls(ms);//Object.assign(document.createElement("div"), {id:'controlpanel'});
+        let controls =  util.createControls(this);//Object.assign(document.createElement("div"), {id:'controlpanel'});
         foot.appendChild(controls);
 
         let seeker= Object.assign(document.createElement('input'), {type:'range', id:'seeker', min: 0, max: 1000, value: 0, step: 0.001});
 
-        seeker.addEventListener('mouseup', (event) => {ms.to.update({position: parseFloat(seeker.value), velocity: 1.0});});
+        seeker.addEventListener('mouseup', (event) => {ms.to.update({position: parseFloat(seeker.value), velocity: (this.playing ? 1.0 : 0.0)});});
         seeker.addEventListener('mousedown', (event) => {ms.to.update({velocity: 0.0});});
         seeker.addEventListener('input', (event) => {posTime.innerHTML = seeker.value;});
         controls.appendChild(seeker);
 
 
-        let posTime = Object.assign(document.createElement('span'), {innerText: '0.0', id:'posTime'});
-        controls.appendChild(Object.assign(document.createElement('p'), {innerText:'time: '}).appendChild(posTime));
+        let pos = Object.assign(document.createElement('p'), {innerText:'time: '})
+        pos.appendChild(this.time);;
+        controls.appendChild(pos);
 
         ms.to.on("timeupdate", function () {
             let curPos= ms.to.query().position;
@@ -102,16 +92,10 @@ let MultiviewView = widgets.DOMWidgetView.extend({
        
         vid1.onloadedmetadata = (event) => {seeker.max = vid1.duration;};
 
-        vid1.onended = (event) => {
-            console.log('ended');
-            ms.to.update({velocity: 0.0});
-        };
+        vid1.onended = (event) => {ms.to.update({velocity: 0.0});};
 
-        let tagbox = document.createElement('div');
+        let tagbox = Object.assign(document.createElement('div'), {id: 'tagbox'});
         foot.appendChild(tagbox);
-
-
-        tagbox.id = 'tagbox';
 
         let form = document.createElement('form');
         let key_start = util.createFormInput('start', {type: 'number', id: 'key_start', step:'any'});
@@ -198,12 +182,11 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         this.model.on("change:_vids", this.data_views_changed, this);
 
         //Debug
-        // window.that=this;
+        window.that=this;
     },
 
     data_views_changed: function() {
         console.log('changed data view')
-
         let element = this.data_views
             while (element.firstChild) {
             element.removeChild(element.firstChild);

@@ -1,6 +1,24 @@
 'use strict';
 
-var createControls = function (ms) {
+var createDOM = function(that){
+	let output = Object.assign(document.createElement("div"), {id:'output', className: 'outputContainer'});
+    let content = Object.assign(document.createElement("div"), {id:'content', className: 'mainCol'});
+    let data_views_container = Object.assign( document.createElement('div'), {id: 'data_views_container', className: 'sidebar'});
+    let annotations = Object.assign( document.createElement('div'), {id: 'annotations', className: 'sidebar'});
+    let foot = Object.assign(document.createElement("div"), {id:'foot', className: 'foot'});
+
+    content.appendChild(Object.assign(document.createElement('h4'), {innerText: 'content: '}));
+    data_views_container.appendChild(Object.assign(document.createElement('h4'), {innerText: 'data views'}));
+    annotations.appendChild(Object.assign(document.createElement('h4'), {innerText: 'annotations'}));
+
+    let data_views = Object.assign(document.createElement('div'), {id: 'data_views', className: 'sidebar'});
+    data_views.appendChild(util.createVidDataViews(that.ms, that.model.get("_vids").slice() ));
+    data_views_container.appendChild(data_views);
+
+    return [output, content, data_views_container, annotations, foot, data_views];
+}
+
+var createControls = function (that) {
 	let controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
 
     controls.appendChild(document.createElement('br'))
@@ -18,10 +36,12 @@ var createControls = function (ms) {
     controls.appendChild(speednormal);
 
 
-    play.onclick= () => ms.play();
-    pause.onclick= () => ms.pause();
-    speedup.onclick = () => ms.to.update({velocity:3.0});
-    speednormal.onclick = () => ms.to.update({velocity:1.0});
+    play.onclick= () => {that.ms.play(); that.playing = true;}
+    pause.onclick= () => {that.ms.pause(); that.playing = false;}
+    speedup.onclick = () => that.ms.to.update({velocity:3.0});
+    speednormal.onclick = () => that.ms.to.update({velocity:1.0});
+
+
 
     return controls;
 };
@@ -76,7 +96,8 @@ var util = {
 	createFormInput: createFormInput,
 	createControls: createControls,
 	createVidDataViews: createVidDataViews,
-	Keypoint: Keypoint
+	Keypoint: Keypoint,
+	createDOM: createDOM
 };
 
 module.exports = util;
