@@ -34,7 +34,7 @@ class Multiview(widgets.DOMWidget):
     _src= Unicode("").tag(sync=True)
     _keypoints = List([]).tag(sync=True)
     _vids = List([]).tag(sync=True)
-    _tags = List(["a", "b", "c"]).tag(sync=True)
+    _tags = List([]).tag(sync=True)
 
     # @observe('_vids')
     # def _observe_vids(self, change):

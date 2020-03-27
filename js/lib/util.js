@@ -31,7 +31,6 @@ var createDOM = function(that){
     let tagbox = Object.assign(document.createElement('div'), {id: 'tagbox'});
     foot.appendChild(tagbox);
     foot.appendChild(annotations_container)
-    console.log("content div made")
 
     return [output, vid_container, data_views_container, annotations, foot, data_views, content, tagbox];
 }
@@ -39,16 +38,16 @@ var createDOM = function(that){
 var createControls = function (that) {
 	let controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
 
-    let play = Object.assign(document.createElement('button'), {innerText: 'play'});
+    let play = Object.assign(document.createElement('button'), {innerText: 'play', className: 'controlButton'});
     controls.appendChild(play)
 
-    let pause = Object.assign(document.createElement('button'), {innerText: 'pause'});
+    let pause = Object.assign(document.createElement('button'), {innerText: 'pause', className: 'controlButton'});
     controls.appendChild(pause);
 
-    let speedup = Object.assign(document.createElement('button'), {innerText: '2x>>'});
+    let speedup = Object.assign(document.createElement('button'), {innerText: '2x>>', className: 'controlButton'});
     controls.appendChild(speedup);
 
-    let speednormal = Object.assign(document.createElement('button'), {innerText: '1x>>'});
+    let speednormal = Object.assign(document.createElement('button'), {innerText: '1x>>', className: 'controlButton'});
     controls.appendChild(speednormal);
 
     play.onclick= () => {that.ms.play(); that.playing = true;}
@@ -81,11 +80,12 @@ var createVidDataViews = function(ms, vids){
 }
 
 let Keypoint = class {
-	constructor(start, end, tags, comments){
+	constructor(src,start, end, tags, comments){
 	this.start = start;
 	this.end = end;
 	this.tags = tags;
 	this.comments = comments;
+	this.src = src
 	}
 
 	reset(){
@@ -93,10 +93,12 @@ let Keypoint = class {
 		this.end = undefined;
 		this.tags = undefined;
 		this.comments = undefined;
+		// this.src = undefined;
 	}
 
 	get values(){
 		return {
+			"src": this.src,
 			"start": this.start,
 			"end": this.end,
 			"tags": this.tags,
@@ -105,6 +107,21 @@ let Keypoint = class {
 	}
 }
 
+let loadKeypoints = function(keypoints, that){
+	let frag = document.createDocumentFragment();
+	let src = that.model.get('_src');
+	keypoints.filter(n => n.src==src).forEach((keypoint)=> {
+		frag.insertBefore(util.clickableKeypoint(keypoint, that), frag.firstChild);
+	})
+	return frag;
+}
+
+let clickableKeypoint = function(keypoint, that){
+	let keyP = Object.assign(document.createElement('p'), {className:"note"})
+	keyP.innerText="Start: "+ keypoint.start.toFixed(2) + ", comments: "+ keypoint.comments + ", tags: "+ keypoint.tags.toString();
+	keyP.onclick = () => {that.ms.seek(keypoint.start)}; 
+	return keyP;
+}
 
 
 var util = {
@@ -112,7 +129,9 @@ var util = {
 	createControls: createControls,
 	createVidDataViews: createVidDataViews,
 	Keypoint: Keypoint,
-	createDOM: createDOM
+	createDOM: createDOM,
+	loadKeypoints: loadKeypoints,
+	clickableKeypoint: clickableKeypoint
 };
 
 module.exports = util;
