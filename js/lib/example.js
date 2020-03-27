@@ -59,7 +59,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         this.data_views = data_views;
         
         let vid1 = Object.assign(document.createElement("video"), {id: "mainVid", muted: true, controls: false, src:this.model.get('_src')});
-        
+        this.vid1= vid1
         ms.add(vid1);
         content.appendChild(vid1);
        
@@ -77,6 +77,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         // controls.insertBefore(pos, controls.firstChild);
 
         let seeker= Object.assign(document.createElement('input'), {type:'range', id:'seeker', min: 0, max: 1000, value: 0, step: 0.001});
+        this.seeker = seeker
         seeker.addEventListener('mouseup', (event) => {ms.to.update({position: parseFloat(seeker.value), velocity: (this.playing ? 1.0 : 0.0)});});
         seeker.addEventListener('mousedown', (event) => {ms.to.update({velocity: 0.0});});
         seeker.addEventListener('input', (event) => {this.time.innerHTML = seeker.value;});
@@ -96,7 +97,10 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             }
         });
        
-        vid1.onloadedmetadata = (event) => {seeker.max = vid1.duration;};
+        vid1.onloadedmetadata = (event) => {
+            console.log('metaed')
+
+            seeker.max = vid1.duration;};
 
         vid1.onended = (event) => {ms.to.update({velocity: 0.0});};
 
@@ -195,6 +199,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         this.el.appendChild(foot)
 
         this.model.on("change:_vids", this.data_views_changed, this);
+        this.model.on("change:_src", this.src_changed, this);
 
         //Debug
         window.that=this;
@@ -208,6 +213,14 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         }
 
         this.data_views.appendChild(util.createVidDataViews(this.ms, this.model.get("_vids").slice()));
+    },
+
+    src_changed: function() {
+        console.log('src_changed');
+        this.vid1.src =this.model.get('_src')
+        while (this.data_views.firstChild) {
+            this.data_views.removeChild(this.data_views.firstChild);
+        }
     }
 });
 
