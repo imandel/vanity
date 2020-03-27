@@ -1,7 +1,7 @@
 import ipywidgets as widgets
 from traitlets import Unicode, Float, List, observe
-
 from pathlib import Path
+import pandas as pd
 
 # See js/lib/example.js for the frontend counterpart to this file.
 
@@ -38,8 +38,10 @@ class Multiview(widgets.DOMWidget):
 
     @observe('_keypoints')
     def _observe_keys(self, change):
-        # print(change)
+        # print(change['old'])
         # print(change['new'])
+        self.df= pd.DataFrame(self._keypoints)
+        # pd.DataFrame(a._keypoints)
         if self.callbackArgs is not None:
             if type(self.callbackArgs) is list:
                 self.callback(*self.callbackArgs)
@@ -53,6 +55,7 @@ class Multiview(widgets.DOMWidget):
     def __init__(self, _src, _vids=None, _tags=None, _keypoints= None, callback=None, callbackArgs=None, **kwargs):
         super().__init__(**kwargs)
         self._src=_src
+        self.df = pd.DataFrame()
 
         if _vids is not None:
             self._vids=_vids
@@ -62,12 +65,9 @@ class Multiview(widgets.DOMWidget):
 
         if _keypoints is not None:
             self._keypoints=_keypoints
+            self.df.append(_keypoints)
 
         if callback is not None:
             self.callback= callback
             self.callbackArgs=callbackArgs
-        # else:
-
-        # print(self._src)
-
 
