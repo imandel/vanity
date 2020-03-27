@@ -32,18 +32,42 @@ class Multiview(widgets.DOMWidget):
     # It is synced back to Python from the frontend *any* time the model is touched.
     _value = Unicode("Hello WOrld").tag(sync=True)
     _src= Unicode("").tag(sync=True)
-    _keypoints = List([]).tag(sync=True)
     _vids = List([]).tag(sync=True)
+    _keypoints = List([]).tag(sync=True)
     _tags = List([]).tag(sync=True)
 
-    # @observe('_vids')
-    # def _observe_vids(self, change):
-    #     return "thingy"
-    #     print(change['old'])
-    #     print(change['new'])
+    @observe('_keypoints')
+    def _observe_keys(self, change):
+        # print(change)
+        # print(change['new'])
+        if self.callbackArgs is not None:
+            if type(self.callbackArgs) is list:
+                self.callback(*self.callbackArgs)
+            if type(self.callbackArgs) is dict:
+                self.callback(**self.callbackArgs)
+        else:
+            self.callback()
 
-    # def __init__(self, **kwargs):
-    #     super().__init__(**kwargs)
-    #     print(self._src)
+        # return "thingy"
+
+    def __init__(self, _src, _vids=None, _tags=None, _keypoints= None, callback=None, callbackArgs=None, **kwargs):
+        super().__init__(**kwargs)
+        self._src=_src
+
+        if _vids is not None:
+            self._vids=_vids
+
+        if _tags is not None:
+            self._tags=_tags
+
+        if _keypoints is not None:
+            self._keypoints=_keypoints
+
+        if callback is not None:
+            self.callback= callback
+            self.callbackArgs=callbackArgs
+        # else:
+
+        # print(self._src)
 
 
