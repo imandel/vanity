@@ -2,26 +2,42 @@
 
 var createDOM = function(that){
 	let output = Object.assign(document.createElement("div"), {id:'output', className: 'outputContainer'});
-    let content = Object.assign(document.createElement("div"), {id:'content', className: 'mainCol'});
+    let content = Object.assign(document.createElement("div"), {id:'content'});
+    let vid_container= Object.assign( document.createElement('div'), {id: 'vid_container', className: 'mainCol'});
     let data_views_container = Object.assign( document.createElement('div'), {id: 'data_views_container', className: 'sidebar'});
-    let annotations = Object.assign( document.createElement('div'), {id: 'annotations', className: 'sidebar'});
+    let annotations_container = Object.assign( document.createElement('div'), {id: 'annotations_container', className: 'mainCol'});
+    let annotations = Object.assign( document.createElement('div'), {id: 'annotations', className: 'scrollbox'});
     let foot = Object.assign(document.createElement("div"), {id:'foot', className: 'foot'});
 
-    content.appendChild(Object.assign(document.createElement('h4'), {innerText: 'content: '}));
+    let titleblock=Object.assign(document.createElement('h4'), {innerText: 'content: '});
+    titleblock.appendChild(Object.assign(document.createElement('span'), {innerText: that.model.get('_src'), id:'title'}));
+    vid_container.appendChild(titleblock);
+    vid_container.appendChild(content)
+    
     data_views_container.appendChild(Object.assign(document.createElement('h4'), {innerText: 'data views'}));
-    annotations.appendChild(Object.assign(document.createElement('h4'), {innerText: 'annotations'}));
+    annotations_container.appendChild(Object.assign(document.createElement('h4'), {innerText: 'annotations'}));
 
-    let data_views = Object.assign(document.createElement('div'), {id: 'data_views', className: 'sidebar'});
+    annotations_container.appendChild(annotations)
+
+    let data_views = Object.assign(document.createElement('div'), {id: 'data_views'});
     data_views.appendChild(util.createVidDataViews(that.ms, that.model.get("_vids").slice() ));
     data_views_container.appendChild(data_views);
 
-    return [output, content, data_views_container, annotations, foot, data_views];
+    // content.appendChild(controls);
+    output.appendChild(vid_container);
+    output.appendChild(data_views_container);
+    // output.appendChild(annotations);
+
+    let tagbox = Object.assign(document.createElement('div'), {id: 'tagbox'});
+    foot.appendChild(tagbox);
+    foot.appendChild(annotations_container)
+    console.log("content div made")
+
+    return [output, vid_container, data_views_container, annotations, foot, data_views, content, tagbox];
 }
 
 var createControls = function (that) {
 	let controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
-
-    controls.appendChild(document.createElement('br'))
 
     let play = Object.assign(document.createElement('button'), {innerText: 'play'});
     controls.appendChild(play)
@@ -34,7 +50,6 @@ var createControls = function (that) {
 
     let speednormal = Object.assign(document.createElement('button'), {innerText: '1x>>'});
     controls.appendChild(speednormal);
-
 
     play.onclick= () => {that.ms.play(); that.playing = true;}
     pause.onclick= () => {that.ms.pause(); that.playing = false;}
@@ -60,7 +75,7 @@ var createVidDataViews = function(ms, vids){
 	    var vid = Object.assign( document.createElement('video'), {className: "dataView", muted: true, controls: false, src: vid_src, className: 'dataView'});
 	    ms.add(vid);
 	    frag.appendChild(vid)
-	    frag.appendChild(document.createElement('br'));
+	    // frag.appendChild(document.createElement('br'));
         });
 	return frag;
 }

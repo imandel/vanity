@@ -1,45 +1,80 @@
 .container { width:97% !important; }
 
 .outputContainer{
-	display: table;
+	display: flex;
 	width: 100%;
-
 }
 
 .mainCol {
-	display: table-cell;
+	/*display: table-cell;*/
 	width: 50%;
+	background-color: ghostwhite;
 }
 
 .sidebar{
-	display: table-cell;
-	width: 25%;
+	width: 50%;
 
 }
 
+.numberInput{
+	width: 5em;
+}
+
 .dataView {
+	width: 50%;
+	padding: 5px;
+}
+
+.foot{
+	display: flex;
 	width: 100%;
-	padding: 10px;
+	/*height: 300px;*/
+
 }
 
 #content {
   /*background-color: blue;*/
+  padding-bottom: 5px;
+
 }
 
-#data_views {
+#data_views_container {
   background-color: whitesmoke;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+#annotations_container{
+	display: block;
 }
 
 #annotations {
   /*background-color: red;*/
+  height: 100px;
+  overflow-y:auto;
 }
 
 #mainVid{
 	width: 100%;
-	padding: 15px;
+	padding-right: 15px;
+	/*padding-bottom: 5px;*/
+	padding-left: 15px;
 }
 
 #seeker {
-	width: 400px;
-	margin: 5px;
+	width: 94%;
+	/*padding: 15px;*/
+	margin: 0 auto;
+}
+
+#tagbox{
+	width: 50%;
+	background-color: whitesmoke;
+}
+
+#comments{
+	width: 100%;
 }

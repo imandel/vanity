@@ -52,9 +52,8 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
         let curKeypoint= new util.Keypoint();
 
-        
         // DOM generation
-        let [output, content, data_views_container, annotations, foot, data_views] = util.createDOM(this);
+        let [output, vid_container, data_views_container, annotations, foot, data_views, content, tagbox] = util.createDOM(this);
 
         this.data_views = data_views;
         
@@ -64,23 +63,29 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         content.appendChild(vid1);
        
         let controls =  util.createControls(this);//Object.assign(document.createElement("div"), {id:'controlpanel'});
-        foot.appendChild(controls);
+        
+   
+        content.appendChild(controls);
 
-        let seeker= Object.assign(document.createElement('input'), {type:'range', id:'seeker', min: 0, max: 1000, value: 0, step: 0.001});
-
-        seeker.addEventListener('mouseup', (event) => {ms.to.update({position: parseFloat(seeker.value), velocity: (this.playing ? 1.0 : 0.0)});});
-        seeker.addEventListener('mousedown', (event) => {ms.to.update({velocity: 0.0});});
-        seeker.addEventListener('input', (event) => {posTime.innerHTML = seeker.value;});
-        controls.appendChild(seeker);
-
-
-        let pos = Object.assign(document.createElement('p'), {innerText:'time: '})
-        pos.appendChild(this.time);;
+        let pos = Object.assign(document.createElement('p'), {innerText:'time: ', id: 'pos', style: "display:inline"})
+        pos.appendChild(this.time)
         controls.appendChild(pos);
 
-        ms.to.on("timeupdate", function () {
+        // let pos = Object.assign(document.createElement('p'), {innerText:'time: '})
+        // document.getElementById('pos').appendChild(this.time);
+        // controls.insertBefore(pos, controls.firstChild);
+
+        let seeker= Object.assign(document.createElement('input'), {type:'range', id:'seeker', min: 0, max: 1000, value: 0, step: 0.001});
+        seeker.addEventListener('mouseup', (event) => {ms.to.update({position: parseFloat(seeker.value), velocity: (this.playing ? 1.0 : 0.0)});});
+        seeker.addEventListener('mousedown', (event) => {ms.to.update({velocity: 0.0});});
+        seeker.addEventListener('input', (event) => {this.time.innerHTML = seeker.value;});
+        controls.insertBefore(seeker, controls.firstChild);
+
+
+
+        ms.to.on("timeupdate", ()=> {
             let curPos= ms.to.query().position;
-            posTime.innerHTML = curPos;
+            this.time.innerHTML = curPos.toFixed(3);
             seeker.value = curPos;
             if(!curKeypoint.start){
                 document.getElementById('key_start').placeholder = curPos.toFixed(3)
@@ -94,11 +99,10 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
         vid1.onended = (event) => {ms.to.update({velocity: 0.0});};
 
-        let tagbox = Object.assign(document.createElement('div'), {id: 'tagbox'});
-        foot.appendChild(tagbox);
+
 
         let form = document.createElement('form');
-        let key_start = util.createFormInput('start', {type: 'number', id: 'key_start', step:'any'});
+        let key_start = util.createFormInput('start', {type: 'number', id: 'key_start', step:'any', className:'numberInput'});
         form.appendChild(key_start);
         let setStart = Object.assign(document.createElement('button'), { id: 'set_start', innerHTML: "set"});
         setStart.onclick = () => {
@@ -115,9 +119,9 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             console.log(curKeypoint)
         }
         form.appendChild(setStart);
-        form.appendChild(document.createElement('br'))
+        // form.appendChild(document.createElement('br'))
 
-        form.appendChild(util.createFormInput('end', {type: 'number', id: 'key_end', step:'any'}));
+        form.appendChild(util.createFormInput('end', {type: 'number', id: 'key_end', step:'any', className:'numberInput'}));
         let setEnd = Object.assign(document.createElement('button'), { id: 'set_end', innerHTML: "set"});
         setEnd.onclick = () => {
             let curPos = ms.to.query().position;
@@ -137,17 +141,8 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
         form.onsubmit = () => {return false}
 
-        let tags_container = document.createElement('div');
-        let tags= this.model.get("_tags").slice();
-        tags.forEach((tag)=>{
-            tags_container.appendChild(util.createFormInput(tag, {value: tag, type: 'checkbox'}));
-            // tags_container.appendChild(document.createElement('br'));
-        })
-
-        form.appendChild(tags_container);
-
         let marktime = document.createElement('button');
-        marktime.innerHTML ='mark key point';
+        marktime.innerHTML ='Add note';
         form.appendChild(marktime);
 
         marktime.onclick = () => {
@@ -163,21 +158,40 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             this.touch();
         };
 
+
+        let tags_container = document.createElement('div');
+        let tags= this.model.get("_tags").slice();
+        tags.forEach((tag)=>{
+            tags_container.appendChild(util.createFormInput(tag, {value: tag, type: 'checkbox'}));
+            // tags_container.appendChild(document.createElement('br'));
+        })
+
+        form.appendChild(tags_container);
+
+        
         tagbox.appendChild(form);
 
         let comments = Object.assign(document.createElement('label'), {innerText: "Comments\n"}).appendChild(
-            Object.assign(document.createElement('textarea'), {id: 'comments',rows:4, cols: 50,}));
+            Object.assign(document.createElement('textarea'), {id: 'comments',rows:3}));
 
         form.appendChild(comments)
         form.appendChild(document.createElement('br'));
 
+        //debug
+        for (let step = 0; step < 15; step++) {
+            annotations.appendChild(Object.assign(document.createElement('p'), {innerText: "Hello"}));
+        }
+
+        
+
+        // foot.appendChild(annotations)
 
 
-        content.appendChild(foot);
-        output.appendChild(content);
-        output.appendChild(data_views_container);
-        output.appendChild(annotations);
+
+
+        
         this.el.appendChild(output); 
+        this.el.appendChild(foot)
 
         this.model.on("change:_vids", this.data_views_changed, this);
 
