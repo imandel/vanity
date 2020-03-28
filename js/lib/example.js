@@ -97,10 +97,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             }
         });
        
-        vid1.onloadedmetadata = (event) => {
-            console.log('metaed')
-
-            seeker.max = vid1.duration;};
+        vid1.onloadedmetadata = (event) => {seeker.max = vid1.duration;};
 
         vid1.onended = (event) => {ms.to.update({velocity: 0.0});};
 
@@ -151,7 +148,6 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             let curPos = ms.to.query().position
             if(!key_start.value){
                 curKeypoint.start = curPos;
-                console.log('set')
             }
             if(!key_end.value){
                 curKeypoint.end=curPos
@@ -159,13 +155,13 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             let keypoints= this.model.get("_keypoints").slice()
             curKeypoint.comments= comments.value
             curKeypoint.tags = Array.from(tags_container.getElementsByTagName('input')).filter(n => n.checked).map(m => m.value)
-            console.log(curKeypoint.values)
             keypoints.push(curKeypoint.values)
-
+            let keyP = util.clickableKeypoint(curKeypoint, this);
+            annotations.insertBefore(keyP, annotations.firstChild);
             this.model.set({"_keypoints": keypoints});
             this.touch();
-            annotations.insertBefore(util.clickableKeypoint(curKeypoint, this), annotations.firstChild);
             curKeypoint.reset();
+            
             form.reset();
             document.getElementById('key_end').placeholder = "";
             annotations.scrollTop = 0;
