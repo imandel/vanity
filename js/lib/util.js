@@ -10,7 +10,7 @@ var createDOM = function(that){
     let foot = Object.assign(document.createElement("div"), {id:'foot', className: 'foot'});
 
     let titleblock=Object.assign(document.createElement('h4'), {innerText: 'content: '});
-    titleblock.appendChild(Object.assign(document.createElement('span'), {innerText: that.model.get('_src'), id:'title'}));
+    titleblock.appendChild(Object.assign(document.createElement('span'), {innerText: that.model.get('src'), id:'title'}));
     vid_container.appendChild(titleblock);
     vid_container.appendChild(content)
     
@@ -20,7 +20,7 @@ var createDOM = function(that){
     annotations_container.appendChild(annotations)
 
     let data_views = Object.assign(document.createElement('div'), {id: 'data_views'});
-    data_views.appendChild(util.createVidDataViews(that.ms, that.model.get("_vids").slice() ));
+    data_views.appendChild(util.createVidDataViews(that.ms, that.model.get("vids").slice() ));
     data_views_container.appendChild(data_views);
 
     // content.appendChild(controls);
@@ -80,12 +80,12 @@ var createVidDataViews = function(ms, vids){
 }
 
 let Keypoint = class {
-	constructor(src,start, end, tags, comments){
+	constructor(key_src,start, end, tags, comments){
 	this.start = start;
 	this.end = end;
 	this.tags = tags;
 	this.comments = comments;
-	this.src = src
+	this.src = key_src
 	}
 
 	reset(){
@@ -109,7 +109,7 @@ let Keypoint = class {
 
 let loadKeypoints = function(keypoints, that){
 	let frag = document.createDocumentFragment();
-	let src = that.model.get('_src');
+	let src = that.model.get('src');
 	keypoints.filter(n => n.src==src).forEach((keypoint)=> {
 		frag.insertBefore(util.clickableKeypoint(keypoint, that), frag.firstChild);
 	})
@@ -120,9 +120,7 @@ let clickableKeypoint = function(keypoint, that){
 	let start =keypoint.start
 	let keyP = Object.assign(document.createElement('p'), {className:"note"})
 	keyP.innerText="Start: "+ keypoint.start.toFixed(2) + ", comments: "+ keypoint.comments + ", tags: "+ keypoint.tags.toString();
-	keyP.onclick = () => {
-		that.ms.seek(start)
-	}; 
+	keyP.onclick = () => {that.ms.seek(start)}; 
 	return keyP;
 }
 

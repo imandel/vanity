@@ -7,7 +7,72 @@ import pandas as pd
 
 @widgets.register
 class Multiview(widgets.DOMWidget):
-    """An example widget."""
+    '''
+    This is a multiviewer for watching and tagging videos while viewing synced video data.
+
+    Parameters
+    ----------
+
+    src : `str`
+        String with path to the main video file to display. This is required.
+    vids : `list` [`str`]
+        A list of paths to videos to display in sync with src
+    tags : `list` [`str`]
+        A list of tags to apply to video notes
+    keypoints : `list` [`dict`]
+        An optional list of keypoint dictionaries with keys:
+        ``"src"``
+            The video source the keypoint originates with (`str`)
+        ``"start"``
+            The start time in the source video for the keypoint (`float`)
+        ``"end"``
+            The end time in the source video for the keypoint (`float`)
+        ``"tags"``
+            A list of strings for tags that are applied to the keypoint (`list`)
+        ``"comments"``
+            Comments made associated with the keypoint (`str`)
+    callback : `function`
+        Function applied each time a new keypoint is added
+    callbackArgs : any
+        list or dict of args to be applied as *args or *kwargs to your callback function
+
+    Attributes
+    ----------
+
+    src : `str`
+        String with path to the main video file to display. This is required.
+    vids : `list` [`str`]
+        A list of paths to videos to display in sync with src
+    tags : `list` [`str`]
+        A list of tags to apply to video notes
+    keypoints : `list` [`dict`]
+        The most up to date keypoints marked with the format :
+        ``"src"``
+            The video source the keypoint originates with (`str`)
+        ``"start"``
+            The start time in the source video for the keypoint (`float`)
+        ``"end"``
+            The end time in the source video for the keypoint (`float`)
+        ``"tags"``
+            A list of strings for tags that are applied to the keypoint (`list`)
+        ``"comments"``
+            Comments made associated with the keypoint (`str`)
+    callback : `function`
+        Function applied each time a new keypoint is added
+    callbackArgs : any
+        list or dict of args to be applied as *args or *kwargs to your callback function
+
+    df : ``Pandas DataFrame``
+        An up to date dataframe with the current keypoints
+
+
+
+
+
+   '''
+    #TODO apply video offsets to source and vids
+    #TODO there is a slight delay when you click an annotation while it is playing
+    #TODO make ot possible to add checkboxs after watching
 
     # Name of the widget view class in front-end
     _view_name = Unicode('MultiviewView').tag(sync=True)
@@ -30,44 +95,49 @@ class Multiview(widgets.DOMWidget):
     # Widget properties are defined as traitlets. Any property tagged with `sync=True`
     # is automatically synced to the frontend *any* time it changes in Python.
     # It is synced back to Python from the frontend *any* time the model is touched.
-    _value = Unicode("Hello WOrld").tag(sync=True)
-    _src= Unicode("").tag(sync=True)
-    _vids = List([]).tag(sync=True)
-    _keypoints = List([]).tag(sync=True)
-    _tags = List([]).tag(sync=True)
+    src= Unicode("").tag(sync=True)
+    vids = List([]).tag(sync=True)
+    keypoints = List([]).tag(sync=True)
+    tags = List([]).tag(sync=True)
 
-    @observe('_keypoints')
+    @observe('keypoints')
     def _observe_keys(self, change):
         # print(change['old'])
         # print(change['new'])
-        self.df= pd.DataFrame(self._keypoints)
-        # pd.DataFrame(a._keypoints)
-        if self.callbackArgs is not None:
-            if type(self.callbackArgs) is list:
-                self.callback(*self.callbackArgs)
-            if type(self.callbackArgs) is dict:
-                self.callback(**self.callbackArgs)
-        else:
-            self.callback()
+        self.df= pd.DataFrame(self.keypoints)
+        # pd.DataFrame(a.keypoints)
 
-        # return "thingy"
+        if self.callback is not None:
+        
+            if self.callbackArgs is not None:
+                if type(self.callbackArgs) is list:
+                    self.callback(*self.callbackArgs)
+                if type(self.callbackArgs) is dict:
+                    self.callback(**self.callbackArgs)
+            else:
+                self.callback()
 
-    def __init__(self, _src, _vids=None, _tags=None, _keypoints= None, callback=None, callbackArgs=None, **kwargs):
+
+    def __init__(self, src, vids=None, tags=None, keypoints= None, callback=None, callbackArgs=None, **kwargs):
+
         super().__init__(**kwargs)
-        self._src=_src
+        self.src=src
         self.df = pd.DataFrame()
 
-        if _vids is not None:
-            self._vids=_vids
+        if vids is not None:
+            self.vids=vids
 
-        if _tags is not None:
-            self._tags=_tags
+        if tags is not None:
+            self.tags=tags
 
-        if _keypoints is not None:
-            self._keypoints=_keypoints
-            self.df.append(_keypoints)
+        if keypoints is not None:
+            self.keypoints=keypoints
+            self.df.append(keypoints)
 
         if callback is not None:
             self.callback= callback
             self.callbackArgs=callbackArgs
+        else:
+            self.callback=None
+
 

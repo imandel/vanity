@@ -30,11 +30,10 @@ let MultiviewModel = widgets.DOMWidgetModel.extend({
         _view_module : 'vanity',
         _model_module_version : '0.1.0',
         _view_module_version : '0.1.0',
-        _src: '',
-        _value: 'Hello World',
-        _keypoints : [],
-        _vids: [],
-        _tags: []
+        src: '',
+        keypoints : [],
+        vids: [],
+        tags: []
     })
 });
 
@@ -50,7 +49,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         this.time= Object.assign(document.createElement('span'), {innerText: '0.0', id:'posTime'});
         this.playing = false;
 
-        let curKeypoint= new util.Keypoint(this.model.get('_src'));
+        let curKeypoint= new util.Keypoint(key_src= this.model.get('src'));
         this.curKeypoint = curKeypoint
 
         // DOM generation
@@ -58,7 +57,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
         this.data_views = data_views;
         
-        let vid1 = Object.assign(document.createElement("video"), {id: "mainVid", muted: true, controls: false, src:this.model.get('_src')});
+        let vid1 = Object.assign(document.createElement("video"), {id: "mainVid", muted: true, controls: false, src:this.model.get('src')});
         this.vid1= vid1
         ms.add(vid1);
         content.appendChild(vid1);
@@ -146,22 +145,21 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
         marktime.onclick = () => {
             let curPos = ms.to.query().position
+            let temp_keypoints= this.model.get("keypoints").slice()
             if(!key_start.value){
                 curKeypoint.start = curPos;
             }
             if(!key_end.value){
                 curKeypoint.end=curPos
             }
-            let keypoints= this.model.get("_keypoints").slice()
             curKeypoint.comments= comments.value
             curKeypoint.tags = Array.from(tags_container.getElementsByTagName('input')).filter(n => n.checked).map(m => m.value)
-            keypoints.push(curKeypoint.values)
-            let keyP = util.clickableKeypoint(curKeypoint, this);
-            annotations.insertBefore(keyP, annotations.firstChild);
-            this.model.set({"_keypoints": keypoints});
+            console.log(curKeypoint.values)
+            annotations.insertBefore(util.clickableKeypoint(curKeypoint, this), annotations.firstChild);
+            temp_keypoints.push(curKeypoint.values)
+            this.model.set({"keypoints": temp_keypoints});
             this.touch();
             curKeypoint.reset();
-            
             form.reset();
             document.getElementById('key_end').placeholder = "";
             annotations.scrollTop = 0;
@@ -170,7 +168,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
 
         let tags_container = Object.assign(document.createElement('div'), {id: 'tags_container'});
-        let tags= this.model.get("_tags").slice();
+        let tags= this.model.get("tags").slice();
         tags.forEach((tag)=>{
             let tagcheck = util.createFormInput(tag, {value: tag, type: 'checkbox'})
             tagcheck.className= 'tagCheck'
@@ -188,14 +186,14 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         form.appendChild(document.createElement('br'));
 
         //debug
-        annotations.appendChild(util.loadKeypoints(this.model.get('_keypoints'), this))
+        annotations.appendChild(util.loadKeypoints(this.model.get('keypoints'), this))
 
         
         this.el.appendChild(output); 
         this.el.appendChild(foot)
 
-        this.model.on("change:_vids", this.data_views_changed, this);
-        this.model.on("change:_src", this.src_changed, this);
+        this.model.on("change:vids", this.data_views_changed, this);
+        this.model.on("change:src", this.src_changed, this);
 
         //Debug
         window.that=this;
@@ -208,12 +206,12 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             element.removeChild(element.firstChild);
         }
 
-        this.data_views.appendChild(util.createVidDataViews(this.ms, this.model.get("_vids").slice()));
+        this.data_views.appendChild(util.createVidDataViews(this.ms, this.model.get("vids").slice()));
     },
 
     src_changed: function() {
         console.log('src_changed');
-        this.vid1.src =this.model.get('_src')
+        this.vid1.src =this.model.get('src')
         while (this.data_views.firstChild) {
             this.data_views.removeChild(this.data_views.firstChild);
         }
