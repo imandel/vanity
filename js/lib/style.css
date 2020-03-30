@@ -11,6 +11,12 @@
 	background-color: ghostwhite;
 }
 
+.srcVid {
+	/*display: table-cell;*/
+	width: 50%;
+	background-color: ghostwhite;
+}
+
 .sidebar{
 	width: 50%;
 

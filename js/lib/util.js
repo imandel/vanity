@@ -3,7 +3,7 @@
 var createDOM = function(that){
 	let output = Object.assign(document.createElement("div"), {id:'output', className: 'outputContainer'});
     let content = Object.assign(document.createElement("div"), {id:'content'});
-    let vid_container= Object.assign( document.createElement('div'), {id: 'vid_container', className: 'mainCol'});
+    let vid_container= Object.assign( document.createElement('div'), {id: 'vid_container', className: 'srcVid'});
     let data_views_container = Object.assign( document.createElement('div'), {id: 'data_views_container', className: 'sidebar'});
     let annotations_container = Object.assign( document.createElement('div'), {id: 'annotations_container', className: 'mainCol'});
     let annotations = Object.assign( document.createElement('div'), {id: 'annotations', className: 'scrollbox'});
@@ -25,7 +25,15 @@ var createDOM = function(that){
 
     // content.appendChild(controls);
     output.appendChild(vid_container);
-    output.appendChild(data_views_container);
+    if(that.model.get("vids").slice().length===0){
+    	vid_container.style.width = "100%";	
+    	console.log('in here!')
+    }
+    else{
+    	 output.appendChild(data_views_container);
+    	 console.log('or here?')
+    }
+    
     // output.appendChild(annotations);
 
     let tagbox = Object.assign(document.createElement('div'), {id: 'tagbox'});
