@@ -27,11 +27,9 @@ var createDOM = function(that){
     output.appendChild(vid_container);
     if(that.model.get("vids").slice().length===0){
     	vid_container.style.width = "100%";	
-    	console.log('in here!')
     }
     else{
     	 output.appendChild(data_views_container);
-    	 console.log('or here?')
     }
     
     // output.appendChild(annotations);
@@ -88,12 +86,13 @@ var createVidDataViews = function(ms, vids){
 }
 
 let Keypoint = class {
-	constructor(key_src,start, end, tags, comments){
+	constructor(key_src, author, start, end, tags, comments){
 	this.start = start;
 	this.end = end;
 	this.tags = tags;
 	this.comments = comments;
 	this.src = key_src
+	this.author=author
 	}
 
 	reset(){
@@ -110,7 +109,9 @@ let Keypoint = class {
 			"start": this.start,
 			"end": this.end,
 			"tags": this.tags,
-			"comments": this.comments
+			"comments": this.comments,
+			"author": this.author
+
 		}
 	}
 }

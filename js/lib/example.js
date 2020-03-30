@@ -49,7 +49,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         this.time= Object.assign(document.createElement('span'), {innerText: '0.0', id:'posTime'});
         this.playing = false;
 
-        let curKeypoint= new util.Keypoint(key_src= this.model.get('src'));
+        let curKeypoint= new util.Keypoint(key_src= this.model.get('src'), author=this.model.get('author'));
         this.curKeypoint = curKeypoint
 
         // DOM generation

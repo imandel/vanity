@@ -99,6 +99,7 @@ class Multiview(widgets.DOMWidget):
     vids = List([]).tag(sync=True)
     keypoints = List([]).tag(sync=True)
     tags = List([]).tag(sync=True)
+    author = Unicode("").tag(sync=True)
 
     @observe('keypoints')
     def _observe_keys(self, change):
@@ -118,7 +119,7 @@ class Multiview(widgets.DOMWidget):
                 self.callback()
 
 
-    def __init__(self, src, vids=None, tags=None, keypoints= None, callback=None, callbackArgs=None, **kwargs):
+    def __init__(self, src, vids=None, tags=None, keypoints= None, author=None, callback=None, callbackArgs=None, **kwargs):
 
         super().__init__(**kwargs)
         self.src=src
@@ -133,11 +134,14 @@ class Multiview(widgets.DOMWidget):
         if keypoints is not None:
             self.keypoints=keypoints
             self.df.append(keypoints)
+        if author is not None:
+            self.author=author
 
         if callback is not None:
             self.callback= callback
             self.callbackArgs=callbackArgs
         else:
             self.callback=None
+
 
 
