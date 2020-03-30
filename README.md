@@ -49,7 +49,7 @@ TODO
 
 - [x] Get multiple videos synced
 - [x] Mark keypoints
-- [ ] Mark key spans
+- [x] Mark key spans
 - [ ] Make the UI nice
 - [ ] Annotation on a central timeline object
 - [ ] Wrap a js plotting library (Highcharts?)
