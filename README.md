@@ -50,6 +50,7 @@ TODO
 - [x] Get multiple videos synced
 - [x] Mark keypoints
 - [x] Mark key spans
+- [ ] Add namespace to keypoints object for collaborative annotation
 - [ ] Make the UI nice
 - [ ] Annotation on a central timeline object
 - [ ] Wrap a js plotting library (Highcharts?)
