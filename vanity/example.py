@@ -108,15 +108,15 @@ class Multiview(widgets.DOMWidget):
         self.df= pd.DataFrame(self.keypoints)
         # pd.DataFrame(a.keypoints)
 
-        if self.callback is not None:
+        # if self.callback is not None:
         
-            if self.callbackArgs is not None:
-                if type(self.callbackArgs) is list:
-                    self.callback(*self.callbackArgs)
-                if type(self.callbackArgs) is dict:
-                    self.callback(**self.callbackArgs)
-            else:
-                self.callback()
+        #     if self.callbackArgs is not None:
+        #         if type(self.callbackArgs) is list:
+        #             self.callback(*self.callbackArgs)
+        #         if type(self.callbackArgs) is dict:
+        #             self.callback(**self.callbackArgs)
+        #     else:
+        #         self.callback()
 
 
     def __init__(self, src, vids=None, tags=None, keypoints= None, author=None, callback=None, callbackArgs=None, **kwargs):

@@ -96,7 +96,9 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             }
         });
        
-        vid1.onloadedmetadata = (event) => {seeker.max = vid1.duration;};
+        vid1.onloadedmetadata = (event) => {
+            seeker.max = vid1.duration;
+            document.getElementById('title').innerText=this.model.get('src')};
 
         vid1.onended = (event) => {ms.to.update({velocity: 0.0});};
 
@@ -194,6 +196,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
         this.model.on("change:vids", this.data_views_changed, this);
         this.model.on("change:src", this.src_changed, this);
+        this.model.on("change:keypoints", this.keypoints_changed, this)
 
         //Debug
         window.that=this;
@@ -205,7 +208,6 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             while (element.firstChild) {
             element.removeChild(element.firstChild);
         }
-
         this.data_views.appendChild(util.createVidDataViews(this.ms, this.model.get("vids").slice()));
     },
 
@@ -215,7 +217,12 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         while (this.data_views.firstChild) {
             this.data_views.removeChild(this.data_views.firstChild);
         }
+    },
+
+    keypoints_changed: function(){
+        console.log('keypoints changed')
     }
+
 });
 
 
