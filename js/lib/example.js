@@ -56,6 +56,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         let [output, vid_container, data_views_container, annotations, foot, data_views, content, tagbox] = util.createDOM(this);
 
         this.data_views = data_views;
+        this.annotations= annotations;
         
         let vid1 = Object.assign(document.createElement("video"), {id: "mainVid", muted: true, controls: false, src:this.model.get('src')});
         this.vid1= vid1
@@ -145,7 +146,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         let marktime = Object.assign(document.createElement('button'), {innerHTML: 'Add note', type: "submit"});
         form.appendChild(marktime);
 
-        marktime.onclick = () => {
+        marktime.onclick = (e) => {
             let curPos = ms.to.query().position
             let temp_keypoints= this.model.get("keypoints").slice()
             if(!key_start.value){
@@ -156,7 +157,6 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             }
             curKeypoint.comments= comments.value
             curKeypoint.tags = Array.from(tags_container.getElementsByTagName('input')).filter(n => n.checked).map(m => m.value)
-            console.log(curKeypoint.values)
             annotations.insertBefore(util.clickableKeypoint(curKeypoint, this), annotations.firstChild);
             temp_keypoints.push(curKeypoint.values)
             this.model.set({"keypoints": temp_keypoints});
@@ -165,6 +165,9 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             form.reset();
             document.getElementById('key_end').placeholder = "";
             annotations.scrollTop = 0;
+            console.log('sending?');
+            this.send({event: 'click'});
+            // console.log(this.send({event: 'again'}))
 
         };
 
@@ -187,7 +190,6 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         form.appendChild(comments)
         form.appendChild(document.createElement('br'));
 
-        //debug
         annotations.appendChild(util.loadKeypoints(this.model.get('keypoints'), this))
 
         
@@ -199,7 +201,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         this.model.on("change:keypoints", this.keypoints_changed, this)
 
         //Debug
-        window.that=this;
+        // window.that=this;
     },
 
     data_views_changed: function() {
@@ -220,7 +222,11 @@ let MultiviewView = widgets.DOMWidgetView.extend({
     },
 
     keypoints_changed: function(){
-        console.log('keypoints changed')
+        // console.log('keypoints changed')
+        while (this.annotations.firstChild) {
+            this.annotations.removeChild(this.annotations.firstChild);
+        }
+        this.annotations.appendChild(util.loadKeypoints(this.model.get('keypoints'), this))
     }
 
 });

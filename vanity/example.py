@@ -119,7 +119,10 @@ class Multiview(widgets.DOMWidget):
         #         self.callback()
 
 
-    def __init__(self, src, vids=None, tags=None, keypoints= None, author=None, callback=None, callbackArgs=None, **kwargs):
+    def __init__(self, src, vids=None, tags=None, keypoints= None, author=None, callback=None, callbackArgs=None, callbackKwargs=None, **kwargs):
+
+        self.on_msg(self._handle_keypoint_click)
+        # self._click_handlers = CallbackDispatcher()
 
         super().__init__(**kwargs)
         self.src=src
@@ -137,11 +140,22 @@ class Multiview(widgets.DOMWidget):
         if author is not None:
             self.author=author
 
-        if callback is not None:
-            self.callback= callback
+        self.callback = callback
+        if callbackArgs is not None:
             self.callbackArgs=callbackArgs
         else:
-            self.callback=None
+            self.callbackArgs=[]
+        if callbackKwargs is not None:
+            self.callbackKwargs=callbackKwargs
+        else:
+            self.callbackKwargs={}
+
+    def _handle_keypoint_click(self, _, content, buffers):
+        self.v=(_, content, buffers)
+        if content.get('event', '') == 'click':
+            if self.callback is not None:
+                self.callback(*self.callbackArgs, **self.callbackKwargs)
+            
 
 
 
