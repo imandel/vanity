@@ -1,7 +1,9 @@
 VANITY
 ===============================
 
-Video Analysis Ipython Toolkit yeah
+Video Analysis Ipython Toolkit yeah.  
+
+[![forthebadge](https://forthebadge.com/images/badges/gluten-free.svg)](https://forthebadge.com)
 
 Overview
 --------
@@ -50,11 +52,13 @@ TODO
 - [x] Get multiple videos synced
 - [x] Mark keypoints
 - [x] Mark key spans
-- [ ] Add namespace to keypoints object for collaborative annotation
+- [x] Add namespace to keypoints object for collaborative annotation
 - [ ] Make the UI nice
 - [ ] Annotation on a central timeline object
 - [ ] Wrap a js plotting library (Highcharts?)
-
+- [ ] allow youtube or vimeo video inputs
+- [ ] parse uploaded keypoints and give different authors different colors and update tags
+- [ ] allow updated tags.
  
 
 <!-- When actively developing extension, build Jupyter Lab with the command:

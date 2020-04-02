@@ -26,9 +26,13 @@ var createDOM = function(that){
     // content.appendChild(controls);
     output.appendChild(vid_container);
     if(that.model.get("vids").slice().length===0){
-    	vid_container.style.width = "100%";	
+    	vid_container.style.width = "100%";
+    	// consle.log
+    	// vid_container.style.height= "300px";
+    	// content.style.maxHeight="300px";	
     }
     else{
+    	vid_container.style.width = "50%";
     	 output.appendChild(data_views_container);
     }
     
