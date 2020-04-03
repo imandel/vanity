@@ -211,6 +211,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             element.removeChild(element.firstChild);
         }
         this.data_views.appendChild(util.createVidDataViews(this.ms, this.model.get("vids").slice()));
+        this.annotations.appendChild(util.loadKeypoints(this.model.get('keypoints'), this))
     },
 
     src_changed: function() {
@@ -219,6 +220,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         while (this.data_views.firstChild) {
             this.data_views.removeChild(this.data_views.firstChild);
         }
+        this.annotations.appendChild(util.loadKeypoints(this.model.get('keypoints'), this))
     },
 
     keypoints_changed: function(){
