@@ -52,6 +52,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         let curKeypoint= new util.Keypoint(key_src= this.model.get('src'), author=this.model.get('author'));
         this.curKeypoint = curKeypoint
 
+
         // DOM generation
         let [output, vid_container, data_views_container, annotations, foot, data_views, content, tagbox] = util.createDOM(this);
 
@@ -72,9 +73,6 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         pos.appendChild(this.time)
         controls.appendChild(pos);
 
-        // let pos = Object.assign(document.createElement('p'), {innerText:'time: '})
-        // document.getElementById('pos').appendChild(this.time);
-        // controls.insertBefore(pos, controls.firstChild);
 
         let seeker= Object.assign(document.createElement('input'), {type:'range', id:'seeker', min: 0, max: 1000, value: 0, step: 0.001});
         this.seeker = seeker
@@ -90,10 +88,10 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             this.time.innerHTML = curPos.toFixed(3);
             seeker.value = curPos;
             if(!curKeypoint.start){
-                document.getElementById('key_start').placeholder = curPos.toFixed(3)
+                key_start.firstElementChild.placeholder = curPos.toFixed(3)
             }
             else if(curKeypoint.start && !curKeypoint.end){
-                document.getElementById('key_end').placeholder = curPos.toFixed(3)
+                key_end.firstElementChild.placeholder = curPos.toFixed(3)
             }
         });
        
@@ -111,31 +109,31 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         let setStart = Object.assign(document.createElement('button'), { id: 'set_start', innerHTML: "set", className:'tagButton'});
         setStart.onclick = () => {
             let curPos = ms.to.query().position;
-            let startval= document.getElementById('key_start')
+            let startval= key_start.firstElementChild
 
             if (startval.value == ""){
                 curKeypoint.start = curPos;
                 startval.value = curPos.toFixed(3);
             }
             else {
-                curKeypoint.start=startval.value
+                curKeypoint.start=parseFloat(startval.value)
             }
         }
         form.appendChild(setStart);
         // form.appendChild(document.createElement('br'))
-
-        form.appendChild(util.createFormInput('end', {type: 'number', id: 'key_end', step:'any', className:'numberInput'}));
+        let key_end= util.createFormInput('end', {type: 'number', id: 'key_end', step:'any', className:'numberInput'})
+        form.appendChild(key_end);
         let setEnd = Object.assign(document.createElement('button'), { id: 'set_end', innerHTML: "set", className:'tagButton'});
         setEnd.onclick = () => {
             let curPos = ms.to.query().position;
-            let endval= document.getElementById('key_end')
+            let endval= key_end.firstElementChild
 
             if (endval.value == ""){
                 curKeypoint.end = curPos;
                 endval.value = curPos.toFixed(3);
             }
             else {
-                curKeypoint.end=endval.value
+                curKeypoint.end=parseFloat(endval.value)
             }
         }
 
@@ -149,12 +147,8 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         marktime.onclick = (e) => {
             let curPos = ms.to.query().position
             let temp_keypoints= this.model.get("keypoints").slice()
-            if(!key_start.value){
-                curKeypoint.start = curPos;
-            }
-            if(!key_end.value){
-                curKeypoint.end=curPos
-            }
+            curKeypoint.start = !key_start.firstElementChild.value ? curPos : parseFloat(key_start.firstElementChild.value)
+            curKeypoint.end = !key_end.firstElementChild.value ? curPos : parseFloat(key_end.firstElementChild.value)
             curKeypoint.comments= comments.value
             curKeypoint.tags = Array.from(tags_container.getElementsByTagName('input')).filter(n => n.checked).map(m => m.value)
             annotations.insertBefore(util.clickableKeypoint(curKeypoint, this), annotations.firstChild);
@@ -163,12 +157,9 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             this.touch();
             curKeypoint.reset();
             form.reset();
-            document.getElementById('key_end').placeholder = "";
+            key_end.firstElementChild.placeholder = "";
             annotations.scrollTop = 0;
-            console.log('sending?');
             this.send({event: 'click'});
-            // console.log(this.send({event: 'again'}))
-
         };
 
 
@@ -178,7 +169,6 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             let tagcheck = util.createFormInput(tag, {value: tag, type: 'checkbox'})
             tagcheck.className= 'tagCheck'
             tags_container.appendChild(tagcheck);
-            // tags_container.appendChild(document.createElement('br'));
         })
 
         form.appendChild(tags_container);
