@@ -211,6 +211,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             this.data_views.removeChild(this.data_views.firstChild);
         }
         this.annotations.appendChild(util.loadKeypoints(this.model.get('keypoints'), this))
+        this.curKeypoint.src= this.model.get('src');
     },
 
     keypoints_changed: function(){
