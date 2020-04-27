@@ -33,6 +33,8 @@ For a development installation (requires npm),
     $ cd .. 
     $ pip install -e .
     $ jupyter nbextension install --py --symlink --sys-prefix vanity
+    $ On Windows use
+    $ jupyter nbextension install --py --sys-prefix vanity
     $ jupyter nbextension enable --py --sys-prefix vanity
 <!-- $ jupyter labextension install js -->
 
