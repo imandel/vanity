@@ -29,6 +29,7 @@
 .dataView {
 	width: 50%;
 	padding: 5px;
+	height: auto;
 }
 
 .foot{
@@ -39,13 +40,17 @@
 }
 
 .controlButton{
-	margin-left:5px ;
-	margin-right: 5px; 
+	margin-left: 10px;
+	margin-right: 10px;
+	border-radius: 15px;
+	border: none;
 }
 
 .tagButton{
-	margin-left:5px ;
-	margin-right: 5px; 
+	margin-left: 10px ;
+	margin-right: 10px;
+	border-radius: 15px;
+	border: none;
 }
 .tagCheck{
 	margin-right: 5px; 
@@ -58,7 +63,7 @@
 
 #data_views_container {
   background-color: whitesmoke;
-  display: flex;
+  display: block;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
