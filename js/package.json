@@ -24,7 +24,9 @@
     "prepublish": "webpack",
     "build": "webpack",
     "prepare": "webpack",
+    "jup": "jupyter nbextension install --py --sys-prefix vanity && jupyter nbextension enable vanity --py --sys-prefix",
     "watch": "watch \"npm run prepare\" lib/",
+    "watch_win": "watch \"npm run prepare && npm run jup\" lib/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

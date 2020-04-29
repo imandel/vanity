@@ -22,6 +22,7 @@ require('./style.css')
 
 // When serialiazing the entire widget state for embedding, only values that
 // differ from the defaults will be specified.
+// is this updating, how about now, and now
 let MultiviewModel = widgets.DOMWidgetModel.extend({
     defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
         _model_name : 'MultiviewModel',
