@@ -79,7 +79,7 @@
 }
 
 #annotations {
-  /*background-color: red;*/
+  background-color: red;
   height: 100px;
   overflow-y:auto;
 }
