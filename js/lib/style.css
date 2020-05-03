@@ -45,16 +45,16 @@
 
 .controlButton{
 	margin: 5px;
-	border-radius: 10px;
+	border-radius: 5%;
 	border: none;
-	padding: 3px 5px;
+	padding: 5px 10px;
 }
 
 .tagButton{
 	margin: 5px;
-	border-radius: 10px;
+	border-radius: 5%;
 	border: none;
-	padding: 3px 5px;
+	padding: 5px 10px;
 }
 .tagCheck{
 	margin-right: 5px; 
@@ -79,7 +79,6 @@
 }
 
 #annotations {
-  background-color: red;
   height: 100px;
   overflow-y:auto;
 }
