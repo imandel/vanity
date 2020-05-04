@@ -34,6 +34,7 @@
 	width: 50%;
 	padding: 5px;
 	height: auto;
+	display: block;
 }
 
 .foot{
@@ -79,8 +80,9 @@
 }
 
 #annotations {
-  height: 100px;
-  overflow-y:auto;
+	background-color: chocolate;
+	height: 100px;
+	overflow-y:auto;
 }
 
 #mainVid{
