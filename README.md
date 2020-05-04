@@ -26,16 +26,24 @@ To install for jupyterlab (*not tested in jupyterlab*)
 -->
 For a development installation (requires npm),
 
+#### Mac or Linux
     $ git clone https://github.com/imandel/vanity.git
     $ cd vanity
     $ cd js
     $ npm install
     $ cd .. 
     $ pip install -e .
-    $ jupyter nbextension install --py --symlink --sys-prefix vanity
-    $ On Windows use
-    $ jupyter nbextension install --py --sys-prefix vanity
-    $ jupyter nbextension enable --py --sys-prefix vanity
+    **$ jupyter nbextension install --py --symlink --sys-prefix vanity**
+
+#### Windows
+    $ git clone https://github.com/imandel/vanity.git
+    $ cd vanity
+    $ cd js
+    $ npm install
+    $ cd .. 
+    $ pip install -e .
+    **$ jupyter nbextension install --py --sys-prefix vanity**
+    **$ jupyter nbextension enable --py --sys-prefix vanity**
 <!-- $ jupyter labextension install js -->
 
 Development
@@ -43,10 +51,18 @@ Development
 
 * After making Python changes restart notebook kernel to reflect changes
 * After making Javascript code changes
+
+#### Mac or Linux
     * `cd js`
     * `npm run build`
     * refresh browser to reflect changes
 * Automate build whenever there are changes in `js/lib/` with `npm run watch &` in `js/`
+
+#### Windows
+    * `cd js`
+    * `npm run watch_win`
+    * refresh browser to reflect changes
+* Automate build whenever there are changes in `js/lib/` with `npm run watch_win &` in `js/`
 
 TODO
 ----
