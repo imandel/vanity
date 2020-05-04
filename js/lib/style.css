@@ -17,13 +17,13 @@
 	background-color: ghostwhite;
 }
 
-.srcVid:hover~.slidebar{
+.srcVid:hover~#seeker{
 	display: block;
 	width: 50%;
 }
 
 .sidebar {
-	display: none;
+	width: 50%;
 }
 
 .numberInput{
