@@ -77,6 +77,12 @@ TODO
 - [ ] allow youtube or vimeo video inputs
 - [ ] parse uploaded keypoints and give different authors different colors and update tags
 - [ ] allow updated tags.
+
+David TODO
+- [ ] half speed playback
+- [ ] next frame interface
+- [ ] fix the memeory leak
+- [ ] force preload?
  
 
 <!-- When actively developing extension, build Jupyter Lab with the command:
