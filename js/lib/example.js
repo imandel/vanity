@@ -76,9 +76,9 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
         let seeker= Object.assign(document.createElement('input'), {type:'range', id:'seeker', min: 0, max: 1000, value: 0, step: 0.001});
         this.seeker = seeker
-        seeker.addEventListener('mouseup', (event) => {ms.to.update({position: parseFloat(seeker.value), velocity: (this.playing ? 1.0 : 0.0)});});
-        seeker.addEventListener('mousedown', (event) => {ms.to.update({velocity: 0.0});});
-        seeker.addEventListener('input', (event) => {this.time.innerHTML = seeker.value;});
+        seeker.addEventListener('mouseup', () => {ms.to.update({position: parseFloat(seeker.value), velocity: (this.playing ? 1.0 : 0.0)});});
+        seeker.addEventListener('mousedown', () => {ms.to.update({velocity: 0.0});});
+        seeker.addEventListener('input', () => {this.time.innerHTML = seeker.value;});
         controls.insertBefore(seeker, controls.firstChild);
 
 
@@ -95,11 +95,11 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             }
         });
        
-        vid1.onloadedmetadata = (event) => {
+        vid1.onloadedmetadata = () => {
             seeker.max = vid1.duration;
             document.getElementById('title').innerText=this.model.get('src')};
 
-        vid1.onended = (event) => {ms.to.update({velocity: 0.0});};
+        vid1.onended = () => {ms.to.update({velocity: 0.0});};
 
 
 
@@ -144,7 +144,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         let marktime = Object.assign(document.createElement('button'), {innerHTML: 'Add note', type: "submit"});
         form.appendChild(marktime);
 
-        marktime.onclick = (e) => {
+        marktime.onclick = () => {
             let curPos = ms.to.query().position
             let temp_keypoints= this.model.get("keypoints").slice()
             curKeypoint.start = !key_start.firstElementChild.value ? curPos : parseFloat(key_start.firstElementChild.value)

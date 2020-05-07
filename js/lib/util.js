@@ -1,7 +1,7 @@
 'use strict';
 
 var createDOM = function(that){
-	let output = Object.assign(document.createElement("div"), {id:'output', className: 'outputContainer'});
+    let output = Object.assign(document.createElement("div"), {id:'output', className: 'outputContainer'});
     let content = Object.assign(document.createElement("div"), {id:'content'});
     let vid_container= Object.assign( document.createElement('div'), {id: 'vid_container', className: 'srcVid'});
     let data_views_container = Object.assign( document.createElement('div'), {id: 'data_views_container', className: 'sidebar'});
@@ -26,14 +26,12 @@ var createDOM = function(that){
     // content.appendChild(controls);
     output.appendChild(vid_container);
     if(that.model.get("vids").slice().length===0){
-    	vid_container.style.width = "100%";
-    	// consle.log
-    	// vid_container.style.height= "300px";
-    	// content.style.maxHeight="300px";	
+        vid_container.style.width = "100%";
+
     }
     else{
-    	vid_container.style.width = "50%";
-    	 output.appendChild(data_views_container);
+         vid_container.style.width = "50%";
+         output.appendChild(data_views_container);
     }
     
     // output.appendChild(annotations);
@@ -46,7 +44,7 @@ var createDOM = function(that){
 }
 
 var createControls = function (that) {
-	let controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
+    let controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
 
     let play = Object.assign(document.createElement('button'), {innerText: 'play', className: 'controlButton'});
     controls.appendChild(play)
@@ -72,80 +70,80 @@ var createControls = function (that) {
 
 
 var createFormInput = function(name, options){
-	let label = Object.assign(document.createElement('label'), {innerText: name + " "});
-	let input = Object.assign(document.createElement('input'), options);
-	label.appendChild(input)
-	return label;
+    let label = Object.assign(document.createElement('label'), {innerText: name + " "});
+    let input = Object.assign(document.createElement('input'), options);
+    label.appendChild(input)
+    return label;
 }
 
 var createVidDataViews = function(ms, vids){
-	var frag = document.createDocumentFragment()
-	vids.forEach( (vid_src) => {
-	    var vid = Object.assign( document.createElement('video'), {className: "dataView", muted: true, controls: false, src: vid_src, className: 'dataView'});
-	    ms.add(vid);
-	    frag.appendChild(vid)
-	    // frag.appendChild(document.createElement('br'));
+    var frag = document.createDocumentFragment()
+    vids.forEach( (vid_src) => {
+        var vid = Object.assign( document.createElement('video'), {className: "dataView", muted: true, controls: false, src: vid_src, className: 'dataView'});
+        ms.add(vid);
+        frag.appendChild(vid)
+        // frag.appendChild(document.createElement('br'));
         });
-	return frag;
+    return frag;
 }
 
 let Keypoint = class {
-	constructor(key_src, author, start, end, tags, comments){
-	this.start = start;
-	this.end = end;
-	this.tags = tags;
-	this.comments = comments;
-	this.src = key_src
-	this.author=author
-	}
+    constructor(key_src, author, start, end, tags, comments){
+    this.start = start;
+    this.end = end;
+    this.tags = tags;
+    this.comments = comments;
+    this.src = key_src
+    this.author=author
+    }
 
-	reset(){
-		this.start = undefined;
-		this.end = undefined;
-		this.tags = undefined;
-		this.comments = undefined;
-		// this.src = undefined;
-	}
+    reset(){
+        this.start = undefined;
+        this.end = undefined;
+        this.tags = undefined;
+        this.comments = undefined;
+        // this.src = undefined;
+    }
 
-	get values(){
-		return {
-			"src": this.src,
-			"start": this.start,
-			"end": this.end,
-			"tags": this.tags,
-			"comments": this.comments,
-			"author": this.author
+    get values(){
+        return {
+            "src": this.src,
+            "start": this.start,
+            "end": this.end,
+            "tags": this.tags,
+            "comments": this.comments,
+            "author": this.author
 
-		}
-	}
+        }
+    }
 }
 
 let loadKeypoints = function(keypoints, that){
-	let frag = document.createDocumentFragment();
-	let src = that.model.get('src');
-	keypoints.filter(n => n.src==src).forEach((keypoint)=> {
-		frag.insertBefore(util.clickableKeypoint(keypoint, that), frag.firstChild);
-	})
-	return frag;
+    let frag = document.createDocumentFragment();
+    let src = that.model.get('src');
+    keypoints.filter(n => n.src==src).forEach((keypoint)=> {
+        frag.insertBefore(util.clickableKeypoint(keypoint, that), frag.firstChild);
+    })
+    return frag;
 }
 
 let clickableKeypoint = function(keypoint, that){
-	let start =keypoint.start
-	let keyP = Object.assign(document.createElement('p'), {className:"note"})
-	keyP.innerText="Start: "+ keypoint.start.toFixed(2) + ", comments: "+ keypoint.comments + ", tags: "+ keypoint.tags.toString();
-	keyP.onclick = () => {that.ms.seek(start)}; 
-	return keyP;
+    let start =keypoint.start
+    let keyP = Object.assign(document.createElement('p'), {className:"note"})
+    keyP.innerText="Start: "+ keypoint.start.toFixed(2) + ", comments: "+ keypoint.comments + ", tags: "+ keypoint.tags.toString();
+    keyP.onclick = () => {that.ms.seek(start)}; 
+    return keyP;
 }
 
 
 var util = {
-	createFormInput: createFormInput,
-	createControls: createControls,
-	createVidDataViews: createVidDataViews,
-	Keypoint: Keypoint,
-	createDOM: createDOM,
-	loadKeypoints: loadKeypoints,
-	clickableKeypoint: clickableKeypoint
+    createFormInput: createFormInput,
+    createControls: createControls,
+    createVidDataViews: createVidDataViews,
+    Keypoint: Keypoint,
+    createDOM: createDOM,
+    loadKeypoints: loadKeypoints,
+    clickableKeypoint: clickableKeypoint
 };
 
 module.exports = util;

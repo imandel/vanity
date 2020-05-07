@@ -12,3 +12,5 @@ vanity/static/
 
 # OS X
 .DS_Store
+
+js/.eslintrc.json
