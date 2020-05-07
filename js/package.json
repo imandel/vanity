@@ -24,13 +24,13 @@
     "prepublish": "webpack",
     "build": "webpack",
     "prepare": "webpack",
-    "watch": "watch 'npm run prepare' lib/",
-    "trun": "echo thingy; echo time",
+    "jup": "jupyter nbextension install --py --sys-prefix vanity && jupyter nbextension enable vanity --py --sys-prefix",
+    "watch": "watch \"npm run prepare\" lib/",
+    "watch_win": "watch \"npm run prepare && npm run jup\" lib/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "css-loader": "^3.4.2",
-    "eslint": "^6.8.0",
     "rimraf": "^2.6.1",
     "style-loader": "^1.1.3",
     "watch": "^1.0.2",
