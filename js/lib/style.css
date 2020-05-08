@@ -7,7 +7,7 @@
 
 .mainCol {
 	/*display: table-cell;*/
-	width: 50%;
+	width: 70%;
 	background-color: ghostwhite;
 }
 
@@ -15,11 +15,6 @@
 	/*display: table-cell;*/
 	/*width: 50%;*/
 	background-color: ghostwhite;
-}
-
-.srcVid:hover~#seeker{
-	display: block;
-	width: 50%;
 }
 
 .sidebar {
@@ -31,7 +26,7 @@
 }
 
 .dataView {
-	width: 50%;
+	width: 30%;
 	padding: 5px;
 	height: auto;
 	display: block;
@@ -93,9 +88,14 @@
 }
 
 #seeker {
-	width: 94%;
 	/*padding: 15px;*/
 	margin: 0 auto;
+	display: none;
+}
+
+#mainVid:hover ~ #seeker{
+	display: block;
+	width: 100%;
 }
 
 #tagbox{
