@@ -49,10 +49,10 @@ var createControls = function (that) {
 	let controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
 
     let playPause = Object.assign(document.createElement('button'), {innerText: '⏵︎', className: 'controlButton'});
-    controls.appendChild(play)
+    controls.appendChild(playPause)
 
-    let pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
-	controls.appendChild(pause);
+    // let pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
+	// controls.appendChild(pause);
 	
 	let speednormal = Object.assign(document.createElement('button'), {innerText: '1x ⏩︎', className: 'controlButton'});
 	controls.appendChild(speednormal);
@@ -68,16 +68,21 @@ var createControls = function (that) {
 
 
 	playPause.addEventListener("click", function(){
-		if(content.paused){
-			content.play();
-			button.innerText = "⏸︎";
+		if(!that.playing){
+			that.ms.play();
+			playPause.innerText = "⏸︎";
+			that.playing = true;
+			console.log("play: activated")
 		} else {
-			content.pauce();
-			button.innerText = "⏵︎";
+			that.ms.pause();
+			playPause.innerText = "⏵︎";
+			that.playing = false;
+			console.log("pause: activated")
 		}
 	});
     // play.onclick= () => {that.ms.play(); that.playing = true;}
-    // pause.onclick= () => {that.ms.pause(); that.playing = false;}
+	// pause.onclick= () => {that.ms.pause(); that.playing = false;}
+
     speedup.onclick = () => that.ms.to.update({velocity:3.0});
     speednormal.onclick = () => that.ms.to.update({velocity:1.0});
 	rewind.onclick = () => that.ms.to.update({});
