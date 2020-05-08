@@ -48,7 +48,7 @@ var createDOM = function(that){
 var createControls = function (that) {
 	let controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
 
-    let play = Object.assign(document.createElement('button'), {innerText: '⏵︎⏸︎', className: 'controlButton'});
+    let playPause = Object.assign(document.createElement('button'), {innerText: '⏵︎', className: 'controlButton'});
     controls.appendChild(play)
 
     let pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
@@ -60,15 +60,24 @@ var createControls = function (that) {
     let speedup = Object.assign(document.createElement('button'), {innerText: '2x ⏩︎', className: 'controlButton'});
     controls.appendChild(speedup);
 
-    let rewind = Object.assign(document.createElement('button'), {innerText: '↺ 5sec', className: 'controlButton'});
+    let rewind = Object.assign(document.createElement('button'), {innerText: '↺ 5s', className: 'controlButton'});
 	controls.appendChild(rewind);
 	
-	let startover = Object.assign(document.createElement('button'), {innerText: '↻', className: 'controlButton'});
+	let startover = Object.assign(document.createElement('button'), {innerText: '◼', className: 'controlButton'});
 	controls.appendChild(startover);
 
 
-    play.onclick= () => {that.ms.play(); that.playing = true;}
-    pause.onclick= () => {that.ms.pause(); that.playing = false;}
+	playPause.addEventListener("click", function(){
+		if(content.paused){
+			content.play();
+			button.innerText = "⏸︎";
+		} else {
+			content.pauce();
+			button.innerText = "⏵︎";
+		}
+	});
+    // play.onclick= () => {that.ms.play(); that.playing = true;}
+    // pause.onclick= () => {that.ms.pause(); that.playing = false;}
     speedup.onclick = () => that.ms.to.update({velocity:3.0});
     speednormal.onclick = () => that.ms.to.update({velocity:1.0});
 	rewind.onclick = () => that.ms.to.update({});
