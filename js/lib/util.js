@@ -85,7 +85,7 @@ var createControls = function (that) {
 
     speedup.onclick = () => that.ms.to.update({velocity:3.0});
     speednormal.onclick = () => that.ms.to.update({velocity:1.0});
-	rewind.onclick = () => that.ms.to.update({});
+	rewind.onclick = () => that.ms.to.update({position: position - 5.0});
 	startover.onclick = () => that.ms.to.update({velocity: 0.0, position: 0.0});
 
 
