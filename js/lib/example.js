@@ -206,7 +206,11 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
     src_changed: function() {
         console.log('src_changed');
+        this.vid1.pause();
+        this.vid1.src ='';
+        this.vid1.load()
         this.vid1.src =this.model.get('src')
+        this.ms.to.update({position: 0.0})
         while (this.data_views.firstChild) {
             this.data_views.removeChild(this.data_views.firstChild);
         }
