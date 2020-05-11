@@ -44,33 +44,62 @@ var createDOM = function(that){
 }
 
 var createControls = function (that) {
-    let controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
 
-    let play = Object.assign(document.createElement('button'), {innerText: 'Play', className: 'controlButton'});
+    // strange behavior without this function but should look into timingsrc for bug
+    const _setspeed = function(val){
+        that.ms.to.update({velocity: 1})
+        setTimeout(() => {that.ms.to.update({velocity: val})}, 1)
+    }
+
+    const controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
+
+    const play = Object.assign(document.createElement('button'), {innerText: 'Play', className: 'controlButton'});
     controls.appendChild(play)
 
-    let pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
+    const pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
     controls.appendChild(pause);
 
-    let speedup = Object.assign(document.createElement('button'), {innerText: '2x>>', className: 'controlButton'});
-    controls.appendChild(speedup);
 
-    let speednormal = Object.assign(document.createElement('button'), {innerText: '1x>>', className: 'controlButton'});
-	controls.appendChild(speednormal);
-
-    let rewind = Object.assign(document.createElement('button'), {innerText: ' <- 5sec', className: 'controlButton'});
+    const rewind = Object.assign(document.createElement('button'), {innerText: ' <- 5sec', className: 'controlButton'});
 	controls.appendChild(rewind);
 	
-	let startover = Object.assign(document.createElement('button'), {innerText: 'Start Over', className: 'controlButton'});
+	const startover = Object.assign(document.createElement('button'), {innerText: 'Start Over', className: 'controlButton'});
 	controls.appendChild(startover);
 
+    const speedList = Object.assign(document.createElement('datalist'), {id:'speedlist'});
+    const speeds=[0.25, 0.5, 1, 1.5, 2];
+    speeds.forEach((speedVal) => {
+        speedList.appendChild(Object.assign(document.createElement('option'), {value: speedVal}))
+    })
+    controls.appendChild(speedList)
+    const speedInput = Object.assign(document.createElement('input'), {type: 'range',  min: speeds[0], max: speeds[speeds.length-1], step: 0.05, value: 1, className:'speedRange',id:'speedRange', style: 'width: 20%;' })
+    speedInput.setAttribute('list', 'speedlist')
+    controls.appendChild(speedInput);
+    const speedOut = Object.assign(document.createElement('output'), {for:'speedRange', innerHTML:'1'})
+    controls.appendChild(speedOut)
+    speedInput.onchange = () => {
+         let closest = getClosest(speeds, speedInput.value);
+         speedInput.value=closest;
+         that.speed = closest;
+         speedOut.value= closest;
+         if(that.playing){
+            _setspeed(closest)
+         } 
+    }
 
-    play.onclick= () => {that.ms.play(); that.playing = true;}
-    pause.onclick= () => {that.ms.pause(); that.playing = false;}
-    speedup.onclick = () => that.ms.to.update({velocity:3.0});
-    speednormal.onclick = () => that.ms.to.update({velocity:1.0});
-	rewind.onclick = () => that.ms.to.update({velocity: 0.0, position: 0.0});
-	startover.onclick = () => that.ms.to.update({velocity: 0.0, position: 0.0});
+     
+
+
+    pause.onclick= () => {that.ms.to.update({velocity: 0.0}); that.playing = false;}
+    play.onclick= () => {_setspeed(that.speed); that.playing = true;}
+    // speedup.onclick = () => {that.speed = 3.0; if (that.playing){that.ms.to.update({velocity: 3.0});}}
+    // slowdown.onclick = () => {that.speed = 0.5; if (that.playing){that.ms.to.update({velocity: 0.5});}}
+    // speednormal.onclick = () => {that.speed = 1.0; if (that.playing){that.ms.to.update({velocity: 1.0});}}
+	rewind.onclick = () => {that.ms.to.update({velocity: 0.0, position: 0.0});}
+	startover.onclick = () => {that.ms.to.update({velocity: 0.0, position: 0.0});}
+
+
+
 
 
 
@@ -142,6 +171,12 @@ let clickableKeypoint = function(keypoint, that){
     keyP.innerText="Start: "+ keypoint.start.toFixed(2) + ", comments: "+ keypoint.comments + ", tags: "+ keypoint.tags.toString();
     keyP.onclick = () => {that.ms.seek(start)}; 
     return keyP;
+}
+
+function getClosest(arr, val) {
+    return arr.reduce(function (prev, curr) {
+    return (Math.abs(curr - val) < Math.abs(prev - val) ? curr : prev);
+  });
 }
 
 
