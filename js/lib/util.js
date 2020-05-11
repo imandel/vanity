@@ -45,7 +45,7 @@ var createDOM = function(that){
 
 var createControls = function (that) {
 
-    // strange behavior without this function but should look into timingsrc for bug
+    // strange behavior without this function but should look into timingsrc for
     const _setspeed = function(val){
         that.ms.to.update({velocity: 1})
         setTimeout(() => {that.ms.to.update({velocity: val})}, 1)
@@ -62,6 +62,10 @@ var createControls = function (that) {
 
     const rewind = Object.assign(document.createElement('button'), {innerText: ' <- 5sec', className: 'controlButton'});
 	controls.appendChild(rewind);
+    const prevFrame = Object.assign(document.createElement('button'), {innerText: '<', className: 'controlButton', title: 'previous frame'});
+    controls.appendChild(prevFrame);
+    const nextFrame = Object.assign(document.createElement('button'), {innerText: '>', className: 'controlButton', title: 'next frame'});
+    controls.appendChild(nextFrame);
 	
 	const startover = Object.assign(document.createElement('button'), {innerText: 'Start Over', className: 'controlButton'});
 	controls.appendChild(startover);
@@ -92,10 +96,9 @@ var createControls = function (that) {
 
     pause.onclick= () => {that.ms.to.update({velocity: 0.0}); that.playing = false;}
     play.onclick= () => {_setspeed(that.speed); that.playing = true;}
-    // speedup.onclick = () => {that.speed = 3.0; if (that.playing){that.ms.to.update({velocity: 3.0});}}
-    // slowdown.onclick = () => {that.speed = 0.5; if (that.playing){that.ms.to.update({velocity: 0.5});}}
-    // speednormal.onclick = () => {that.speed = 1.0; if (that.playing){that.ms.to.update({velocity: 1.0});}}
-	rewind.onclick = () => {that.ms.to.update({velocity: 0.0, position: 0.0});}
+	rewind.onclick = () => {that.ms.to.update({position: that.ms.to.pos - 5.0});}
+    prevFrame.onclick = () => {that.ms.to.update({position: that.ms.to.pos - (1/24)});}
+    nextFrame.onclick = () => {that.ms.to.update({position: that.ms.to.pos + (1/24)});}
 	startover.onclick = () => {that.ms.to.update({velocity: 0.0, position: 0.0});}
 
 
