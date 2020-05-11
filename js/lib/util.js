@@ -53,15 +53,15 @@ var createControls = function (that) {
 
     // let pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
 	// controls.appendChild(pause);
+
+	let rewind = Object.assign(document.createElement('button'), {innerText: '↺ 5s', className: 'controlButton'});
+	controls.appendChild(rewind);
 	
 	let speednormal = Object.assign(document.createElement('button'), {innerText: '1x ⏩︎', className: 'controlButton'});
 	controls.appendChild(speednormal);
 
     let speedup = Object.assign(document.createElement('button'), {innerText: '2x ⏩︎', className: 'controlButton'});
     controls.appendChild(speedup);
-
-    let rewind = Object.assign(document.createElement('button'), {innerText: '↺ 5s', className: 'controlButton'});
-	controls.appendChild(rewind);
 	
 	let startover = Object.assign(document.createElement('button'), {innerText: '◼', className: 'controlButton'});
 	controls.appendChild(startover);
@@ -85,7 +85,7 @@ var createControls = function (that) {
 
     speedup.onclick = () => that.ms.to.update({velocity:3.0});
     speednormal.onclick = () => that.ms.to.update({velocity:1.0});
-	rewind.onclick = () => that.ms.to.update({position: position - 5.0});
+	rewind.onclick = () => that.ms.to.update({currentTime - 5});
 	startover.onclick = () => that.ms.to.update({velocity: 0.0, position: 0.0});
 
 

@@ -8,13 +8,13 @@
 .mainCol {
 	/*display: table-cell;*/
 	width: 70%;
-	background-color: ghostwhite;
+	background-color: #cbe4cb;
 }
 
 .srcVid {
 	/*display: table-cell;*/
 	/*width: 50%;*/
-	background-color: ghostwhite;
+	background-color: #cbe4cb;
 }
 
 .sidebar {
@@ -26,7 +26,8 @@
 }
 
 .dataView {
-	width: 30%;
+	width: 50%;
+	margin: 0 auto;
 	padding: 5px;
 	height: auto;
 	display: block;
@@ -40,17 +41,19 @@
 }
 
 .controlButton{
-	margin: 5px;
-	border-radius: 5%;
-	border: none;
-	padding: 5px 10px;
+	margin: 3% 1%;
+	border-radius: 10%;
+	border: 0.5px solid darkgrey;
+	padding: 5px 15px;
+	text-align: center;
 }
 
 .tagButton{
 	margin: 5px;
-	border-radius: 5%;
+	border-radius: 10%;
 	border: none;
 	padding: 5px 10px;
+	text-align: center;
 }
 .tagCheck{
 	margin-right: 5px; 
@@ -75,7 +78,7 @@
 }
 
 #annotations {
-	background-color: chocolate;
+	background-color: #cbe4cb;
 	height: 100px;
 	overflow-y:auto;
 }
@@ -93,7 +96,7 @@
 	display: none;
 }
 
-#mainVid:hover~#seeker{
+.mainCol:hover~#seeker{
 	display: block;
 	width: 100%;
 	padding: 15px;
@@ -101,7 +104,7 @@
 }
 
 #tagbox{
-	width: 50%;
+	width: 70%;
 	background-color: whitesmoke;
 }
 
