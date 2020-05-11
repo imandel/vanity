@@ -61,7 +61,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         this.data_views = data_views;
         this.annotations= annotations;
         
-        let vid1 = Object.assign(document.createElement("video"), {id: "mainVid", muted: true, controls: false, src:this.model.get('src')});
+        let vid1 = Object.assign(document.createElement("video"), {id: "mainVid", controls: false, src: this.model.get('src')});
         this.vid1= vid1
         ms.add(vid1);
         content.appendChild(vid1);
@@ -208,9 +208,9 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         console.log('src_changed');
         this.vid1.pause();
         this.vid1.src ='';
-        this.vid1.load()
-        this.vid1.src =this.model.get('src')
-        this.ms.to.update({position: 0.0})
+        this.vid1.load();
+        this.vid1.src =this.model.get('src');
+        this.ms.to.update({position: 0.0});
         while (this.data_views.firstChild) {
             this.data_views.removeChild(this.data_views.firstChild);
         }
