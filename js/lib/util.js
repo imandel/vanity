@@ -53,8 +53,6 @@ var createControls = function (that) {
 
     const controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
 
-    // const play = Object.assign(document.createElement('button'), {innerText: 'Play', className: 'controlButton'});
-    // controls.appendChild(play)
 
     //const pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
     //controls.appendChild(pause);
