@@ -7,19 +7,11 @@
 
 .mainCol {
 	/*display: table-cell;*/
-	width: 50%;
-	background-color: ghostwhite;
 }
 
 .srcVid {
 	/*display: table-cell;*/
 	/*width: 50%;*/
-	background-color: ghostwhite;
-}
-
-.srcVid:hover~#seeker{
-	display: block;
-	width: 50%;
 }
 
 .sidebar {
@@ -45,15 +37,10 @@
 }
 
 .controlButton{
-	margin: 5px;
-	border-radius: 5%;
-	border: none;
-	padding: 5px 10px;
 }
 
 .tagButton{
 	margin: 5px;
-	border-radius: 5%;
 	border: none;
 	padding: 5px 10px;
 }
@@ -80,7 +67,7 @@
 }
 
 #annotations {
-	/*background-color: chocolate;*/
+	background-color: #cbe4cb;
 	height: 100px;
 	overflow-y:auto;
 }
@@ -93,13 +80,11 @@
 }
 
 #seeker {
-	width: 94%;
 	/*padding: 15px;*/
 	margin: 0 auto;
 }
 
 #tagbox{
-	width: 50%;
 	background-color: whitesmoke;
 }
 
