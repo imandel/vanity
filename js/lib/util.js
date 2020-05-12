@@ -56,11 +56,10 @@ var createControls = function (that) {
     const play = Object.assign(document.createElement('button'), {innerText: 'Play', className: 'controlButton'});
     controls.appendChild(play)
 
-    //const pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
-    //controls.appendChild(pause);
+    const pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
+    controls.appendChild(pause);
 
-    const playPause = Object.assign(document.createElement('button'), {innerText: '⏵︎', className: 'controlButton'});
-    controls.appendChild(playPause)
+
     const rewind = Object.assign(document.createElement('button'), {innerText: ' <- 5sec', className: 'controlButton'});
 	controls.appendChild(rewind);
     const prevFrame = Object.assign(document.createElement('button'), {innerText: '<', className: 'controlButton', title: 'previous frame'});
@@ -92,23 +91,16 @@ var createControls = function (that) {
          } 
     }
 
-    //pause.onclick= () => {that.ms.to.update({velocity: 0.0}); that.playing = false;}
-    //play.onclick= () => {_setspeed(that.speed); that.playing = true;}
-	playPause.onclick = () => {
-		if(!that.playing){
-		_setspeed(that.speed);
-		playPause.innerText = "⏸︎"; 
-		that.playing = true;
-		} else {
-		that.ms.to.update({velocity: 0.0}); 
-		that.playing = false;
-		playPause.innerText = "⏵︎";
-		}
-	}
+     
+
+
+    pause.onclick= () => {that.ms.to.update({velocity: 0.0}); that.playing = false;}
+    play.onclick= () => {_setspeed(that.speed); that.playing = true;}
 	rewind.onclick = () => {that.ms.to.update({position: that.ms.to.pos - 5.0});}
     prevFrame.onclick = () => {that.ms.to.update({position: that.ms.to.pos - (1/24)});}
     nextFrame.onclick = () => {that.ms.to.update({position: that.ms.to.pos + (1/24)});}
 	startover.onclick = () => {that.ms.to.update({velocity: 0.0, position: 0.0});}
+
 
 
 
