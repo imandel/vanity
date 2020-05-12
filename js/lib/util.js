@@ -53,22 +53,22 @@ var createControls = function (that) {
 
     const controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
 
-    const play = Object.assign(document.createElement('button'), {innerText: 'Play', className: 'controlButton'});
-    controls.appendChild(play)
+    // const play = Object.assign(document.createElement('button'), {innerText: 'Play', className: 'controlButton'});
+    // controls.appendChild(play)
 
     //const pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
     //controls.appendChild(pause);
 
-    const playPause = Object.assign(document.createElement('button'), {innerText: '⏵︎', className: 'controlButton'});
+    const playPause = Object.assign(document.createElement('button'), {innerText: '▶️', className: 'controlButton', title: 'play'});
     controls.appendChild(playPause)
-    const rewind = Object.assign(document.createElement('button'), {innerText: ' <- 5sec', className: 'controlButton'});
+    const rewind = Object.assign(document.createElement('button'), {innerText: ' ↺ 5s', className: 'controlButton', title: 'rewind five seconds'});
 	controls.appendChild(rewind);
     const prevFrame = Object.assign(document.createElement('button'), {innerText: '<', className: 'controlButton', title: 'previous frame'});
     controls.appendChild(prevFrame);
     const nextFrame = Object.assign(document.createElement('button'), {innerText: '>', className: 'controlButton', title: 'next frame'});
     controls.appendChild(nextFrame);
 	
-	const startover = Object.assign(document.createElement('button'), {innerText: 'Start Over', className: 'controlButton'});
+	const startover = Object.assign(document.createElement('button'), {innerText: 'Start Over', className: 'controlButton', title: 'start from beginning'});
 	controls.appendChild(startover);
 
     const speedList = Object.assign(document.createElement('datalist'), {id:'speedlist'});
@@ -97,12 +97,12 @@ var createControls = function (that) {
 	playPause.onclick = () => {
 		if(!that.playing){
 		_setspeed(that.speed);
-		playPause.innerText = "⏸︎"; 
+		playPause.innerText = "⏸"; 
 		that.playing = true;
 		} else {
 		that.ms.to.update({velocity: 0.0}); 
 		that.playing = false;
-		playPause.innerText = "⏵︎";
+		playPause.innerText = "▶️";
 		}
 	}
 	rewind.onclick = () => {that.ms.to.update({position: that.ms.to.pos - 5.0});}
