@@ -1,3 +1,4 @@
+.gitignore
 *.egg-info/
 .ipynb_checkpoints/
 dist/
@@ -12,3 +13,8 @@ vanity/static/
 
 # OS X
 .DS_Store
+
+js/.eslintrc.json
+
+js/lib/mediasync.js
+js/lib/timingsrc-require-v2.1.js

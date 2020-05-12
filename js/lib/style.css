@@ -27,7 +27,6 @@
 
 .dataView {
 	width: 50%;
-	margin: 0 auto;
 	padding: 5px;
 	height: auto;
 	display: block;
@@ -78,6 +77,7 @@
 }
 
 #annotations {
+	/*background-color: chocolate;*/
 	background-color: #cbe4cb;
 	height: 100px;
 	overflow-y:auto;
@@ -95,7 +95,6 @@
 	margin: 0 auto;
 	display: none;
 }
-
 .mainCol:hover~#seeker{
 	display: block;
 	width: 100%;

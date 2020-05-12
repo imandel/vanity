@@ -49,6 +49,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         this.ms=ms;
         this.time= Object.assign(document.createElement('span'), {innerText: '0.0', id:'posTime'});
         this.playing = false;
+        this.speed = 1.0;
 
         let curKeypoint= new util.Keypoint(key_src= this.model.get('src'), author=this.model.get('author'));
         this.curKeypoint = curKeypoint
@@ -60,14 +61,12 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         this.data_views = data_views;
         this.annotations= annotations;
         
-        let vid1 = Object.assign(document.createElement("video"), {id: "mainVid", muted: true, controls: false, src:this.model.get('src')});
+        let vid1 = Object.assign(document.createElement("video"), {id: "mainVid", controls: false, src: this.model.get('src')});
         this.vid1= vid1
         ms.add(vid1);
         content.appendChild(vid1);
        
-        let controls =  util.createControls(this);//Object.assign(document.createElement("div"), {id:'controlpanel'});
-        
-   
+        let controls = util.createControls(this);//Object.assign(document.createElement("div"), {id:'controlpanel'});
         content.appendChild(controls);
 
         let pos = Object.assign(document.createElement('p'), {innerText:'time: ', id: 'pos', style: "display:inline"})
@@ -77,9 +76,9 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
         let seeker= Object.assign(document.createElement('input'), {type:'range', id:'seeker', min: 0, max: 1000, value: 0, step: 0.001});
         this.seeker = seeker
-        seeker.addEventListener('mouseup', (event) => {ms.to.update({position: parseFloat(seeker.value), velocity: (this.playing ? 1.0 : 0.0)});});
-        seeker.addEventListener('mousedown', (event) => {ms.to.update({velocity: 0.0});});
-        seeker.addEventListener('input', (event) => {this.time.innerHTML = seeker.value;});
+        seeker.addEventListener('mouseup', () => {ms.to.update({position: parseFloat(seeker.value), velocity: (this.playing ? this.speed : 0.0)});});
+        seeker.addEventListener('mousedown', () => {ms.to.update({velocity: 0.0});});
+        seeker.addEventListener('input', () => {this.time.innerHTML = seeker.value;});
         controls.insertBefore(seeker, controls.firstChild);
 
 
@@ -96,11 +95,11 @@ let MultiviewView = widgets.DOMWidgetView.extend({
             }
         });
        
-        vid1.onloadedmetadata = (event) => {
+        vid1.onloadedmetadata = () => {
             seeker.max = vid1.duration;
             document.getElementById('title').innerText=this.model.get('src')};
 
-        vid1.onended = (event) => {ms.to.update({velocity: 0.0});};
+        vid1.onended = () => {ms.to.update({velocity: 0.0});};
 
 
 
@@ -145,7 +144,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         let marktime = Object.assign(document.createElement('button'), {innerHTML: 'Add note', type: "submit"});
         form.appendChild(marktime);
 
-        marktime.onclick = (e) => {
+        marktime.onclick = () => {
             let curPos = ms.to.query().position
             let temp_keypoints= this.model.get("keypoints").slice()
             curKeypoint.start = !key_start.firstElementChild.value ? curPos : parseFloat(key_start.firstElementChild.value)
@@ -192,7 +191,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         this.model.on("change:keypoints", this.keypoints_changed, this)
 
         //Debug
-        // window.that=this;
+        window.that=this;
     },
 
     data_views_changed: function() {
@@ -207,7 +206,11 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
     src_changed: function() {
         console.log('src_changed');
-        this.vid1.src =this.model.get('src')
+        this.vid1.pause();
+        this.vid1.src ='';
+        this.vid1.load();
+        this.vid1.src =this.model.get('src');
+        this.ms.to.update({position: 0.0});
         while (this.data_views.firstChild) {
             this.data_views.removeChild(this.data_views.firstChild);
         }

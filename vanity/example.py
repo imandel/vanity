@@ -155,7 +155,9 @@ class Multiview(widgets.DOMWidget):
         if content.get('event', '') == 'click':
             if self.callback is not None:
                 self.callback(*self.callbackArgs, **self.callbackKwargs)
-            
+
+
+
 
 
 
