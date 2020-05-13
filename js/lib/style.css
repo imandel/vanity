@@ -7,7 +7,7 @@
 
 .mainCol {
 	/*display: table-cell;*/
-	width: 70%;
+	width: 100%;
 	background-color: #cbe4cb;
 }
 
@@ -47,6 +47,13 @@
 	text-align: center;
 }
 
+#speedRange {
+	background: white;
+	display: inline;
+	margin: 3% 2%;
+	transition: opacity .2s;
+}
+
 .tagButton{
 	margin: 5px;
 	border-radius: 10%;
@@ -58,9 +65,7 @@
 	margin-right: 5px; 
 }
 #content {
-  /*background-color: blue;*/
   padding-bottom: 5px;
-
 }
 
 #data_views_container {
@@ -102,7 +107,7 @@
 }
 
 #tagbox{
-	width: 70%;
+	width: 100%;
 	background-color: whitesmoke;
 }
 
