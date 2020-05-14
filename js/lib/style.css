@@ -48,10 +48,17 @@
 }
 
 #speedRange {
-	background: white;
 	display: inline;
-	margin: 3% 2%;
+	margin: 3% 3%;
 	transition: opacity .2s;
+}
+
+#output {
+	display: inline;
+}
+
+#pos {
+	margin-left: 3%;
 }
 
 .tagButton{

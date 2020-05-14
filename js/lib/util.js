@@ -75,10 +75,10 @@ var createControls = function (that) {
         speedList.appendChild(Object.assign(document.createElement('option'), {value: speedVal}))
     })
     controls.appendChild(speedList)
-    const speedInput = Object.assign(document.createElement('input'), {type: 'range',  min: speeds[0], max: speeds[speeds.length-1], step: 0.05, value: 1, className:'speedRange',id:'speedRange', style: 'width: 20%;' })
+    const speedInput = Object.assign(document.createElement('input'), {id:'input', type: 'range',  min: speeds[0], max: speeds[speeds.length-1], step: 0.05, value: 1, className:'speedRange',id:'speedRange', style: 'width: 20%;' })
     speedInput.setAttribute('list', 'speedlist')
     controls.appendChild(speedInput);
-    const speedOut = Object.assign(document.createElement('output'), {for:'speedRange', innerHTML:'1'})
+    const speedOut = Object.assign(document.createElement('output'), {id:'output', for:'speedRange', innerHTML:'1'})
     controls.appendChild(speedOut)
     speedInput.onchange = () => {
          let closest = getClosest(speeds, speedInput.value);
