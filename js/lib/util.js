@@ -26,7 +26,8 @@ var createDOM = function(that){
     // content.appendChild(controls);
     output.appendChild(vid_container);
     if(that.model.get("vids").slice().length===0){
-        vid_container.style.width = "100%";
+        vid_container.style.width = "80%";
+        
 
     }
     else{
@@ -75,7 +76,7 @@ var createControls = function (that) {
         speedList.appendChild(Object.assign(document.createElement('option'), {value: speedVal}))
     })
     controls.appendChild(speedList)
-    const speedInput = Object.assign(document.createElement('input'), {type: 'range',  min: speeds[0], max: speeds[speeds.length-1], step: 0.05, value: 1, className:'speedRange',id:'speedRange', style: 'width: 20%;' })
+    const speedInput = Object.assign(document.createElement('input'), {type: 'range',  min: speeds[0], max: speeds[speeds.length-1], step: 0.05, value: 1, className:'speedRange', id:'speedRange'})
     speedInput.setAttribute('list', 'speedlist')
     controls.appendChild(speedInput);
     const speedOut = Object.assign(document.createElement('output'), {for:'speedRange', innerHTML:'1', id:'outputnum'})
@@ -89,6 +90,8 @@ var createControls = function (that) {
             _setspeed(closest)
          } 
     }
+
+
 
     //pause.onclick= () => {that.ms.to.update({velocity: 0.0}); that.playing = false;}
     //play.onclick= () => {_setspeed(that.speed); that.playing = true;}
@@ -126,11 +129,12 @@ var createFormInput = function(name, options){
 var createVidDataViews = function(ms, vids){
     var frag = document.createDocumentFragment()
     vids.forEach( (vid_src) => {
-        var vid = Object.assign( document.createElement('video'), {className: "dataView", muted: true, controls: false, src: vid_src, className: 'dataView'});
+        var vid = Object.assign( document.createElement('video'), {className: "dataView", muted: true, controls: false, src: vid_src, className: 'dataView', style: 'width: 30%;'});
         ms.add(vid);
         frag.appendChild(vid)
         // frag.appendChild(document.createElement('br'));
         });
+    
     return frag;
 }
 
