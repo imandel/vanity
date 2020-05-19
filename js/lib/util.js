@@ -27,7 +27,7 @@ var createDOM = function(that){
     output.appendChild(vid_container);
     if(that.model.get("vids").slice().length===0){
         vid_container.style.width = "80%";
-        
+
 
     }
     else{
@@ -129,7 +129,7 @@ var createFormInput = function(name, options){
 var createVidDataViews = function(ms, vids){
     var frag = document.createDocumentFragment()
     vids.forEach( (vid_src) => {
-        var vid = Object.assign( document.createElement('video'), {className: "dataView", muted: true, controls: false, src: vid_src, className: 'dataView', style: 'width: 30%;'});
+        var vid = Object.assign( document.createElement('video'), {className: "dataView", muted: true, controls: false, src: vid_src, className: 'dataView', style: 'width: 60%;'});
         ms.add(vid);
         frag.appendChild(vid)
         // frag.appendChild(document.createElement('br'));
