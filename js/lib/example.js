@@ -84,7 +84,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         seeker.addEventListener('input', () => {this.time.innerHTML = seeker.value;});
         controls.insertBefore(seeker, controls.firstChild);
 
-
+        var slider = document.getElementById('slider');
         noUiSlider.create(slider, {
             start: [20, 80],
             connect: true,
