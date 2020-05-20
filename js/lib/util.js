@@ -54,7 +54,8 @@ var createControls = function (that) {
 
     const controls = Object.assign(document.createElement("div"), {id:'controlpanel'});
 
-
+    const nouislider = Object.assign(document.createElement('div'), {id:'nouiSlider'})
+    controls.appendChild(nouislider)
     //const pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
     //controls.appendChild(pause);
 
