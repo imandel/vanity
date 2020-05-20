@@ -26,8 +26,8 @@ var createDOM = function(that){
     // content.appendChild(controls);
     output.appendChild(vid_container);
     if(that.model.get("vids").slice().length===0){
-        vid_container.style.width = "80%";
-
+        // vid_container.style.width = "100%";
+        vid_container.style.height = "60%";
 
     }
     else{

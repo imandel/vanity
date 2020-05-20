@@ -56,9 +56,9 @@
 	transition: opacity .2s;
 }
 
-#shadow-root {
-	-moz-user-modify: read-write !important;
-	-webkit-user-modify: read-write !important;
+input[type=range]::-ms-thumb {
+	/* -moz-user-modify: read-write !important;
+	-webkit-user-modify: read-write !important; */
 	-webkit-appearance: none;
 	width: 25px;
 	height: 25px;

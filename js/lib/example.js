@@ -1,3 +1,6 @@
+import noUiSlider from 'nouislider';
+import 'nouislider/distribute/nouislider.css';
+
 let widgets = require('@jupyter-widgets/base');
 let _ = require('lodash');
 const MediaSync = require('mediasync').MediaSync
@@ -80,6 +83,16 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         seeker.addEventListener('mousedown', () => {ms.to.update({velocity: 0.0});});
         seeker.addEventListener('input', () => {this.time.innerHTML = seeker.value;});
         controls.insertBefore(seeker, controls.firstChild);
+
+
+        noUiSlider.create(slider, {
+            start: [20, 80],
+            connect: true,
+            range: {
+                'min': 0,
+                'max': 100
+            }
+        });
 
 
 
