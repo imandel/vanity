@@ -1,5 +1,5 @@
-import noUiSlider from 'nouislider';
-import 'nouislider/distribute/nouislider.css';
+// import noUiSlider from 'nouislider';
+// import 'nouislider/distribute/nouislider.css';
 
 let widgets = require('@jupyter-widgets/base');
 let _ = require('lodash');
@@ -84,15 +84,15 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         seeker.addEventListener('input', () => {this.time.innerHTML = seeker.value;});
         controls.insertBefore(seeker, controls.firstChild);
 
-        var slider = document.getElementById('slider');
-        noUiSlider.create(slider, {
-            start: [20, 80],
-            connect: true,
-            range: {
-                'min': 0,
-                'max': 100
-            }
-        });
+        // var slider = document.getElementById('slider');
+        // noUiSlider.create(slider, {
+        //     start: [20, 80],
+        //     connect: true,
+        //     range: {
+        //         'min': 0,
+        //         'max': 100
+        //     }
+        // });
 
 
 
@@ -117,9 +117,9 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
 
         let form = document.createElement('form');
-        let key_start = util.createFormInput('start', {type: 'number', id: 'key_start', step:'any', className:'numberInput'});
+        let key_start = util.createFormInput('Start', {type: 'number', id: 'key_start', step:'any', className:'numberInput'});
         form.appendChild(key_start);
-        let setStart = Object.assign(document.createElement('button'), { id: 'set_start', innerHTML: "set", className:'tagButton'});
+        let setStart = Object.assign(document.createElement('button'), { id: 'set_start', innerHTML: "Set", className:'tagButton'});
         setStart.onclick = () => {
             let curPos = ms.to.query().position;
             let startval= key_start.firstElementChild
@@ -134,9 +134,9 @@ let MultiviewView = widgets.DOMWidgetView.extend({
         }
         form.appendChild(setStart);
         // form.appendChild(document.createElement('br'))
-        let key_end= util.createFormInput('end', {type: 'number', id: 'key_end', step:'any', className:'numberInput'})
+        let key_end= util.createFormInput('End', {type: 'number', id: 'key_end', step:'any', className:'numberInput'})
         form.appendChild(key_end);
-        let setEnd = Object.assign(document.createElement('button'), { id: 'set_end', innerHTML: "set", className:'tagButton'});
+        let setEnd = Object.assign(document.createElement('button'), { id: 'set_end', innerHTML: "Set", className:'tagButton'});
         setEnd.onclick = () => {
             let curPos = ms.to.query().position;
             let endval= key_end.firstElementChild
@@ -154,7 +154,7 @@ let MultiviewView = widgets.DOMWidgetView.extend({
 
         form.onsubmit = () => {return false}
 
-        let marktime = Object.assign(document.createElement('button'), {innerHTML: 'Add note', type: "submit"});
+        let marktime = Object.assign(document.createElement('button'), {innerHTML: 'Add Note', type: "submit", id: "addnotebutton"});
         form.appendChild(marktime);
 
         marktime.onclick = () => {

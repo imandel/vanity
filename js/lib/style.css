@@ -42,7 +42,6 @@
 .controlButton{
 	margin: 3% 0% 3% 2%;
 	border-radius: 30px;
-	/* border: 0.5px solid darkgrey; */
 	border: none;
 	background-color: white;
 	padding: 5px 15px;
@@ -82,15 +81,27 @@ input[type=range]::-ms-thumb {
 }
 
 .tagButton{
-	margin: 5px;
-	border-radius: 10%;
+	margin: 3% 1%;
+	border-radius: 30px;
 	border: none;
-	padding: 5px 10px;
+	background-color: #cbe4cb;
+	padding: 5px 15px;
 	text-align: center;
 }
+
+#addnotebutton {
+	margin: 3% 1%;
+	border-radius: 30px;
+	border: none;
+	background-color: #8dc38d;
+	padding: 5px 15px;
+	text-align: center;
+}
+
 .tagCheck{
 	margin-right: 5px; 
 }
+
 #content {
   padding-bottom: 5px;
 }

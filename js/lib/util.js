@@ -181,7 +181,7 @@ let loadKeypoints = function(keypoints, that){
 let clickableKeypoint = function(keypoint, that){
     let start =keypoint.start
     let keyP = Object.assign(document.createElement('p'), {className:"note"})
-    keyP.innerText="Start: "+ keypoint.start.toFixed(2) + ", comments: "+ keypoint.comments + ", tags: "+ keypoint.tags.toString();
+    keyP.innerText="start: "+ keypoint.start.toFixed(2) + ", comments: "+ keypoint.comments + ", tags: "+ keypoint.tags.toString();
     keyP.onclick = () => {that.ms.seek(start)}; 
     return keyP;
 }
