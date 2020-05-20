@@ -70,7 +70,7 @@ const MultiviewView = widgets.DOMWidgetView.extend({
     const controls = util.createControls(this);// Object.assign(document.createElement("div"), {id:'controlpanel'});
     content.appendChild(controls);
 
-    const pos = Object.assign(document.createElement('p'), { innerText: 'time: ', id: 'pos', style: 'display:inline' });
+    const pos = Object.assign(document.createElement('p'), { innerText: 'Time: ', id: 'pos', style: 'display:inline' });
     pos.appendChild(this.time);
     controls.appendChild(pos);
 
@@ -116,11 +116,11 @@ const MultiviewView = widgets.DOMWidgetView.extend({
 
 
     const form = document.createElement('form');
-    let key_start = util.createFormInput('start', {
+    let key_start = util.createFormInput('Start:', {
       type: 'number', id: 'key_start', step: 'any', className: 'numberInput',
     });
     form.appendChild(key_start);
-    const setStart = Object.assign(document.createElement('button'), { id: 'set_start', innerHTML: 'set', className: 'tagButton' });
+    const setStart = Object.assign(document.createElement('button'), { id: 'set_start', innerHTML: 'Set', className: 'tagButton' });
     setStart.onclick = () => {
       const curPos = ms.to.query().position;
       const startval = key_start.firstElementChild;
@@ -134,11 +134,11 @@ const MultiviewView = widgets.DOMWidgetView.extend({
     };
     form.appendChild(setStart);
     // form.appendChild(document.createElement('br'))
-    let key_end = util.createFormInput('end', {
+    let key_end = util.createFormInput('End:', {
       type: 'number', id: 'key_end', step: 'any', className: 'numberInput',
     });
     form.appendChild(key_end);
-    const setEnd = Object.assign(document.createElement('button'), { id: 'set_end', innerHTML: 'set', className: 'tagButton' });
+    const setEnd = Object.assign(document.createElement('button'), { id: 'set_end', innerHTML: 'Set', className: 'tagButton' });
     setEnd.onclick = () => {
       const curPos = ms.to.query().position;
       const endval = key_end.firstElementChild;
@@ -155,7 +155,7 @@ const MultiviewView = widgets.DOMWidgetView.extend({
 
     form.onsubmit = () => false;
 
-    const marktime = Object.assign(document.createElement('button'), { innerHTML: 'Add note', type: 'submit' });
+    const marktime = Object.assign(document.createElement('button'), { innerHTML: 'Add Note', type: 'submit', id: "addnotebutton"});
     form.appendChild(marktime);
 
     marktime.onclick = () => {
