@@ -75,7 +75,7 @@ const MultiviewView = widgets.DOMWidgetView.extend({
     controls.appendChild(pos);
 
 
-    const seeker = Object.assign(document.createElement('input'), {
+    let seeker = Object.assign(document.createElement('input'), {
       type: 'range', id: 'seeker', min: 0, max: 1000, value: 0, step: 0.001,
     });
     this.seeker = seeker;
@@ -86,31 +86,34 @@ const MultiviewView = widgets.DOMWidgetView.extend({
 
 
     ms.to.on('timeupdate', () => {
-      const curPos = ms.to.query().position;
+      let curPos = ms.to.query().position;
       this.time.innerHTML = curPos.toFixed(3);
       seeker.value = curPos;
+      //seek2.nouiSlider.set([curPos, curPos]);
       if (!curKeypoint.start) {
         key_start.firstElementChild.placeholder = curPos.toFixed(3);
       } else if (curKeypoint.start && !curKeypoint.end) {
         key_end.firstElementChild.placeholder = curPos.toFixed(3);
       }
+      console.log("seeker.value: " + seeker.value);
+      //console.log("seek2.value: " + seek2.noUiSlider.get());
     });
 
     vid1.onloadedmetadata = () => {
-      seeker.max = vid1.duration;
-      document.getElementById('title').innerText = this.model.get('src');
-    const seek2 = document.querySelector("#nouiSlider");
-    noUiSlider.create(seek2, {
-        start: [20, 80],
-        connect: true,
-        range: {
-            'min': 0,
-            'max': 100
-        }
-    });
-    console.log(seek2);
+        seeker.max = vid1.duration;
+        document.getElementById('title').innerText = this.model.get('src');
+        let seek2 = document.querySelector("#nouiSlider");
+        console.log("seek2 (onloaded): " + seek2);
+        noUiSlider.create(seek2, {
+            start: [0, 0],
+            connect: true,
+            range: {
+                'min': 0,
+                'max': 1000
+            }
+        });
+        seek2.max = vid1.duration;
     };
-
 
     vid1.onended = () => { ms.to.update({ velocity: 0.0 }); };
 
