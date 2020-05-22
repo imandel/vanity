@@ -51,13 +51,14 @@ const MultiviewView = widgets.DOMWidgetView.extend({
     this.time = Object.assign(document.createElement('span'), { innerText: '0.0', id: 'posTime' });
     this.playing = false;
     this.speed = 1.0;
+    let slider;
 
     const curKeypoint = new util.Keypoint(key_src = this.model.get('src'), author = this.model.get('author'));
     this.curKeypoint = curKeypoint;
 
 
     // DOM generation
-    const [output, vid_container, data_views_container, annotations, foot, data_views, content, tagbox] = util.createDOM(this);
+    const [output, vid_container, data_views_container, annotations, foot, data_views, content, tagbox, controls] = util.createDOM(this);
 
     this.data_views = data_views;
     this.annotations = annotations;
@@ -65,17 +66,10 @@ const MultiviewView = widgets.DOMWidgetView.extend({
     const vid1 = Object.assign(document.createElement('video'), { id: 'mainVid', controls: false, src: this.model.get('src') });
     this.vid1 = vid1;
     ms.add(vid1);
-    content.appendChild(vid1);
-
-    const controls = util.createControls(this);// Object.assign(document.createElement("div"), {id:'controlpanel'});
-    content.appendChild(controls);
-
-    const pos = Object.assign(document.createElement('p'), { innerText: 'Time: ', id: 'pos', style: 'display:inline' });
-    pos.appendChild(this.time);
-    controls.appendChild(pos);
+    content.insertBefore(vid1, content.firstChild);
 
 
-    let seeker = Object.assign(document.createElement('input'), {
+    const seeker = Object.assign(document.createElement('input'), {
       type: 'range', id: 'seeker', min: 0, max: 1000, value: 0, step: 0.001,
     });
     this.seeker = seeker;
@@ -86,33 +80,31 @@ const MultiviewView = widgets.DOMWidgetView.extend({
 
 
     ms.to.on('timeupdate', () => {
-      let curPos = ms.to.query().position;
+      const curPos = ms.to.query().position;
       this.time.innerHTML = curPos.toFixed(3);
       seeker.value = curPos;
-      //seek2.nouiSlider.set([curPos, curPos]);
+      // seek2.nouiSlider.set([curPos, curPos]);
+      slider.noUiSlider.set([curPos, curPos]);
       if (!curKeypoint.start) {
         key_start.firstElementChild.placeholder = curPos.toFixed(3);
       } else if (curKeypoint.start && !curKeypoint.end) {
         key_end.firstElementChild.placeholder = curPos.toFixed(3);
       }
-      console.log("seeker.value: " + seeker.value);
-      //console.log("seek2.value: " + seek2.noUiSlider.get());
+      console.log(`seeker.value: ${seeker.value}`);
+      // console.log("seek2.value: " + seek2.noUiSlider.get());
     });
-
+    
     vid1.onloadedmetadata = () => {
-        seeker.max = vid1.duration;
-        document.getElementById('title').innerText = this.model.get('src');
-        let seek2 = document.querySelector("#nouiSlider");
-        console.log("seek2 (onloaded): " + seek2);
-        noUiSlider.create(seek2, {
-            start: [0, 0],
-            connect: true,
-            range: {
-                'min': 0,
-                'max': 1000
-            }
-        });
-        seek2.max = vid1.duration;
+      seeker.max = vid1.duration;
+      document.getElementById('title').innerText = this.model.get('src');
+      slider= document.getElementById('nouiSlider');
+
+      slider.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: vid1.duration,
+        },
+      });
     };
 
     vid1.onended = () => { ms.to.update({ velocity: 0.0 }); };
@@ -158,7 +150,7 @@ const MultiviewView = widgets.DOMWidgetView.extend({
 
     form.onsubmit = () => false;
 
-    const marktime = Object.assign(document.createElement('button'), { innerHTML: 'Add Note', type: 'submit', id: "addnotebutton"});
+    const marktime = Object.assign(document.createElement('button'), { innerHTML: 'Add Note', type: 'submit', id: 'addnotebutton' });
     form.appendChild(marktime);
 
     marktime.onclick = () => {
