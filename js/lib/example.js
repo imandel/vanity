@@ -2,9 +2,9 @@ const widgets = require('@jupyter-widgets/base');
 const _ = require('lodash');
 const { MediaSync } = require('mediasync');
 const util = require('./util');
-require('./style.css');
 const noUiSlider = require('nouislider');
 require('nouislider/distribute/nouislider.css');
+require('./style.css');
 
 // See example.py for the kernel counterpart to this file.
 

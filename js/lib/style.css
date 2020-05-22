@@ -39,7 +39,32 @@
 
 }
 
-.controlButton{
+.noUi-horizontal .noUi-handle {
+	-webkit-appearance: none;
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	border: none;
+	background-color: #8dc38d;
+	cursor: pointer;
+	box-shadow: none;
+	top: 0px;
+	right: -20px;
+}
+
+.noUi-horizontal {
+	height: 15px;
+}
+
+.noUi-touch-area {
+	display: none;
+}
+
+.noUi-handle {
+	background: none;
+}
+
+.controlButton {
 	margin: 3% 0% 3% 2%;
 	border-radius: 30px;
 	border: none;
