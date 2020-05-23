@@ -42,7 +42,7 @@ const createDOM = function (that) {
   const controls = createControls(that);// Object.assign(document.createElement("div"), {id:'controlpanel'});
   content.appendChild(controls);
 
-  const pos = Object.assign(document.createElement('p'), { innerText: 'Time: ', id: 'pos', style: 'display:inline' });
+  const pos = Object.assign(document.createElement('p'), { innerText: 'Time: ', id: 'pos', style: 'display:block' });
   pos.appendChild(that.time);
   controls.appendChild(pos);
 
