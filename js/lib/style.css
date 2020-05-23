@@ -40,15 +40,15 @@
 }
 
 .noUi-horizontal .noUi-handle {
-	width: 10px;
-	height: 21px;
+	width: 12px;
+	height: 24px;
 	border-radius: 8px;
 	border: none;
 	background-color: #8dc38d;
 	cursor: pointer;
 	box-shadow: none;
-	top: -6px;
-	right: -10px;
+	top: -7px;
+	right: -12px;
 }
 
 .noUi-horizontal {
