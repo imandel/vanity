@@ -66,6 +66,10 @@
 	background: none;
 }
 
+#nouiSlider > div > div:nth-child(2) > div {
+	pointer-events: none;
+}
+
 .controlButton {
 	margin: 3% 0% 3% 2%;
 	border-radius: 30px;
@@ -114,6 +118,14 @@ input[type=range]::-ms-thumb {
 	padding: 5px 15px;
 	text-align: center;
 }
+.tagButton:disabled{
+	margin: 3% 2% 3% 1%;
+	border-radius: 30px;
+	border: none;
+	background-color: #dce3dc;
+	padding: 5px 15px;
+	text-align: center;
+}
 
 #addnotebutton {
 	margin: 3% 1%;
@@ -158,6 +170,7 @@ input[type=range]::-ms-thumb {
 	/*padding-bottom: 5px;*/
 	padding-left: 15px;
 }
+
 
 #seeker {
 	/*padding: 15px;*/

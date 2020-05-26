@@ -33,7 +33,8 @@ For a development installation (requires npm),
     $ npm install
     $ cd .. 
     $ pip install -e .
-    **$ jupyter nbextension install --py --symlink --sys-prefix vanity**
+    $ jupyter nbextension install --py --symlink --sys-prefix vanity
+    $ jupyter nbextension enable --py --sys-prefix vanity
 
 #### Windows
     $ git clone https://github.com/imandel/vanity.git
@@ -42,8 +43,8 @@ For a development installation (requires npm),
     $ npm install
     $ cd .. 
     $ pip install -e .
-    **$ jupyter nbextension install --py --sys-prefix vanity**
-    **$ jupyter nbextension enable --py --sys-prefix vanity**
+    $ jupyter nbextension install --py --sys-prefix vanity
+    $ jupyter nbextension enable --py --sys-prefix vanity
 <!-- $ jupyter labextension install js -->
 
 Development
@@ -54,7 +55,7 @@ Development
 
 #### Mac or Linux
     * `cd js`
-    * `npm run build`
+    * `npm run watch`
     * refresh browser to reflect changes
 * Automate build whenever there are changes in `js/lib/` with `npm run watch &` in `js/`
 
@@ -71,18 +72,20 @@ TODO
 - [x] Mark keypoints
 - [x] Mark key spans
 - [x] Add namespace to keypoints object for collaborative annotation
-- [ ] Make the UI nice
+- [x] Make the UI nice
 - [ ] Annotation on a central timeline object
 - [ ] Wrap a js plotting library (Highcharts?)
 - [ ] allow youtube or vimeo video inputs
 - [ ] parse uploaded keypoints and give different authors different colors and update tags
 - [ ] allow updated tags.
+- [ ] show how much has [loaded](https://stackoverflow.com/questions/5029519/html5-video-percentage-loaded)
 
 David TODO
-- [ ] half speed playback
-- [ ] next frame interface
+- [x] half speed playback
+- [x] next frame interface
 - [ ] fix the memeory leak
-- [ ] force preload?
+- [ ] make disabled until loaded
+- [ ] style when set or unset
  
 
 <!-- When actively developing extension, build Jupyter Lab with the command:

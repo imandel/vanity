@@ -1,30 +1,38 @@
 const noUiSlider = require('nouislider');
-const wNumb = require('wnumb')
+const wNumb = require('wnumb');
+
 const createDOM = function (that) {
   const output = Object.assign(document.createElement('div'), { id: 'output', className: 'outputContainer' });
   const content = Object.assign(document.createElement('div'), { id: 'content' });
   const vid_container = Object.assign(document.createElement('div'), { id: 'vid_container', className: 'srcVid' });
   const data_views_container = Object.assign(document.createElement('div'), { id: 'data_views_container', className: 'sidebar' });
   const annotations_container = Object.assign(document.createElement('div'), { id: 'annotations_container', className: 'mainCol' });
-  const annotations = Object.assign(document.createElement('div'), { id: 'annotations', className: 'scrollbox' });
-  const foot = Object.assign(document.createElement('div'), { id: 'foot', className: 'foot' });
 
-  const titleblock = Object.assign(document.createElement('h4'), { innerText: 'content: ' });
-  titleblock.appendChild(Object.assign(document.createElement('span'), { innerText: that.model.get('src'), id: 'title' }));
-  vid_container.appendChild(titleblock);
-  vid_container.appendChild(content);
+  const annotations = Object.assign(document.createElement('div'), { id: 'annotations', className: 'scrollbox' });
+  that.annotations = annotations;
+  annotations.appendChild(loadKeypoints(that.model.get('keypoints'), that));
+  const foot = Object.assign(document.createElement('div'), { id: 'foot', className: 'foot' });
 
   data_views_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'data views' }));
   annotations_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'annotations' }));
 
   annotations_container.appendChild(annotations);
 
+
   const data_views = Object.assign(document.createElement('div'), { id: 'data_views' });
-  data_views.appendChild(util.createVidDataViews(that.ms, that.model.get('vids').slice()));
+  data_views.appendChild(createVidDataViews(that.ms, that.model.get('vids').slice()));
   data_views_container.appendChild(data_views);
 
-  // content.appendChild(controls);
+  that.data_views = data_views;
+
   output.appendChild(vid_container);
+
+  vid_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'content: ' }).appendChild(Object.assign(document.createElement('span'), { innerText: that.model.get('src'), id: 'title' })).parentNode);
+  const controls = vid_container.appendChild(createControls(that));
+  const mainVid = vid_container.appendChild(Object.assign(document.createElement('video'), { id: 'mainVid', controls: false, src: that.model.get('src') }));
+  that.mainVid = mainVid;
+  that.ms.add(mainVid);
+
   if (that.model.get('vids').slice().length === 0) {
     // vid_container.style.width = "100%";
     vid_container.style.height = '60%';
@@ -33,20 +41,14 @@ const createDOM = function (that) {
     output.appendChild(data_views_container);
   }
 
-  // output.appendChild(annotations);
-
-  const tagbox = Object.assign(document.createElement('div'), { id: 'tagbox' });
+  const tagbox = createTagbox(that);
   foot.appendChild(tagbox);
   foot.appendChild(annotations_container);
 
-  const controls = createControls(that);// Object.assign(document.createElement("div"), {id:'controlpanel'});
-  content.appendChild(controls);
+  vid_container.appendChild(controls);
 
-  const pos = Object.assign(document.createElement('p'), { innerText: 'Time: ', id: 'pos', style: 'display:block' });
-  pos.appendChild(that.time);
-  controls.appendChild(pos);
-
-  return [output, vid_container, data_views_container, annotations, foot, data_views, content, tagbox, controls];
+  that.el.appendChild(output);
+  that.el.appendChild(foot);
 };
 
 const createControls = function (that) {
@@ -58,77 +60,135 @@ const createControls = function (that) {
 
   const controls = Object.assign(document.createElement('div'), { id: 'controlpanel' });
 
-  const slider = Object.assign(document.createElement('div'), { id: 'nouiSlider' });
-  controls.appendChild(slider);
-  // const seek2 = document.querySelector('#nouiSlider');
-  noUiSlider.create(slider, {
+  const slider = controls.appendChild(Object.assign(document.createElement('div'), { id: 'nouiSlider' }));
+  that.slider = slider;
+  noUiSlider.create(that.slider, {
     start: [0, 0],
+    behaviour: 'drag-unconstrained',
     connect: true,
+    animate: false,
     range: {
       min: 0,
-      max: 100,
+      max: 1000,
     },
     format: wNumb({
-            decimals: 3,
-        })
+      decimals: 3,
+    }),
   });
-  // const pause = Object.assign(document.createElement('button'), {innerText: 'Pause', className: 'controlButton'});
-  // controls.appendChild(pause);
 
-  const playPause = Object.assign(document.createElement('button'), { innerText: '▶️', className: 'controlButton', title: 'play' });
-  controls.appendChild(playPause);
-  const rewind = Object.assign(document.createElement('button'), { innerText: ' ↺ 5s', className: 'controlButton', title: 'rewind five seconds' });
-  controls.appendChild(rewind);
-  const prevFrame = Object.assign(document.createElement('button'), { innerText: '<', className: 'controlButton', title: 'previous frame' });
-  controls.appendChild(prevFrame);
-  const nextFrame = Object.assign(document.createElement('button'), { innerText: '>', className: 'controlButton', title: 'next frame' });
-  controls.appendChild(nextFrame);
+  that.slider.noUiSlider.on('start', () => {
+    that.ms.to.update({ velocity: 0 });
+  });
+  that.slider.noUiSlider.on('end', (values) => {
+    that.ms.to.update({ velocity: that.state.playing ? that.speed : 0, position: parseFloat(values[1])});
 
-  const startover = Object.assign(document.createElement('button'), { innerText: '◼', className: 'controlButton', title: 'start from beginning' });
-  controls.appendChild(startover);
+  });
 
-  const speedList = Object.assign(document.createElement('datalist'), { id: 'speedlist' });
+  that.slider.noUiSlider.on('slide', (values, handle, unencoded) => {
+    if (!that.curKeypoint.start && !that.curKeypoint.end) {
+      if (values[1] !== values[0]) {
+        that.slider.noUiSlider.set([values[1], null]);
+        that.ms.to.update({ position: parseFloat(values[1]) });
+      }
+    } else if (that.curKeypoint.start && !that.curKeypoint.end) {
+      that.curKeypoint.start = values[0];
+      that.tagbox.start.input.value = values[0];
+    } else if (that.curKeypoint.start && that.curKeypoint.end) {
+      that.curKeypoint.start = values[0];
+      that.tagbox.start.input.value = values[0];
+      that.curKeypoint.end = values[1];
+      that.tagbox.end.input.value = values[1];
+    }
+  });
+
+  // debug
+
+
+
+  that.ms.to.on('timeupdate', () => {
+    const curPos = that.ms.to.query().position;
+    that.time.innerHTML = curPos.toFixed(3);
+    // seeker.value = curPos;
+    slider.noUiSlider.set([that.curKeypoint.start || curPos, that.curKeypoint.end || curPos]);
+    if (!that.curKeypoint.start) {
+      that.tagbox.start.input.placeholder = curPos.toFixed(3);
+    } else if (that.curKeypoint.start && !that.curKeypoint.end) {
+      that.tagbox.end.input.placeholder = curPos.toFixed(3);
+    }
+  });
+
+
+
+
+  const playPause = controls.appendChild(Object.assign(document.createElement('button'), { innerText: '▶️', className: 'controlButton', title: 'play' }));
+  const rewind = controls.appendChild(Object.assign(document.createElement('button'), { innerText: ' ↺ 5s', className: 'controlButton', title: 'rewind five seconds' }));
+  const prevFrame = controls.appendChild(Object.assign(document.createElement('button'), { innerText: '<', className: 'controlButton', title: 'previous frame' }));
+  const nextFrame = controls.appendChild(Object.assign(document.createElement('button'), { innerText: '>', className: 'controlButton', title: 'next frame' }));
+  const startover = controls.appendChild(Object.assign(document.createElement('button'), { innerText: '◼', className: 'controlButton', title: 'start from beginning' }));
+
+
+  const handler = {
+    set(target, key, value) {
+      console.log(`Setting value ${key} as ${value}`);
+      if (key === 'playing') {
+        if (value === true) {
+          playPause.innerText = '⏸';
+          _setspeed(that.speed);
+        } else {
+          playPause.innerText = '▶️';
+          that.ms.to.update({ velocity: 0.0 });
+        }
+        target[key] = value;
+      }
+    },
+    get(target, key) {
+      return target[key];
+    },
+  };
+  that.state = new Proxy({}, handler);
+  that.state.playing = false;
+
+  rewind.onclick = () => { that.ms.to.update({ position: that.ms.to.pos - 5.0 }); };
+  prevFrame.onclick = () => { that.ms.to.update({ position: that.ms.to.pos - (1 / 24) }); };
+  nextFrame.onclick = () => { that.ms.to.update({ position: that.ms.to.pos + (1 / 24) }); };
+  startover.onclick = () => { that.ms.to.update({ velocity: 0.0, position: 0.0 }); };
+  const speedList = controls.appendChild(Object.assign(document.createElement('datalist'), { id: 'speedlist' }));
   const speeds = [0.25, 0.5, 1, 1.5, 2];
   speeds.forEach((speedVal) => {
     speedList.appendChild(Object.assign(document.createElement('option'), { value: speedVal }));
   });
-  controls.appendChild(speedList);
-  const speedInput = Object.assign(document.createElement('input'), {
+
+  const speedInput = controls.appendChild(Object.assign(document.createElement('input'), {
     type: 'range', min: speeds[0], max: speeds[speeds.length - 1], step: 0.05, value: 1, className: 'speedRange', id: 'speedRange',
-  });
+  }));
   speedInput.setAttribute('list', 'speedlist');
-  controls.appendChild(speedInput);
-  const speedOut = Object.assign(document.createElement('output'), { for: 'speedRange', innerHTML: '1', id: 'outputnum' });
-  controls.appendChild(speedOut);
+
+  const speedOut = controls.appendChild(Object.assign(document.createElement('output'), { for: 'speedRange', innerHTML: '1', id: 'outputnum' }));
+
   speedInput.onchange = () => {
     const closest = getClosest(speeds, speedInput.value);
     speedInput.value = closest;
     that.speed = closest;
     speedOut.value = closest;
-    if (that.playing) {
+    if (that.state.playing) {
       _setspeed(closest);
     }
   };
 
-
-  // pause.onclick= () => {that.ms.to.update({velocity: 0.0}); that.playing = false;}
-  // play.onclick= () => {_setspeed(that.speed); that.playing = true;}
   playPause.onclick = () => {
-    if (!that.playing) {
-      _setspeed(that.speed);
-      playPause.innerText = '⏸';
-      that.playing = true;
-    } else {
-      that.ms.to.update({ velocity: 0.0 });
-      that.playing = false;
-      playPause.innerText = '▶️';
-    }
+    that.state.playing = !that.state.playing;
+    // if (!that.state.playing) {
+    //   _setspeed(that.speed);
+    //   playPause.innerText = '⏸';
+    //   that.state.playing = true;
+    // } else {
+    //   that.ms.to.update({ velocity: 0.0 });
+    //   that.state.playing = false;
+    //   playPause.innerText = '▶️';
+    // }
   };
-  rewind.onclick = () => { that.ms.to.update({ position: that.ms.to.pos - 5.0 }); };
-  prevFrame.onclick = () => { that.ms.to.update({ position: that.ms.to.pos - (1 / 24) }); };
-  nextFrame.onclick = () => { that.ms.to.update({ position: that.ms.to.pos + (1 / 24) }); };
-  startover.onclick = () => { that.ms.to.update({ velocity: 0.0, position: 0.0 }); };
 
+  controls.appendChild(Object.assign(document.createElement('p'), { innerText: 'Time: ', id: 'pos', style: 'display:block' }).appendChild(that.time).parentNode);
 
   return controls;
 };
@@ -139,6 +199,114 @@ const createFormInput = function (name, options) {
   const input = Object.assign(document.createElement('input'), options);
   label.appendChild(input);
   return label;
+};
+
+const insertAfter = function (newNode, prevSibling) {
+  prevSibling.after(newNode);
+  return newNode;
+};
+
+const createTagbox = function (that) {
+  const tagDiv = Object.assign(document.createElement('div'), { id: 'tagbox' });
+  const form = tagDiv.appendChild(document.createElement('form'));
+  const keyStartForm = form.appendChild(createFormInput('Start:', {
+    type: 'number', id: 'key_start', step: 'any', className: 'numberInput',
+  }));
+  const keyEndForm = form.appendChild(createFormInput('End:', {
+    type: 'number', id: 'key_end', step: 'any', className: 'numberInput',
+  }));
+
+  const tagbox = {
+    start: {
+      input: keyStartForm.firstElementChild,
+      button: insertAfter(Object.assign(document.createElement('button'), { id: 'set_start', innerHTML: 'Set', className: 'tagButton' }), keyStartForm),
+    },
+    end: {
+      input: keyEndForm.firstElementChild,
+      button: insertAfter(Object.assign(document.createElement('button'), { id: 'set_end', innerHTML: 'Set', className: 'tagButton', disabled: true }), keyEndForm),
+    },
+    marktime: Object.assign(document.createElement('button'), { innerHTML: 'Add Note', type: 'submit', id: 'addnotebutton' }),
+    tags_container: Object.assign(document.createElement('div'), { id: 'tags_container' }),
+    comments: Object.assign(document.createElement('label'), { innerText: 'Comments\n' }).appendChild(Object.assign(document.createElement('textarea'), { id: 'comments', rows: 3 })),
+  };
+
+  tagbox.end.button.after(tagbox.marktime);
+  tagbox.marktime.after(tagbox.tags_container);
+  tagbox.tags_container.after(tagbox.comments);
+
+  that.model.get('tags').slice().forEach((tag) => {
+    const tagcheck = createFormInput(tag, { value: tag, type: 'checkbox' });
+    tagcheck.className = 'tagCheck';
+    tagbox.tags_container.appendChild(tagcheck);
+  });
+
+  tagbox.start.button.onclick = () => {
+    if (!that.curKeypoint.start) {
+      const curPos = that.ms.to.query().position;
+      tagbox.end.button.disabled = false;
+      if (tagbox.start.input.value === '') {
+        that.curKeypoint.start = curPos;
+        tagbox.start.input.value = curPos.toFixed(3);
+      } else {
+        that.curKeypoint.start = parseFloat(tagbox.start.input.value);
+      }
+      document.querySelector('#nouiSlider > div > div:nth-child(2) > div').style.pointerEvents = 'auto';
+    } else {
+      tagbox.end.button.disabled = true;
+      that.curKeypoint.start = undefined;
+      tagbox.start.input.value = '';
+      tagbox.end.input.placeholder = '';
+      document.querySelector('#nouiSlider > div > div:nth-child(2) > div').style.pointerEvents = 'none';
+    }
+  };
+
+  tagbox.end.button.onclick = () => {
+    const curPos = that.ms.to.query().position;
+    if (!that.curKeypoint.end) {
+      if (tagbox.end.input.value === '') {
+        that.curKeypoint.end = curPos;
+        tagbox.end.input.value = curPos.toFixed(3);
+        that.state.playing = false;
+        // that.ms.to.update({ velocity: 0 });
+      } else {
+        that.curKeypoint.end = parseFloat(tagbox.end.input.value);
+      }
+    } else {
+      that.curKeypoint.end = undefined;
+      tagbox.end.input.value = '';
+      tagbox.end.input.placeholder = '';
+      that.ms.to.update({ velocity: that.state.playing ? that.speed : 0, position: parseFloat(values[1])});
+
+    }
+  };
+
+  form.onsubmit = () => false;
+
+
+  tagbox.marktime.onclick = () => {
+    const curPos = that.ms.to.query().position;
+    const tempKeypoints = that.model.get('keypoints').slice();
+    that.curKeypoint.start = parseFloat(tagbox.start.input.value) || curPos;
+    that.curKeypoint.end = parseFloat(tagbox.end.input.value) || curPos;
+    that.curKeypoint.comments = tagbox.comments.value;
+    that.curKeypoint.tags = Array.from(tagbox.tags_container.getElementsByTagName('input')).filter((n) => n.checked).map((m) => m.value);
+    that.annotations.insertBefore(
+      clickableKeypoint(that.curKeypoint, that),
+      that.annotations.firstChild,
+    );
+    tempKeypoints.push(that.curKeypoint.values);
+    that.model.set({ keypoints: tempKeypoints });
+    that.touch();
+    that.curKeypoint.reset();
+    form.reset();
+    tagbox.end.input.placeholder = '';
+    that.annotations.scrollTop = 0;
+    that.send({ event: 'click' });
+    document.querySelector('#nouiSlider > div > div:nth-child(2) > div').style.pointerEvents = 'none';
+  };
+
+  that.tagbox = tagbox;
+  return tagDiv;
 };
 
 const createVidDataViews = function (ms, vids) {
@@ -208,7 +376,7 @@ function getClosest(arr, val) {
 }
 
 
-var util = {
+const util = {
   createFormInput,
   createControls,
   createVidDataViews,
