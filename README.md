@@ -76,7 +76,7 @@ TODO
 - [ ] Annotation on a central timeline object
 - [ ] Wrap a js plotting library (Highcharts?)
 - [ ] allow youtube or vimeo video inputs
-- [ ] parse uploaded keypoints and give different authors different colors and update tags
+- [x] keypoint author display on hover
 - [ ] allow updated tags.
 - [ ] show how much has [loaded](https://stackoverflow.com/questions/5029519/html5-video-percentage-loaded)
 
@@ -84,7 +84,7 @@ David TODO
 - [x] half speed playback
 - [x] next frame interface
 - [ ] fix the memeory leak
-- [ ] make disabled until loaded
+- [x] make disabled until loaded
 - [ ] style when set or unset
  
 

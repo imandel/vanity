@@ -365,7 +365,7 @@ const loadKeypoints = function (keypoints, that) {
 
 const clickableKeypoint = function (keypoint, that) {
   const { start } = keypoint;
-  const keyP = Object.assign(document.createElement('p'), { className: 'note' });
+  const keyP = Object.assign(document.createElement('p'), { className: 'note', title: keypoint.author|| "no author"});
   keyP.innerText = `start: ${keypoint.start.toFixed(2)}, comments: ${keypoint.comments}, tags: ${keypoint.tags.toString()}`;
   keyP.onclick = () => { that.ms.seek(start); };
   return keyP;
