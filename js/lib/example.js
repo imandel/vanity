@@ -58,9 +58,18 @@ const MultiviewView = widgets.DOMWidgetView.extend({
     // DOM generation
     util.createDOM(this);
 
+    // this.mainVid.onloadstart = (e) => {console.log(e.type, e)};
+    // this.mainVid.onloadeddata = (e) => {console.log(e.type, e)};
+    // this.mainVid.oncanplay = (e) => {console.log(e.type, e)};
+    this.mainVid.oncanplaythrough = (e) => {
+      console.log('canplaythough');
+      document.getElementById('controlpanel').classList.remove('disabledpanel');
+    };
+
 
     this.mainVid.onloadedmetadata = () => {
       // seeker.max = this.mainVid.duration;
+      // document.getElementById('controlpanel').classList.add('disabledpanel');
       document.getElementById('title').innerText = this.model.get('src');
       slider = document.getElementById('nouiSlider');
 
@@ -94,11 +103,13 @@ const MultiviewView = widgets.DOMWidgetView.extend({
 
   src_changed() {
     console.log('src_changed');
-    this.this.mainVid.pause();
-    this.this.mainVid.src = '';
-    this.this.mainVid.load();
-    this.this.mainVid.src = this.model.get('src');
+    this.mainVid.pause();
+    this.mainVid.src = '';
+    this.mainVid.load();
+    document.getElementById('controlpanel').classList.add('disabledpanel');
+    this.mainVid.src = this.model.get('src');
     this.ms.to.update({ position: 0.0 });
+    this.state.playing = false;
     while (this.data_views.firstChild) {
       this.data_views.removeChild(this.data_views.firstChild);
     }

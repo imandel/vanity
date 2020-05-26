@@ -36,7 +36,11 @@
 	display: flex;
 	width: 100%;
 	/*height: 300px;*/
+}
 
+.disabledpanel {
+    pointer-events: none;
+    opacity: 0.4;
 }
 
 .noUi-horizontal .noUi-handle {

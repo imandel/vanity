@@ -58,7 +58,7 @@ const createControls = function (that) {
     setTimeout(() => { that.ms.to.update({ velocity: val }); }, 1);
   };
 
-  const controls = Object.assign(document.createElement('div'), { id: 'controlpanel' });
+  const controls = Object.assign(document.createElement('div'), { id: 'controlpanel', className:'disabledpanel' });
 
   const slider = controls.appendChild(Object.assign(document.createElement('div'), { id: 'nouiSlider' }));
   that.slider = slider;
