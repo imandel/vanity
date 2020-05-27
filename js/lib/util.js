@@ -154,6 +154,9 @@ const createControls = function (that) {
   prevFrame.onclick = () => { that.ms.to.update({ position: that.ms.to.pos - (1 / 24) }); };
   nextFrame.onclick = () => { that.ms.to.update({ position: that.ms.to.pos + (1 / 24) }); };
   startover.onclick = () => { that.ms.to.update({ velocity: 0.0, position: 0.0 }); };
+
+
+
   const speedList = controls.appendChild(Object.assign(document.createElement('datalist'), { id: 'speedlist' }));
   const speeds = [0.25, 0.5, 1, 1.5, 2];
   speeds.forEach((speedVal) => {
@@ -251,6 +254,7 @@ const createTagbox = function (that) {
         tagbox.start.input.value = curPos.toFixed(3);
       } else {
         that.curKeypoint.start = parseFloat(tagbox.start.input.value);
+
       }
       document.querySelector('#nouiSlider > div > div:nth-child(2) > div').style.pointerEvents = 'auto';
     } else {
@@ -270,6 +274,7 @@ const createTagbox = function (that) {
         tagbox.end.input.value = curPos.toFixed(3);
         that.state.playing = false;
         // that.ms.to.update({ velocity: 0 });
+        
       } else {
         that.curKeypoint.end = parseFloat(tagbox.end.input.value);
       }
@@ -281,6 +286,29 @@ const createTagbox = function (that) {
 
     }
   };
+
+  $("#set_start").click(function () {
+    var startclick = document.getElementById("set_start")
+    if (startclick.classList.contains("tb-clicked")) {
+        $('#set_start').removeClass("tb-clicked")
+    }
+    else {
+        $('#set_start').addClass("tb-clicked")
+        // $('#set_start').innerHTML("Unset")
+    }
+});
+
+$("#set_end").click(function () {
+    var endclick = document.getElementById("set_end")
+    if (endclick.classList.contains("tb-clicked")) {
+        $('#set_end').removeClass("tb-clicked")
+    }
+    else {
+        $('#set_end').addClass("tb-clicked")
+        // $('#set_end').innerHTML("Unset")
+    }
+});
+
 
   form.onsubmit = () => false;
 
