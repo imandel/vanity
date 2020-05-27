@@ -37,7 +37,6 @@ const createDOM = function (that) {
     vid_container.style.width = '65%';
     vid_container.style.margin = '0 auto';
     output.style.backgroundColor = '#cbe4cb';
-
   } else {
     vid_container.style.width = '50%';
     output.appendChild(data_views_container);
@@ -60,7 +59,7 @@ const createControls = function (that) {
     setTimeout(() => { that.ms.to.update({ velocity: val }); }, 1);
   };
 
-  const controls = Object.assign(document.createElement('div'), { id: 'controlpanel', className:'disabledpanel' });
+  const controls = Object.assign(document.createElement('div'), { id: 'controlpanel', className: 'disabledpanel' });
 
   const slider = controls.appendChild(Object.assign(document.createElement('div'), { id: 'nouiSlider' }));
   that.slider = slider;
@@ -82,8 +81,7 @@ const createControls = function (that) {
     that.ms.to.update({ velocity: 0 });
   });
   that.slider.noUiSlider.on('end', (values) => {
-    that.ms.to.update({ velocity: that.state.playing ? that.speed : 0, position: parseFloat(values[1])});
-
+    that.ms.to.update({ velocity: that.state.playing ? that.speed : 0, position: parseFloat(values[1]) });
   });
 
   that.slider.noUiSlider.on('slide', (values, handle, unencoded) => {
@@ -106,20 +104,18 @@ const createControls = function (that) {
   // debug
 
 
-
   that.ms.to.on('timeupdate', () => {
     const curPos = that.ms.to.query().position;
     that.time.innerHTML = curPos.toFixed(3);
     // seeker.value = curPos;
     slider.noUiSlider.set([that.curKeypoint.start || curPos, that.curKeypoint.end || curPos]);
-    if (!that.curKeypoint.start) {
+    if (that.curKeypoint.start === undefined) {
       that.tagbox.start.input.placeholder = curPos.toFixed(3);
-    } else if (that.curKeypoint.start && !that.curKeypoint.end) {
+      // that.tagbox.start.button.classList.remove('tb-clicked');
+    } else if (that.curKeypoint.start && (that.curKeypoint.end === undefined)) {
       that.tagbox.end.input.placeholder = curPos.toFixed(3);
     }
   });
-
-
 
 
   const playPause = controls.appendChild(Object.assign(document.createElement('button'), { innerText: '▶️', className: 'controlButton', title: 'play' }));
@@ -153,7 +149,13 @@ const createControls = function (that) {
   rewind.onclick = () => { that.ms.to.update({ position: that.ms.to.pos - 5.0 }); };
   prevFrame.onclick = () => { that.ms.to.update({ position: that.ms.to.pos - (1 / 24) }); };
   nextFrame.onclick = () => { that.ms.to.update({ position: that.ms.to.pos + (1 / 24) }); };
-  startover.onclick = () => { that.ms.to.update({ position: 0.0 }); that.state.playing = false; };
+  startover.onclick = () => {
+    that.ms.to.update({ position: 0.0 });
+    that.state.playing = false;
+    that.curKeypoint.reset();
+    that.tagbox.start.button.classList.remove('tb-clicked');
+    that.tagbox.end.button.classList.remove('tb-clicked');
+  };
   const speedList = controls.appendChild(Object.assign(document.createElement('datalist'), { id: 'speedlist' }));
   const speeds = [0.25, 0.5, 1, 1.5, 2];
   speeds.forEach((speedVal) => {
@@ -225,7 +227,9 @@ const createTagbox = function (that) {
     },
     end: {
       input: keyEndForm.firstElementChild,
-      button: insertAfter(Object.assign(document.createElement('button'), { id: 'set_end', innerHTML: 'Set', className: 'tagButton', disabled: true }), keyEndForm),
+      button: insertAfter(Object.assign(document.createElement('button'), {
+        id: 'set_end', innerHTML: 'Set', className: 'tagButton', disabled: true,
+      }), keyEndForm),
     },
     marktime: Object.assign(document.createElement('button'), { innerHTML: 'Add Note', type: 'submit', id: 'addnotebutton' }),
     tags_container: Object.assign(document.createElement('div'), { id: 'tags_container' }),
@@ -243,7 +247,9 @@ const createTagbox = function (that) {
   });
 
   tagbox.start.button.onclick = () => {
-    if (!that.curKeypoint.start) {
+    console.log('click')
+    if (that.curKeypoint.start === undefined) {
+      console.log('undef, defn')
       const curPos = that.ms.to.query().position;
       tagbox.end.button.disabled = false;
       if (tagbox.start.input.value === '') {
@@ -252,19 +258,22 @@ const createTagbox = function (that) {
       } else {
         that.curKeypoint.start = parseFloat(tagbox.start.input.value);
       }
+      tagbox.start.button.classList.add('tb-clicked');
       document.querySelector('#nouiSlider > div > div:nth-child(2) > div').style.pointerEvents = 'auto';
     } else {
+      console.log('unclick')
       tagbox.end.button.disabled = true;
       that.curKeypoint.start = undefined;
       tagbox.start.input.value = '';
       tagbox.end.input.placeholder = '';
+      tagbox.start.button.classList.remove('tb-clicked');
       document.querySelector('#nouiSlider > div > div:nth-child(2) > div').style.pointerEvents = 'none';
     }
   };
 
   tagbox.end.button.onclick = () => {
     const curPos = that.ms.to.query().position;
-    if (!that.curKeypoint.end) {
+    if (that.curKeypoint.end === undefined) {
       if (tagbox.end.input.value === '') {
         that.curKeypoint.end = curPos;
         tagbox.end.input.value = curPos.toFixed(3);
@@ -273,36 +282,15 @@ const createTagbox = function (that) {
       } else {
         that.curKeypoint.end = parseFloat(tagbox.end.input.value);
       }
+      tagbox.end.button.classList.add('tb-clicked');
     } else {
       that.curKeypoint.end = undefined;
       tagbox.end.input.value = '';
       tagbox.end.input.placeholder = '';
-      that.ms.to.update({ velocity: that.state.playing ? that.speed : 0, position: parseFloat(values[1])});
-
+      tagbox.end.button.classList.remove('tb-clicked');
+      that.ms.to.update({ velocity: that.state.playing ? that.speed : 0, position: parseFloat(that.slider.noUiSlider.get()[1]) });
     }
   };
-
-  $("#set_start").click(function () {
-    var startclick = document.getElementById("set_start")
-    if (startclick.classList.contains("tb-clicked")) {
-        $('#set_start').removeClass("tb-clicked")
-    }
-    else {
-        $('#set_start').addClass("tb-clicked")
-        // $('#set_start').innerHTML("Unset")
-    }
-});
-
-$("#set_end").click(function () {
-    var endclick = document.getElementById("set_end")
-    if (endclick.classList.contains("tb-clicked")) {
-        $('#set_end').removeClass("tb-clicked")
-    }
-    else {
-        $('#set_end').addClass("tb-clicked")
-        // $('#set_end').innerHTML("Unset")
-    }
-});
 
 
   form.onsubmit = () => false;
@@ -390,7 +378,7 @@ const loadKeypoints = function (keypoints, that) {
 
 const clickableKeypoint = function (keypoint, that) {
   const { start } = keypoint;
-  const keyP = Object.assign(document.createElement('p'), { className: 'note', title: keypoint.author|| "no author"});
+  const keyP = Object.assign(document.createElement('p'), { className: 'note', title: keypoint.author || 'no author' });
   keyP.innerText = `start: ${keypoint.start.toFixed(2)}, comments: ${keypoint.comments}, tags: ${keypoint.tags.toString()}`;
   keyP.onclick = () => { that.ms.seek(start); };
   return keyP;
