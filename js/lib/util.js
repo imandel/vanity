@@ -34,8 +34,10 @@ const createDOM = function (that) {
   that.ms.add(mainVid);
 
   if (that.model.get('vids').slice().length === 0) {
-    // vid_container.style.width = "100%";
-    vid_container.style.height = '60%';
+    vid_container.style.width = '65%';
+    vid_container.style.margin = '0 auto';
+    output.style.backgroundColor = '#cbe4cb';
+
   } else {
     vid_container.style.width = '50%';
     output.appendChild(data_views_container);
@@ -279,6 +281,29 @@ const createTagbox = function (that) {
 
     }
   };
+
+  $("#set_start").click(function () {
+    var startclick = document.getElementById("set_start")
+    if (startclick.classList.contains("tb-clicked")) {
+        $('#set_start').removeClass("tb-clicked")
+    }
+    else {
+        $('#set_start').addClass("tb-clicked")
+        // $('#set_start').innerHTML("Unset")
+    }
+});
+
+$("#set_end").click(function () {
+    var endclick = document.getElementById("set_end")
+    if (endclick.classList.contains("tb-clicked")) {
+        $('#set_end').removeClass("tb-clicked")
+    }
+    else {
+        $('#set_end').addClass("tb-clicked")
+        // $('#set_end').innerHTML("Unset")
+    }
+});
+
 
   form.onsubmit = () => false;
 

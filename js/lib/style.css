@@ -44,15 +44,15 @@
 }
 
 .noUi-horizontal .noUi-handle {
-	width: 12px;
-	height: 24px;
-	border-radius: 8px;
+	width: 6px;
+	height: 21px;
+	border-radius: 4px;
 	border: none;
 	background-color: #8dc38d;
 	cursor: pointer;
 	box-shadow: none;
-	top: -7px;
-	right: -12px;
+	top: -6px;
+	right: -6px;
 }
 
 .noUi-horizontal {
@@ -67,6 +67,10 @@
 }
 
 .noUi-handle {
+	background: none;
+}
+
+.noUi-handle:before, .noUi-handle:after {
 	background: none;
 }
 
@@ -106,7 +110,7 @@ input[type=range]::-ms-thumb {
 	display: inline;
 	border: none;
 	border-radius: 50%;
-	background-color: #8dc38d;
+	background-color: #f7c631;
 	padding: 2px 6px;
 }
 
@@ -114,7 +118,7 @@ input[type=range]::-ms-thumb {
 	margin-left: 4%;
 }
 
-.tagButton{
+.tagButton {
 	margin: 3% 2% 3% 1%;
 	border-radius: 30px;
 	border: none;
@@ -122,7 +126,7 @@ input[type=range]::-ms-thumb {
 	padding: 5px 15px;
 	text-align: center;
 }
-.tagButton:disabled{
+.tagButton:disabled {
 	margin: 3% 2% 3% 1%;
 	border-radius: 30px;
 	border: none;
@@ -131,11 +135,20 @@ input[type=range]::-ms-thumb {
 	text-align: center;
 }
 
+.tb-clicked {
+	margin: 3% 2% 3% 1%;
+	border-radius: 30px;
+	border: none;
+	background-color: #8dc38d;
+	padding: 5px 15px;
+	text-align: center;
+}
+
 #addnotebutton {
 	margin: 3% 1%;
 	border-radius: 30px;
 	border: none;
-	background-color: #8dc38d;
+	background-color: lightskyblue;
 	padding: 5px 15px;
 	text-align: center;
 }
@@ -196,4 +209,36 @@ input[type=range]::-ms-thumb {
 #comments{
 	width: 90%;
 	margin-left: 2%;
+}
+
+video::-webkit-media-controls-enclosure {
+    text-indent: 0px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: flex-end;
+    width: 60%;
+    padding: 0px;
+    margin: 0 auto;
+    flex: 1 1 0%;
+}
+
+video::-webkit-media-controls-overlay-enclosure {
+    width: 50%;
+    height: 50%;
+}
+
+video::-webkit-media-controls {
+    writing-mode: horizontal-tb;
+    width: 60%;
+    height: 60%;
+    position: relative;
+    direction: ltr;
+    display: flex;
+    flex-direction: column;
+    font-family: Roboto, Noto, sans-serif;
+    color: rgb(0, 0, 0);
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 14px;
+    margin: 0 auto;
 }
