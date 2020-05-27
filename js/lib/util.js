@@ -151,7 +151,7 @@ const createControls = function (that) {
   rewind.onclick = () => { that.ms.to.update({ position: that.ms.to.pos - 5.0 }); };
   prevFrame.onclick = () => { that.ms.to.update({ position: that.ms.to.pos - (1 / 24) }); };
   nextFrame.onclick = () => { that.ms.to.update({ position: that.ms.to.pos + (1 / 24) }); };
-  startover.onclick = () => { that.ms.to.update({ velocity: 0.0, position: 0.0 }); };
+  startover.onclick = () => { that.ms.to.update({ position: 0.0 }); that.state.playing = false; };
   const speedList = controls.appendChild(Object.assign(document.createElement('datalist'), { id: 'speedlist' }));
   const speeds = [0.25, 0.5, 1, 1.5, 2];
   speeds.forEach((speedVal) => {
