@@ -6,6 +6,7 @@ const createDOM = function (that) {
   const content = Object.assign(document.createElement('div'), { id: 'content' });
   const vid_container = Object.assign(document.createElement('div'), { id: 'vid_container', className: 'srcVid' });
   const data_views_container = Object.assign(document.createElement('div'), { id: 'data_views_container', className: 'sidebar' });
+  const subtitles_container = Object.assign(document.createElement('div'), { id: 'subtitles_container', className: 'sidebar' });
   const annotations_container = Object.assign(document.createElement('div'), { id: 'annotations_container', className: 'mainCol' });
 
   const annotations = Object.assign(document.createElement('div'), { id: 'annotations', className: 'scrollbox' });
@@ -14,6 +15,7 @@ const createDOM = function (that) {
   const foot = Object.assign(document.createElement('div'), { id: 'foot', className: 'foot' });
 
   data_views_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'data views' }));
+  subtitles_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'subtitles' }));
   annotations_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'annotations' }));
 
   annotations_container.appendChild(annotations);
@@ -34,11 +36,13 @@ const createDOM = function (that) {
   that.ms.add(mainVid);
 
   if (that.model.get('vids').slice().length === 0) {
-    vid_container.style.width = '65%';
-    vid_container.style.margin = '0 auto';
-    output.style.backgroundColor = '#cbe4cb';
+    vid_container.style.width = '50%';
+    output.appendChild(subtitles_container);
+    // vid_container.style.margin = '0 auto';
+    // output.style.backgroundColor = '#cbe4cb';
   } else {
     vid_container.style.width = '50%';
+    output.appendChild(data_views_container);
     output.appendChild(data_views_container);
   }
 
@@ -51,6 +55,8 @@ const createDOM = function (that) {
   that.el.appendChild(output);
   that.el.appendChild(foot);
 };
+
+
 
 const createControls = function (that) {
   // strange behavior without this function but should look into timingsrc for

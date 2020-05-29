@@ -168,6 +168,16 @@ input[type=range]::-ms-thumb {
   flex-wrap: wrap;
   align-items: flex-start;
   align-content: flex-start;
+  height: 25%;
+}
+
+#subtitles_contatiner {
+	display: block;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	align-content: flex-start;
+	height: 25%;
 }
 
 #annotations_container{
