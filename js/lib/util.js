@@ -14,6 +14,7 @@ const createDOM = function (that) {
   annotations.appendChild(loadKeypoints(that.model.get('keypoints'), that));
   const foot = Object.assign(document.createElement('div'), { id: 'foot', className: 'foot' });
 
+  const sideoutput = Object.assign(document.createElement('div'), { id: 'sideoutput', className: 'sideoutputContainter' });
   data_views_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'data views' }));
   subtitles_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'subtitles' }));
   annotations_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'annotations' }));
@@ -35,6 +36,8 @@ const createDOM = function (that) {
   that.mainVid = mainVid;
   that.ms.add(mainVid);
 
+  
+
   if (that.model.get('vids').slice().length === 0) {
     vid_container.style.width = '50%';
     output.appendChild(subtitles_container);
@@ -43,7 +46,7 @@ const createDOM = function (that) {
   } else {
     vid_container.style.width = '50%';
     output.appendChild(data_views_container);
-    output.appendChild(data_views_container);
+    output.appendChild(subtitles_container);
   }
 
   const tagbox = createTagbox(that);
