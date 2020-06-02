@@ -96,6 +96,7 @@ class Multiview(widgets.DOMWidget):
     # is automatically synced to the frontend *any* time it changes in Python.
     # It is synced back to Python from the frontend *any* time the model is touched.
     src= Unicode("").tag(sync=True)
+    subtitles= Unicode("").tag(sync=True)
     vids = List([]).tag(sync=True)
     keypoints = List([]).tag(sync=True)
     tags = List([]).tag(sync=True)
@@ -119,7 +120,7 @@ class Multiview(widgets.DOMWidget):
         #         self.callback()
 
 
-    def __init__(self, src, vids=None, tags=None, keypoints= None, author=None, callback=None, callbackArgs=None, callbackKwargs=None, **kwargs):
+    def __init__(self, src, vids=None, tags=None, subtitles= None, keypoints= None, author=None, callback=None, callbackArgs=None, callbackKwargs=None, **kwargs):
 
         self.on_msg(self._handle_keypoint_click)
         # self._click_handlers = CallbackDispatcher()
@@ -130,6 +131,9 @@ class Multiview(widgets.DOMWidget):
 
         if vids is not None:
             self.vids=vids
+
+        if subtitles is not None:
+            self.subtitles = subtitles
 
         if tags is not None:
             self.tags=tags

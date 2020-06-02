@@ -2,19 +2,24 @@
 
 .outputContainer{
 	display: flex;
+	overflow: hidden;
+	/*height: 70vh;*/
 	width: 100%;
+	flex-wrap: nowrap;
 }
 
 .mainCol {
 	/*display: table-cell;*/
 	width: 100%;
-	background-color: #cbe4cb;
+	/*background-color: #cbe4cb;*/
 }
 
 .srcVid {
 	/*display: table-cell;*/
-	/*width: 50%;*/
+	flex: 4.5;
+	/*width: 100%;*/
 	background-color: #cbe4cb;
+	padding: 0.5em;
 }
 
 .sidebar {
@@ -28,8 +33,10 @@
 .dataView {
 	padding: 5px;
 	height: auto;
-	display: block;
+	/*display: block;*/
 	margin: 0 auto;
+	width: 100%;
+	max-width: 30vw;
 }
 
 .foot{
@@ -161,38 +168,71 @@ input[type=range]::-ms-thumb {
   padding-bottom: 5px;
 }
 
+
 #data_views_container {
+	flex: 3;
+	padding: 0.5em;
   background-color: whitesmoke;
   display: block;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: flex-start;
   align-content: flex-start;
-  height: 25%;
+  width: 40%;
+  /*height: 25%;*/
 }
 
 #subtitles_contatiner {
+	flex: 2;
+	padding: 0.5em;
 	display: block;
 	flex-direction: row;
 	flex-wrap: wrap;
 	align-items: flex-start;
 	align-content: flex-start;
-	height: 25%;
+	/*height: 25%;*/
+}
+
+.activeText {
+	font-size: 1.2em;
+	background-color: yellow;
 }
 
 #annotations_container{
 	display: block;
+	background-color: whitesmoke;
+	padding: 0.5em;
+	border-style: dotted; 
+	border-color: lightgrey;
+
 }
 
 #annotations {
 	/*background-color: chocolate;*/
-	background-color: #cbe4cb;
+	/*background-color: whitesmoke;*/
 	height: 100px;
 	overflow-y:auto;
 }
 
+#subtitles_container {
+	display: block;
+	width: 30%;
+	padding: 0.5em;
+	flex: 2.5;
+}
+#subtitles{
+	overflow-y: auto;
+	position: relative;
+	/*max-height: 45vh;*/
+}
+
+#subtitles::selection {
+	background-color: red;
+}
+
 #mainVid{
 	width: 100%;
+	max-height: 55vh;
 	padding-right: 15px;
 	/*padding-bottom: 5px;*/
 	padding-left: 15px;
@@ -226,7 +266,7 @@ video::-webkit-media-controls-enclosure {
     box-sizing: border-box;
     display: flex;
     justify-content: flex-end;
-    width: 60%;
+    /*width: 60%; */
     padding: 0px;
     margin: 0 auto;
     flex: 1 1 0%;

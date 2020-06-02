@@ -6,7 +6,7 @@ const createDOM = function (that) {
   const content = Object.assign(document.createElement('div'), { id: 'content' });
   const vid_container = Object.assign(document.createElement('div'), { id: 'vid_container', className: 'srcVid' });
   const data_views_container = Object.assign(document.createElement('div'), { id: 'data_views_container', className: 'sidebar' });
-  const subtitles_container = Object.assign(document.createElement('div'), { id: 'subtitles_container', className: 'sidebar' });
+  // const subtitles_container = Object.assign(document.createElement('div'), { id: 'subtitles_container', className: 'sidebar' });
   const annotations_container = Object.assign(document.createElement('div'), { id: 'annotations_container', className: 'mainCol' });
 
   const annotations = Object.assign(document.createElement('div'), { id: 'annotations', className: 'scrollbox' });
@@ -16,7 +16,6 @@ const createDOM = function (that) {
 
   const sideoutput = Object.assign(document.createElement('div'), { id: 'sideoutput', className: 'sideoutputContainter' });
   data_views_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'data views' }));
-  subtitles_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'subtitles' }));
   annotations_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'annotations' }));
 
   annotations_container.appendChild(annotations);
@@ -35,30 +34,68 @@ const createDOM = function (that) {
   const mainVid = vid_container.appendChild(Object.assign(document.createElement('video'), { id: 'mainVid', controls: false, src: that.model.get('src') }));
   that.mainVid = mainVid;
   that.ms.add(mainVid);
+  // vid_container.style.width = `100%`;
 
-  
-
-  if (that.model.get('vids').slice().length === 0) {
-    vid_container.style.width = '50%';
-    output.appendChild(subtitles_container);
-    // vid_container.style.margin = '0 auto';
-    // output.style.backgroundColor = '#cbe4cb';
-  } else {
-    vid_container.style.width = '50%';
+  if (that.model.get('vids').slice().length > 0) {
     output.appendChild(data_views_container);
-    output.appendChild(subtitles_container);
   }
+  if (that.model.get('subtitles')) {
+    const subtitles_container = Object.assign(document.createElement('div'), { id: 'subtitles_container', className: 'sidebar' });
+    subtitles_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'subtitles' }));
+    const subtitles = subtitles_container.appendChild(Object.assign(document.createElement('div'), { id: 'subtitles', className: 'scrollbox' }));
+    output.appendChild(subtitles_container);
+
+    console.log('getting captions');
+    const track = document.createElement('track');
+    track.kind = 'captions';
+    track.label = 'English';
+    track.srclang = 'en';
+    track.src = that.model.get('subtitles');
+    that.mainVid.appendChild(track);
+    track.addEventListener('load', () => {
+      console.log('loaded track');
+      [...document.querySelector('#mainVid').textTracks[0].cues].forEach((cue) => {
+        const sub = subtitles.appendChild(Object.assign(document.createElement('p'), { className: 'sub' }));
+        sub.innerHTML = `<b>${cue.startTime}-${cue.endTime}</b>: ${cue.text}`;
+        cue.onenter = () => {
+          // console.log(`cue ${cue}`)
+          const middleOffset = subtitles.getBoundingClientRect().height / 2;
+          subtitles.scrollTo({left: 0, top: sub.offsetTop - middleOffset, behavior: 'smooth' });
+          sub.classList.add('activeText');
+        };
+        cue.onexit = () => { sub.classList.remove('activeText'); };
+
+        sub.onmouseup = () => {
+          if (window.getSelection().toString()) {
+            const times = [...window.getSelection().anchorNode.parentElement.closest('p').innerText.split(':')[0].split('-'),
+              ...window.getSelection().extentNode.parentElement.closest('p').innerText.split(':')[0].split('-')].map((i) => parseFloat(i));
+            const start = Math.min(...times);
+            const end = Math.max(...times);
+            console.log(start, end);
+            that.curKeypoint.start = start;
+            that.curKeypoint.end = end;
+            that.slider.noUiSlider.set([start, end]);
+            that.ms.to.update({ position: parseFloat(end) });
+          } else {
+            that.ms.to.update({ position: cue.startTime });
+          }
+        };
+      });
+      subtitles.style.maxHeight = `${10 + document.querySelector('#mainVid').offsetHeight + document.querySelector('#controlpanel').offsetHeight}px`;
+    });
+  }
+  [...that.mainVid.textTracks].forEach((track) => track.mode = 'hidden');
+  window.onresize = () => { document.querySelector('#subtitles').style.maxHeight = `${15 + document.querySelector('#mainVid').offsetHeight + document.querySelector('#controlpanel').offsetHeight}px`; };
 
   const tagbox = createTagbox(that);
   foot.appendChild(tagbox);
   foot.appendChild(annotations_container);
 
   vid_container.appendChild(controls);
-
+  output.appendChild(foot);
   that.el.appendChild(output);
   that.el.appendChild(foot);
 };
-
 
 
 const createControls = function (that) {
@@ -256,9 +293,7 @@ const createTagbox = function (that) {
   });
 
   tagbox.start.button.onclick = () => {
-    console.log('click')
     if (that.curKeypoint.start === undefined) {
-      console.log('undef, defn')
       const curPos = that.ms.to.query().position;
       tagbox.end.button.disabled = false;
       if (tagbox.start.input.value === '') {
@@ -270,7 +305,6 @@ const createTagbox = function (that) {
       tagbox.start.button.classList.add('tb-clicked');
       document.querySelector('#nouiSlider > div > div:nth-child(2) > div').style.pointerEvents = 'auto';
     } else {
-      console.log('unclick')
       tagbox.end.button.disabled = true;
       that.curKeypoint.start = undefined;
       tagbox.start.input.value = '';
@@ -308,8 +342,8 @@ const createTagbox = function (that) {
   tagbox.marktime.onclick = () => {
     const curPos = that.ms.to.query().position;
     const tempKeypoints = that.model.get('keypoints').slice();
-    that.curKeypoint.start = parseFloat(tagbox.start.input.value) || curPos;
-    that.curKeypoint.end = parseFloat(tagbox.end.input.value) || curPos;
+    that.curKeypoint.start = parseFloat(tagbox.start.input.value) || parseFloat(that.curKeypoint.start) || curPos;
+    that.curKeypoint.end =  parseFloat(tagbox.end.input.value) || parseFloat(that.curKeypoint.end) || curPos;
     that.curKeypoint.comments = tagbox.comments.value;
     that.curKeypoint.tags = Array.from(tagbox.tags_container.getElementsByTagName('input')).filter((n) => n.checked).map((m) => m.value);
     that.annotations.insertBefore(
@@ -335,7 +369,7 @@ const createVidDataViews = function (ms, vids) {
   const frag = document.createDocumentFragment();
   vids.forEach((vid_src) => {
     const vid = Object.assign(document.createElement('video'), {
-      className: 'dataView', muted: true, controls: false, src: vid_src, className: 'dataView', style: 'width: 60%;',
+      className: 'dataView', muted: true, controls: false, src: vid_src, className: 'dataView',
     });
     ms.add(vid);
     frag.appendChild(vid);

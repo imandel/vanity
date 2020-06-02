@@ -1,8 +1,8 @@
 const widgets = require('@jupyter-widgets/base');
 const _ = require('lodash');
 const { MediaSync } = require('mediasync');
-const util = require('./util');
 const noUiSlider = require('nouislider');
+const util = require('./util');
 require('nouislider/distribute/nouislider.css');
 require('./style.css');
 
@@ -79,8 +79,13 @@ const MultiviewView = widgets.DOMWidgetView.extend({
           max: this.mainVid.duration,
         },
       });
+      if (this.model.get('subtitles')) {
+        document.querySelector('#subtitles').style.maxHeight = `${15 + document.querySelector('#mainVid').offsetHeight + document.querySelector('#controlpanel').offsetHeight}px`;
+      }
+      // this.mainVid.textTracks.forEach((track) => { track.mode = 'hidden'}; )
+      // console.log(this.mainVid.textTracks);
+      // [...this.mainVid.textTracks].forEach((track) => track.mode = 'hidden');
     };
-
     this.mainVid.onended = () => { ms.to.update({ velocity: 0.0 }); };
 
     this.model.on('change:vids', this.data_views_changed, this);
