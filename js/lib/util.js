@@ -36,14 +36,31 @@ const createDOM = function (that) {
   that.ms.add(mainVid);
   // vid_container.style.width = `100%`;
 
+
   if (that.model.get('vids').slice().length > 0) {
     output.appendChild(data_views_container);
   }
   if (that.model.get('subtitles')) {
+      
     const subtitles_container = Object.assign(document.createElement('div'), { id: 'subtitles_container', className: 'sidebar' });
+    const collapsbible = subtitles_container.appendChild(Object.assign(document.createElement('button'), { innerHTML: 'Subtitles <br> >>', className: 'collapsibleButton' })); 
+    var i;
+    for (i = 0; i < collapsbible.length; i++) {
+      collapsible[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        subtitles_container = this.nextElementSibling;
+        if (subtitles_container.style.display === "block") {
+          subtitles_container.style.display = "none";
+          vid_container.style.width = '50%';
+        } else {
+          subtitles_container.style.display = "block";
+        }
+      });
+    } 
     subtitles_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'subtitles' }));
     const subtitles = subtitles_container.appendChild(Object.assign(document.createElement('div'), { id: 'subtitles', className: 'scrollbox' }));
     output.appendChild(subtitles_container);
+
 
     console.log('getting captions');
     const track = document.createElement('track');
@@ -86,6 +103,8 @@ const createDOM = function (that) {
   }
   [...that.mainVid.textTracks].forEach((track) => track.mode = 'hidden');
   window.onresize = () => { document.querySelector('#subtitles').style.maxHeight = `${15 + document.querySelector('#mainVid').offsetHeight + document.querySelector('#controlpanel').offsetHeight}px`; };
+  
+  
 
   const tagbox = createTagbox(that);
   foot.appendChild(tagbox);

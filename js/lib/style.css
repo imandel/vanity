@@ -39,6 +39,13 @@
 	max-width: 30vw;
 }
 
+.collapsibleButton {
+	height: 100%;
+	width: 25%;
+	border: none;
+
+}
+
 .foot{
 	display: flex;
 	width: 100%;
