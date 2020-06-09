@@ -41,19 +41,26 @@ const createDOM = function (that) {
     output.appendChild(data_views_container);
   }
   if (that.model.get('subtitles')) {
-      
+      console.log("Hiiiiiii");
     const subtitles_container = Object.assign(document.createElement('div'), { id: 'subtitles_container', className: 'sidebar' });
-    const collapsbible = subtitles_container.appendChild(Object.assign(document.createElement('button'), { innerHTML: 'Subtitles <br> >>', className: 'collapsibleButton' })); 
+    const coll = subtitles_container.appendChild(Object.assign(document.createElement('button'), { innerHTML: 'Subtitles <br> >>', className: 'collapsibleButton' })); 
+    var collapsible = document.getElementsByClassName("collapsibleButton");
+    console.log("length = " + collapsible.length);
+    console.log(collapsible);
+    console.log(collapsible[0]);
+    console.log(coll);
     var i;
-    for (i = 0; i < collapsbible.length; i++) {
+    for (i = 0; i < collapsible.length; i++) {
+        console.log("YOLO");
       collapsible[i].addEventListener("click", function() {
         this.classList.toggle("active");
         subtitles_container = this.nextElementSibling;
         if (subtitles_container.style.display === "block") {
           subtitles_container.style.display = "none";
-          vid_container.style.width = '50%';
         } else {
-          subtitles_container.style.display = "block";
+          subtitles_container.style.display = "none";
+          vid_container.style.width = '50%';
+
         }
       });
     } 
