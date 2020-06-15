@@ -39,13 +39,6 @@
 	max-width: 30vw;
 }
 
-.collapsibleButton {
-	height: 100%;
-	width: 25%;
-	border: none;
-
-}
-
 .foot{
 	display: flex;
 	width: 100%;
@@ -221,11 +214,22 @@ input[type=range]::-ms-thumb {
 	overflow-y:auto;
 }
 
+.collapsibleButton {
+	height: 100%;
+	width: 100%;
+	border: none;
+	flex: 0.5;
+}
+
+.collapsibleButton:hover {
+	background-color: #dedbdb;
+}
+
 #subtitles_container {
 	display: block;
 	width: 30%;
 	padding: 0.5em;
-	flex: 2.5;
+	flex: 0;
 }
 #subtitles{
 	overflow-y: auto;

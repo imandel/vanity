@@ -40,30 +40,43 @@ const createDOM = function (that) {
   if (that.model.get('vids').slice().length > 0) {
     output.appendChild(data_views_container);
   }
+
   if (that.model.get('subtitles')) {
       console.log("Hiiiiiii");
-    const subtitles_container = Object.assign(document.createElement('div'), { id: 'subtitles_container', className: 'sidebar' });
-    const coll = subtitles_container.appendChild(Object.assign(document.createElement('button'), { innerHTML: 'Subtitles <br> >>', className: 'collapsibleButton' })); 
-    var collapsible = document.getElementsByClassName("collapsibleButton");
-    console.log("length = " + collapsible.length);
-    console.log(collapsible);
-    console.log(collapsible[0]);
-    console.log(coll);
-    var i;
-    for (i = 0; i < collapsible.length; i++) {
-        console.log("YOLO");
-      collapsible[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        subtitles_container = this.nextElementSibling;
-        if (subtitles_container.style.display === "block") {
-          subtitles_container.style.display = "none";
-        } else {
-          subtitles_container.style.display = "none";
-          vid_container.style.width = '50%';
+    var subtitles_container = Object.assign(document.createElement('div'), { id: 'subtitles_container', className: 'sidebar' });
+    var coll = subtitles_container.appendChild(Object.assign(document.createElement('button'), { innerHTML: 'Subtitles <br> >>', className: 'collapsibleButton' })); 
+    coll.addEventListener("click", function() {
+      alert("In!");
+      // this.classList.toggle("active");
+      // subtitles_container = this.nextElementSibling;
+      if (subtitles_container.style.flex === "0") {
+        subtitles_container.style.flex = "2.5";
+      } else {
+        subtitles_container.style.flex = "0";
+        vid_container.style.width = '50%';
+      }
+    });
 
-        }
-      });
-    } 
+    // var collapsible = document.getElementsByClassName("collapsibleButton");
+    // console.log("length = " + collapsible.length);
+    // console.log(collapsible);
+    // console.log(collapsible[0]);
+    // console.log(coll);
+    // var i;
+    // for (i = 0; i < collapsible.length; i++) {
+    //     console.log("YOLO");
+    //   collapsible[i].addEventListener("click", function() {
+    //     this.classList.toggle("active");
+    //     subtitles_container = this.nextElementSibling;
+    //     if (subtitles_container.style.display === "block") {
+    //       subtitles_container.style.display = "none";
+    //     } else {
+    //       subtitles_container.style.display = "none";
+    //       vid_container.style.width = '50%';
+
+    //     }
+    //   });
+    // } 
     subtitles_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'subtitles' }));
     const subtitles = subtitles_container.appendChild(Object.assign(document.createElement('div'), { id: 'subtitles', className: 'scrollbox' }));
     output.appendChild(subtitles_container);
@@ -111,7 +124,7 @@ const createDOM = function (that) {
   [...that.mainVid.textTracks].forEach((track) => track.mode = 'hidden');
   window.onresize = () => { document.querySelector('#subtitles').style.maxHeight = `${15 + document.querySelector('#mainVid').offsetHeight + document.querySelector('#controlpanel').offsetHeight}px`; };
   
-  
+
 
   const tagbox = createTagbox(that);
   foot.appendChild(tagbox);
