@@ -182,16 +182,6 @@ input[type=range]::-ms-thumb {
   /*height: 25%;*/
 }
 
-#subtitles_contatiner {
-	flex: 2;
-	padding: 0.5em;
-	display: block;
-	flex-direction: row;
-	flex-wrap: wrap;
-	align-items: flex-start;
-	align-content: flex-start;
-	/*height: 25%;*/
-}
 
 .activeText {
 	font-size: 1.2em;
@@ -215,8 +205,8 @@ input[type=range]::-ms-thumb {
 }
 
 .collapsibleButton {
-	height: 100%;
-	width: 100%;
+	/* height: 100%; */
+	/* width: 100%; */
 	border: none;
 	flex: 0.5;
 }
@@ -226,6 +216,11 @@ input[type=range]::-ms-thumb {
 }
 
 #subtitles_container {
+	padding: 0.5em;
+	flex-direction: row;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	align-content: flex-start;
 	display: block;
 	width: 30%;
 	padding: 0.5em;

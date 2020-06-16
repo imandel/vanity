@@ -41,19 +41,35 @@ const createDOM = function (that) {
     output.appendChild(data_views_container);
   }
 
+  var sub;
+
   if (that.model.get('subtitles')) {
       console.log("Hiiiiiii");
     var subtitles_container = Object.assign(document.createElement('div'), { id: 'subtitles_container', className: 'sidebar' });
-    var coll = subtitles_container.appendChild(Object.assign(document.createElement('button'), { innerHTML: 'Subtitles <br> >>', className: 'collapsibleButton' })); 
+    console.log("1");
+    console.log("1: " + subtitles_container.style.flex);
+    var coll = output.appendChild(Object.assign(document.createElement('button'), { innerHTML: 'Subtitles <br> >>', className: 'collapsibleButton' })); 
+    console.log("2");
+    console.log("2: " + subtitles_container.style.flex);
+
     coll.addEventListener("click", function() {
-      alert("In!");
+
+      //var sub;
       // this.classList.toggle("active");
       // subtitles_container = this.nextElementSibling;
-      if (subtitles_container.style.flex === "0") {
+      if (subtitles_container.style.flex[0] === "0" || subtitles_container.style.flex === "") {
         subtitles_container.style.flex = "2.5";
+        coll.style.flex = "0.2";
+        sub = subtitles_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'subtitles' }));
+        // console.log("if -> " + subtitles_container.style.flex);
+        // console.log("sub = " + sub);
       } else {
         subtitles_container.style.flex = "0";
+        coll.innerHTML ="Subtitles <br> >>";
+        coll.style.flex = "0.5";
+        sub.remove();
         vid_container.style.width = '50%';
+        // console.log("else -> " + subtitles_container.style.flex);
       }
     });
 
@@ -77,7 +93,6 @@ const createDOM = function (that) {
     //     }
     //   });
     // } 
-    subtitles_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'subtitles' }));
     const subtitles = subtitles_container.appendChild(Object.assign(document.createElement('div'), { id: 'subtitles', className: 'scrollbox' }));
     output.appendChild(subtitles_container);
 
