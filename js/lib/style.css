@@ -208,7 +208,7 @@ input[type=range]::-ms-thumb {
 	/* height: 100%; */
 	/* width: 100%; */
 	border: none;
-	flex: 0.5;
+	flex: 0.4;
 }
 
 .collapsibleButton:hover {

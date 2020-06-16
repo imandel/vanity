@@ -54,19 +54,18 @@ const createDOM = function (that) {
 
     coll.addEventListener("click", function() {
 
-      //var sub;
-      // this.classList.toggle("active");
-      // subtitles_container = this.nextElementSibling;
+
       if (subtitles_container.style.flex[0] === "0" || subtitles_container.style.flex === "") {
         subtitles_container.style.flex = "2.5";
-        coll.style.flex = "0.2";
+        coll.innerHTML ="Sub <br> <<";
+        coll.style.flex = "0.1";
         sub = subtitles_container.appendChild(Object.assign(document.createElement('h4'), { innerText: 'subtitles' }));
         // console.log("if -> " + subtitles_container.style.flex);
         // console.log("sub = " + sub);
       } else {
         subtitles_container.style.flex = "0";
         coll.innerHTML ="Subtitles <br> >>";
-        coll.style.flex = "0.5";
+        coll.style.flex = "0.4";
         sub.remove();
         vid_container.style.width = '50%';
         // console.log("else -> " + subtitles_container.style.flex);
