@@ -19,6 +19,8 @@ class Multiview(widgets.DOMWidget):
         A list of paths to videos to display in sync with src
     tags : `list` [`str`]
         A list of tags to apply to video notes
+    subtitles : `str`
+        String with Path to subtitles
     keypoints : `list` [`dict`]
         An optional list of keypoint dictionaries with keys:
         ``"src"``
