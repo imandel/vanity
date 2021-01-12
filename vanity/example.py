@@ -2,6 +2,7 @@ import ipywidgets as widgets
 from traitlets import Unicode, Float, List, observe
 from pathlib import Path
 import pandas as pd
+import json
 
 # See js/lib/example.js for the frontend counterpart to this file.
 
@@ -103,7 +104,7 @@ class Multiview(widgets.DOMWidget):
     keypoints = List([]).tag(sync=True)
     tags = List([]).tag(sync=True)
     author = Unicode("").tag(sync=True)
-
+    _spec_source = Unicode('null').tag(sync=True)
     @observe('keypoints')
     def _observe_keys(self, change):
         # print(change['old'])
@@ -122,7 +123,7 @@ class Multiview(widgets.DOMWidget):
         #         self.callback()
 
 
-    def __init__(self, src, vids=None, tags=None, subtitles= None, keypoints= None, author=None, callback=None, callbackArgs=None, callbackKwargs=None, **kwargs):
+    def __init__(self, src, vids=None, tags=None, subtitles= None, keypoints= None, author=None, spec=None, callback=None, callbackArgs=None, callbackKwargs=None, **kwargs):
 
         self.on_msg(self._handle_keypoint_click)
         # self._click_handlers = CallbackDispatcher()
@@ -155,6 +156,9 @@ class Multiview(widgets.DOMWidget):
             self.callbackKwargs=callbackKwargs
         else:
             self.callbackKwargs={}
+        
+        if spec is not None:
+            self._spec_source =json.dumps(spec)
 
     def _handle_keypoint_click(self, _, content, buffers):
         self.v=(_, content, buffers)

@@ -44,6 +44,9 @@
     "lodash": "^4.17.4",
     "mediasync": "^0.3.0",
     "nouislider": "^14.5.0",
+    "vega": "^5.18.0",
+    "vega-embed": "^6.15.0",
+    "vega-lite": "^4.17.0",
     "wnumb": "^1.2.0"
   },
   "jupyterlab": {

@@ -2,9 +2,14 @@ const widgets = require('@jupyter-widgets/base');
 const _ = require('lodash');
 const { MediaSync } = require('mediasync');
 const noUiSlider = require('nouislider');
+const embed  = require('vega-embed').default;
+const vegalite = require('vega-lite');
+
 const util = require('./util');
 require('nouislider/distribute/nouislider.css');
 require('./style.css');
+
+
 
 // See example.py for the kernel counterpart to this file.
 
@@ -45,16 +50,26 @@ const MultiviewModel = widgets.DOMWidgetModel.extend({
 const MultiviewView = widgets.DOMWidgetView.extend({
   // Defines how the widget gets rendered into the DOM
   render() {
+    console.log(this.model.get('src'))
+    const spec = JSON.parse(this.model.get('_spec_source'))
+    let viewElement = document.createElement("div");
+    viewElement.id = 'testid'
+    this.el.appendChild(viewElement);
+    embed(viewElement, spec)    
+    // console.log(vegalite(specJson));
+
     // Sync and annotation utilitites
     const ms = new MediaSync({ duration: Infinity });
     this.ms = ms;
     this.time = Object.assign(document.createElement('span'), { innerText: '0.0', id: 'posTime' });
     this.speed = 1.0;
 
+
     const curKeypoint = new util.Keypoint(key_src = this.model.get('src'), author = this.model.get('author'));
     this.curKeypoint = curKeypoint;
 
 
+    
     // DOM generation
     util.createDOM(this);
 
