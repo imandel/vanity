@@ -1,6 +1,35 @@
 import type { Writable } from 'svelte/store';
-import { writable } from 'svelte/store';
+import { writable, get, derived } from 'svelte/store';
 
+interface pt {
+  src: string;
+  author: string;
+  start: number | null | undefined;
+  end: number | null | undefined;
+  tags: Array<string>;
+  comments: string | null | undefined;
+
+}
+function Keypoint(src: string='', author: string=''){
+  const store: Writable<pt> = writable({src, author, start:null, end:null, tags:[], comments:null})
+  return{
+    set: store.set,
+    subscribe: store.subscribe,    
+    resetKeypoint: () => {
+        store.update((state: pt)=> {
+          state.start=null
+          state.end = null
+          state.tags = []
+          state.comments = null
+        return state
+      })},
+    getValues: () => {return get(store)}, //i can delete this?
+  }
+}
+export const curKeypoint = Keypoint();
+export const keypointDefined = derived(curKeypoint, ($curKeypoint) => {
+  return (($curKeypoint.start || $curKeypoint.start ===0)? true : false)
+})
 export function createValue(model: any, name_: string, value_: any) {
   const name: string = name_;
   // const curVal: Writable<any> = writable(value_);
@@ -31,6 +60,3 @@ export function createValue(model: any, name_: string, value_: any) {
 }
 
 export const curTime: Writable<any> = writable(0);
-// export const Gmodel: Writable<any> = writable({});
-// export const filename: Writable<any> = writable('');
-// export const src: Writable<any> = writable('');

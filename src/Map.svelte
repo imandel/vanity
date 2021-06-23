@@ -16,9 +16,9 @@
   export let mapStyle;
   $: if (gps && typeof route ==='undefined'){
     route = gpx(new DOMParser().parseFromString(gps, "text/xml"));
-  start = Date.parse(route.features[0].properties.time);
-  route.features[0].properties.coordinateProperties.times = route.features[0].properties.coordinateProperties.times.map((time)=> Date.parse(time) - start);
-  gps=JSON.stringify(route)
+    start = Date.parse(route.features[0].properties.time);
+    route.features[0].properties.coordinateProperties.times = route.features[0].properties.coordinateProperties.times.map((time)=> Date.parse(time) - start);
+    gps=JSON.stringify(route)
   }
 
   let geojsonPoint = {
@@ -93,8 +93,8 @@
       "type": "line",
       "source": "fullLineSource",
       'paint': {
-            'line-opacity': 0.3,
-            'line-color': '#333',
+            'line-opacity': 0.5,
+            'line-color': '#eba834',
             'line-width': 4.5
        },
        'layout': {
@@ -114,7 +114,7 @@
       "source": "lineSource",
       'paint': {
             'line-opacity': 1,
-            'line-color': '#333',
+            'line-color': '#eba834',
             'line-width': 4.5
        },
        'layout': {
@@ -129,7 +129,7 @@
       'paint': {
             'circle-radius': 5,
             'circle-opacity': 1,
-            'circle-color': '#333'
+            'circle-color': '#eba834'
       },
       'layout': {
            // 'visibility': 'none'
