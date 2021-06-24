@@ -28,8 +28,11 @@ function Keypoint(src: string='', author: string=''){
 }
 export const curKeypoint = Keypoint();
 export const keypointDefined = derived(curKeypoint, ($curKeypoint) => {
-  return (($curKeypoint.start || $curKeypoint.start ===0)? true : false)
-})
+  return {start:($curKeypoint.start || $curKeypoint.start ===0) ? true : false,
+          end: ($curKeypoint.end || $curKeypoint.end ===0) ? true : false,
+          full:($curKeypoint.start || $curKeypoint.start ===0) && ($curKeypoint.end || $curKeypoint.end ===0) ? true : false
+    }
+  })
 export function createValue(model: any, name_: string, value_: any) {
   const name: string = name_;
   // const curVal: Writable<any> = writable(value_);

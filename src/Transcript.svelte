@@ -1,6 +1,6 @@
 <script>
 	import { onMount, tick } from 'svelte';
-	import { curTime } from './stores';
+	import { curTime, curKeypoint } from './stores';
 	let cueData;
 	let transcriptBox;
 	let currentCue;
@@ -25,7 +25,9 @@
 						   selected.focusNode.parentNode.closest('p').dataset]
 			const start = Math.min(...nodes.map(node=> parseFloat(node.starttime)))
 			const end = Math.max(...nodes.map(node=> parseFloat(node.endtime)))
-			console.log(start, end)
+			// console.log(start, end)
+			$curKeypoint.start=start
+			$curKeypoint.end=end
 			$curTime = start
 		}
 	}

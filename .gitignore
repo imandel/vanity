@@ -154,6 +154,6 @@ vanity/labextension/*.tgz
 
 # Packed lab extensions
 vanity/labextension
-
-#large files
-*.mp4
+**/*.mp4
+**/*.gpx
+**/*.vtt

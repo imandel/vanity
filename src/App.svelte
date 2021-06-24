@@ -7,10 +7,6 @@
   import Timeline from './Timeline.svelte'
   
   export let model;
-  $: console.log($curKeypoint.defined)
-  // console.log($curKeypoint.getValues())
-
-
 
   let gps = createValue(model, 'gps', '')
   let vidSrc= createValue(model, 'src', '')
@@ -71,5 +67,6 @@
   <button on:click={()=> $curKeypoint.end= $curTime}> end</button>
   <button on:click={()=> curKeypoint.resetKeypoint()}>reset</button>
   <span>{$curKeypoint.start}</span>
+  <span>{$curKeypoint.end}</span>
 </div>
 

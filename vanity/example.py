@@ -28,15 +28,20 @@ class MapView(DOMWidget):
     map_style = Unicode("").tag(sync=True)
     transcript = Unicode("").tag(sync=True)
     transcript_lang = Unicode("").tag(sync=True)
+    duration = Float("").tag(sync=True)
 
     def __init__(self, 
                  src, 
                  gps=None, 
                  map_style=None,
                  transcript=None,
-                 transcript_lang='en'):
+                 transcript_lang='en',
+                 duration=None):
         super().__init__()
+
         self.src = src
+        self.duration=duration
+        
         if gps is not None:
             with open(gps, 'r') as inf:
                 self.gps= inf.read()
@@ -47,3 +52,4 @@ class MapView(DOMWidget):
         if transcript is not None:
             self.transcript=transcript
             self.transcript_lang=transcript_lang
+

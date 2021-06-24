@@ -1,18 +1,37 @@
 <script>
-	import { curTime } from './stores';
+	//TODO: this file is a mess and really should be redone
+	import { curTime, curKeypoint, keypointDefined } from './stores';
 	// https://github.com/mhkeller/svelte-double-range-slider
 	export let start = 0;
 	export let end = 1;
 	export let duration;
+	export let middle;
 
 	let leftHandle;
+	let middleHandle
 
 	let body;
 	let slider;
-	let mouseDown = false;
+	let mouseDown=false;
 
-	$: if(!mouseDown) { 
+	const toggleDown = () => { mouseDown=!mouseDown; console.log(mouseDown)}
+
+	// $: $curKeypoint.start = start*duration
+	// $: $curKeypoint.end = end*duration
+
+	$: start = $curKeypoint.start/duration
+	$: end = $curKeypoint.end/duration
+
+	$: if(!mouseDown && !$keypointDefined.start){
 		start = end = $curTime/duration
+	}
+
+	$: if(!mouseDown && $keypointDefined.start && !$keypointDefined.end){
+		end = $curTime/duration
+	}
+
+	$: if(!mouseDown && $keypointDefined.full){
+		middle = $curTime/duration
 	}
 
 	// https://github.com/Rich-Harris/yootils/blob/master/src/number/clamp.js
@@ -90,13 +109,41 @@
 			const parentWidth = right - left;
 
 			const p = Math.min(Math.max((evt.detail.x - left) / parentWidth, 0), 1);
-			$curTime=p*duration
+			// $curTime=p*duration
+			
 			if (which === 'start') {
-				start = p;
-				end = Math.max(end, p);
-			} else {
-				start = Math.min(p, start);
-				end = p;
+				$curKeypoint.start = p*duration;
+				$curKeypoint.end = Math.max(end, p)*duration;
+				if(!$keypointDefined.full){	
+					middle = Math.max(start, middle)
+				}
+				else {
+					if (start>middle){
+						middle= start;
+						$curTime=p*duration;
+					}
+				}
+			}
+			else if(which === 'middle'){
+				middle = p;
+				if($keypointDefined.start){
+				$curKeypoint.end = Math.max(end, p, start)*duration;
+				$curKeypoint.start = Math.min(p, start, end)*duration;
+			}
+				$curTime=p*duration
+			} 
+			else {
+				$curKeypoint.start = Math.min(p, start)*duration;
+				$curKeypoint.end = p*duration;
+				if(!$keypointDefined.full){	
+					$curTime=p*duration
+				}
+				else {
+					if (end<middle){
+						middle=end;
+						$curTime=p*duration
+					}
+				}
 			}
 		}
 	}
@@ -119,40 +166,6 @@
 		end = pEnd;
 	}
 </script>
-
-<div class="double-range-container">
-	<div class="slider" bind:this={slider}>
-		<div
-			class="body"
-			bind:this={body}
-			use:draggable
-			on:dragmove|preventDefault|stopPropagation="{setHandlesFromBody}"
-			style="
-				left: {100 * start}%;
-				right: {100 * (1 - end)}%;
-			"
-			></div>
-		<div
-			class="handle"
-			bind:this={leftHandle}
-			data-which="start"
-			use:draggable
-			on:dragmove|preventDefault|stopPropagation="{setHandlePosition('start')}"
-			style="
-				left: {100 * start}%
-			"
-		></div>
-		<div
-			class="handle"
-			data-which="end"
-			use:draggable
-			on:dragmove|preventDefault|stopPropagation="{setHandlePosition('end')}"
-			style="
-				left: {100 * end}%
-			"
-		></div>
-	</div>
-</div>
 
 <style>
 	.double-range-container {
@@ -203,3 +216,55 @@
 		bottom: 0;
 	}
 </style>
+
+<div class="double-range-container">
+	<div class="slider" 
+		 bind:this={slider}
+		 on:mousedown={toggleDown}
+		 on:mouseup={toggleDown}>
+		<div
+			class="body"
+			bind:this={body}
+			use:draggable
+			on:dragmove|preventDefault|stopPropagation="{setHandlesFromBody}"
+			style="
+				left: {100 * start}%;
+				right: {100 * (1 - end)}%;
+				visibility: {!$keypointDefined.start ? 'hidden': 'visible'};
+			"
+			></div>
+		<div
+			class="handle"
+			bind:this={leftHandle}
+			data-which="start"
+			use:draggable
+			on:dragmove|preventDefault|stopPropagation="{setHandlePosition('start')}"
+			style="
+				left: {100 * start}%;
+				visibility: {!$keypointDefined.start ? 'hidden': 'visible'};
+			"
+		></div>
+		<div
+			class="handle"
+			data-which="end"
+			use:draggable
+			on:dragmove|preventDefault|stopPropagation="{setHandlePosition('end')}"
+			style="
+				left: {100 * end}%;
+				visibility: {!$keypointDefined.start ? 'hidden': 'visible'};
+			"
+		></div>
+		<div
+			class="handle"
+			bind:this={middleHandle}
+			data-which="middle"
+			use:draggable
+			on:dragmove|preventDefault|stopPropagation="{setHandlePosition('middle')}"
+			style="
+				left: {100 * middle}%;
+				
+			"
+		></div>
+	</div>
+</div>
+
