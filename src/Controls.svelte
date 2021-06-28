@@ -1,39 +1,56 @@
+<svelte:head>
+	<link rel="stylesheet" href="https://unpkg.com/mono-icons@1.0.5/iconfont/icons.css" >
+</svelte:head>
 <script>
-	import { curTime } from './stores';
-	import { onMount } from 'svelte';
-	import DoubleRangeSlider from './DoubleRangeSlider'
-
-	let start;
-	let end;
-	let vid;
-	let duration
-
-	export const onDataLoad = async (viddata) => {
-		vid = viddata
+	import Hoverable from './Hoverable.svelte';
+	let a=1;
+	let count = true //COUNT=TRUE paused, COUNT = False playing
+	
+	function increase() {
+		count = ! count
+		
 	}
-
-
+	function current(e) {
+		console.log(e.currentTarget)
+	}
 </script>
 
+<button
+  on:click={increase}
+  on:click={current}
+>
+	{#if count}
+			<i class="mi mi-play"><span class="u-sr-only">Play</span></i>
+		{:else}
+			<i class="mi mi-pause"><span class="u-sr-only">Pause</span></i>
+		{/if}
+</button>
+
+<Hoverable let:hovering={active}>
+	<i class="mi mi-volume-up"><span class="u-sr-only">Volume up</span></i>
+	<div class:active>
+		{#if active}
+			<input type=range bind:value={a} min=0 max=10>
+		{:else}
+			<p> </p>
+		{/if}
+	</div>
+</Hoverable>
+
+
 <style>
-	.controls{
-		/*width: 100%;*/
-		height: 40px;
-		background-color: #d6a6a3;
-		position: relative;
+	div {
+		padding: 0;
+		margin: 0 0 0em;
 	}
-	.selected{
-		height: 110%;
-		background-color: green;
-
+	.mi {
+		font-size: 2rem;
 	}
-	
+	.u-sr-only {
+		position: absolute;
+    left: -100px;
+    top: auto;
+    width:1px;
+    height:1px;
+	}
 </style>
-
-<div class='controls'>
-<DoubleRangeSlider 
-	bind:start 
-	bind:end
-	bind:duration={vid.duration}
-	/>
-</div>
