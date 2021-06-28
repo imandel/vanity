@@ -4,7 +4,8 @@
   import Map from './Map.svelte';
   import MainVid from './MainVid.svelte';
   import Transcript from './Transcript.svelte'
-  import Timeline from './Timeline.svelte'
+  // import Timeline from './Timeline.svelte'
+  import WaveSurferControler from './WaveSurferControler.svelte'
   
   export let model;
 
@@ -53,7 +54,7 @@
                transcript_lang={$transcriptLang}
                bind:height 
                on:trackLoaded={handleTranscript}
-               on:durationLoaded={handleTimeline}/>
+               on:durationLoaded|once={handleTimeline}/>
     </div>
     {#if transcriptSrc}
       <Transcript bind:this={transcript}/>
@@ -62,11 +63,12 @@
       <Map gps={$gps} mapStyle={$mapStyle} />
     {/if}
   </div>
-  <Timeline bind:this={timeline} />
+  <WaveSurferControler bind:this={timeline}/>
+  <!-- <Timeline bind:this={timeline} />
   <button on:click={()=> $curKeypoint.start= $curTime}> start</button>
   <button on:click={()=> $curKeypoint.end= $curTime}> end</button>
   <button on:click={()=> curKeypoint.resetKeypoint()}>reset</button>
   <span>{$curKeypoint.start}</span>
-  <span>{$curKeypoint.end}</span>
+  <span>{$curKeypoint.end}</span> -->
 </div>
 
