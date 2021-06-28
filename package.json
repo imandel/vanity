@@ -50,7 +50,8 @@
     "@turf/nearest-point-on-line": "^6.3.0",
     "mapbox-gl": "^2.3.0",
     "svelte-awesome": "^2.3.2",
-    "svelte-range-slider-pips": "github:imandel/svelte-range-slider-pips"
+    "svelte-range-slider-pips": "github:imandel/svelte-range-slider-pips",
+    "wavesurfer.js": "^5.1.0"
   },
   "devDependencies": {
     "@phosphor/application": "^1.6.0",
