@@ -16,23 +16,10 @@
 
 	const toggleDown = () => { mouseDown=!mouseDown; console.log(mouseDown)}
 
-	// $: $curKeypoint.start = start*duration
-	// $: $curKeypoint.end = end*duration
-
 	$: start = $curKeypoint.start/duration
 	$: end = $curKeypoint.end/duration
-
-	$: if(!mouseDown && !$keypointDefined.start){
-		start = end = $curTime/duration
-	}
-
-	$: if(!mouseDown && $keypointDefined.start && !$keypointDefined.end){
-		end = $curTime/duration
-	}
-
-	$: if(!mouseDown && $keypointDefined.full){
-		middle = $curTime/duration
-	}
+	$: middle = $curTime/duration
+	$: if($keypointDefined.start && !$keypointDefined.end){end = $curTime/duration }
 
 	// https://github.com/Rich-Harris/yootils/blob/master/src/number/clamp.js
 	function clamp(num, min, max) {
@@ -195,8 +182,8 @@
 		content: ' ';
 		box-sizing: border-box;
 		position: absolute;
-		border-radius: 50%;
-		width: 16px;
+		border-radius: 25%;
+		width: 6px;
 		height: 16px;
 		background-color: #fdfdfd;
 		border: 1px solid #7b7b7b;
@@ -251,7 +238,7 @@
 			on:dragmove|preventDefault|stopPropagation="{setHandlePosition('end')}"
 			style="
 				left: {100 * end}%;
-				visibility: {!$keypointDefined.start ? 'hidden': 'visible'};
+				visibility: {!$keypointDefined.full ? 'hidden': 'visible'};
 			"
 		></div>
 		<div

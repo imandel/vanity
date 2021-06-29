@@ -13,7 +13,7 @@
 	let frameRate = 1/25;
 	let showVolume = false
 
-	$: console.log($keypointDefined)
+	// $: console.log($keypointDefined)
 
 	export const onDataLoad = async (viddata) => {
 		vid = viddata

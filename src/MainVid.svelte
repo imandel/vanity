@@ -43,7 +43,7 @@
  <video
   bind:currentTime={$curTime}
   bind:this={vid} 
-  on:loadedmetadata={vidData}
+  on:loadedmetadata|once={vidData}
 	src={src}
 	controls>
 	{#if transcript}
