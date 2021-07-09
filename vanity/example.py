@@ -9,7 +9,7 @@ TODO: Add module docstring
 """
 
 from ipywidgets import DOMWidget
-from traitlets import Integer, Unicode, Float
+from traitlets import Integer, Unicode, Float, List
 from ._frontend import module_name, module_version
 from pathlib import Path
 
@@ -28,6 +28,8 @@ class MapView(DOMWidget):
     map_style = Unicode("").tag(sync=True)
     transcript = Unicode("").tag(sync=True)
     transcript_lang = Unicode("").tag(sync=True)
+    tags = List([]).tag(sync=True)
+
     # duration = Float(0).tag(sync=True)
 
     def __init__(self, 
@@ -36,11 +38,13 @@ class MapView(DOMWidget):
                  map_style=None,
                  transcript=None,
                  transcript_lang='en',
+                 tags = [],
                  # duration=None
                  ):
         super().__init__()
 
         self.src = src
+        self.tags = tags
         # self.duration=duration
         
         if gps is not None:

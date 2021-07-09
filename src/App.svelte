@@ -15,7 +15,7 @@
   let transcriptLang = createValue(model, 'transcript_lang', '')
   let mapStyle = createValue(model, 'map_style', '')
   let duration = createValue(model, 'duration', '')
-
+  let tags = createValue(model, 'tags', [])
 
   let map;
   let height;
@@ -31,7 +31,7 @@
 
   const handleTimeline = (vid) => {
     timeline.onDataLoad(vid.detail)
-    map.onDataLoad(vid.detail)
+    if($gps){map.onDataLoad(vid.detail)}
   }
 
 </script>
@@ -60,14 +60,14 @@
                on:trackLoaded={handleTranscript}
                on:durationLoaded|once={handleTimeline}/>
     </div>
-    {#if transcriptSrc}
+    {#if $transcriptSrc}
       <Transcript bind:this={transcript}/>
     {/if}
     {#if $gps}
       <Map gps={$gps} mapStyle={$mapStyle} bind:this={map}/>
     {/if}
   </div>
-  <WaveSurferControler bind:this={timeline}/>
+  <WaveSurferControler bind:this={timeline} tags={$tags}/>
 <!-- <button on:click={()=>{curKeypoint.resetKeypoint();}}> reset</button> -->
 <!-- <button on:click={()=>{console.log(curKeypoint.getValues()) }}> vals</button> -->
   <!-- <Timeline bind:this={timeline} />

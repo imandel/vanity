@@ -13,6 +13,7 @@
   let route;
   let start;
   let vid;
+  let keyOrigin;
   export let gps;
   export let mapStyle;
   export const onDataLoad = async (viddata) => {
@@ -80,20 +81,6 @@
     mapRef.getSource('keyLineSource').setData(markedLine);
     }
   }
-
-  // const handelClick = (e) => {
-  //   e.originalEvent.stopPropagation();
-  //   if(e.originalEvent.shiftKey && $curKeypoint.start){
-  //     $curTime = $curKeypoint.start
-  //     vid.play()
-  //     // TODO: this is janky. if you move the timeline the pause won't cancel....
-  //     setTimeout(()=> vid.pause(), ($curKeypoint.end-$curKeypoint.start)*1000)
-  //   }
-  //   else{
-  //     $curTime = parseFloat(e.path[0].dataset.starttime)
-  //   }
-  // }
-
   const nearPointTime = (lngLat) => {
     const nearPoint = nearestPointOnLine(route, Object.values(lngLat));
     return route.features[0].properties.coordinateProperties.times[nearPoint.properties.index] / 1000;
@@ -103,15 +90,13 @@
   const updateLocation = (e) => {
     const time = nearPointTime(e.lngLat)
       if(e.originalEvent.shiftKey){
-        if($curKeypoint.start && time <= $curKeypoint.start){
-          $curKeypoint.start = time
-        }
-        else if($curKeypoint.start && time > $curKeypoint.start){
+        if(time>=keyOrigin){
+          $curKeypoint.start = keyOrigin;
           $curKeypoint.end = time
         }
-        else {
-           $curKeypoint.start = time
-           $curKeypoint.end = time
+        else{
+          $curKeypoint.end = keyOrigin;
+          $curKeypoint.start = time
         }
       }
       $curTime = time
@@ -129,7 +114,6 @@
     mapboxgl.accessToken = 'pk.eyJ1IjoiaW1hbmRlbCIsImEiOiJjankxdjU4ODMwYTViM21teGFpenpsbmd1In0.IN9K9rp8-I5pTbYTmwRJ4Q';
 
     // Create the map
-
     let popup = new mapboxgl.Popup({
       closeButton: false,
       closeOnClick: false
@@ -141,6 +125,7 @@
       zoom: 13
     });
     mapRef.on('load', () => {
+      mapRef.boxZoom.disable();
       new ResizeObserver(() => mapRef.resize()).observe(container);
       mapRef.resize()      
       const coordinates = route.features[0].geometry.coordinates
@@ -232,6 +217,7 @@
 
     mapRef.on('mouseenter', 'staticLine', (e) => {
       mapRef.getCanvasContainer().style.cursor = 'crosshair'
+      
       const time = nearPointTime(e.lngLat)
       popup.setLngLat(e.lngLat).setText(new Date(time * 1000).toISOString().substr(11, 8)).addTo(mapRef);
     })
@@ -250,14 +236,13 @@
       const time = nearPointTime(e.lngLat)
        if(e.originalEvent.shiftKey){
         $curKeypoint.start = time
+         keyOrigin = time;
        }
       $curTime = time
       // updateLocation(e)
       mapRef.on('mousemove', updateLocation)
       mapRef.once('mouseup', onUp)
     })
-
-    // mapRef.on('click', 'keyLine', handelClick);
 
     mapRef.getSource('pointSource').setData(point(coordinates[0]))
     })
