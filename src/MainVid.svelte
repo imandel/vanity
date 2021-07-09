@@ -12,11 +12,13 @@
 
 	onMount(async () => {
 		new ResizeObserver(() => height = container.clientHeight).observe(container);
+		// this is a weird hack and should probably be done correctly
+		container.style.width="500px"
 	})
 
 	const setupCues = () => {
 		vid.textTracks[0].mode='hidden'
-		dispatch('trackLoaded', vid.textTracks[0].cues)
+		dispatch('trackLoaded', vid)
 	}
 
 	const vidData = () => { 
@@ -33,7 +35,8 @@
     .mainVid{
 	    resize: horizontal;
 	    overflow: auto;
-	    /*height: 100%;*/
+	    /*height: 30vh;*/
+	    /*width: 50%;*/
 	    flex: 1000 1000 auto;
 	    background-color: #dbdbdb;
   }
@@ -45,14 +48,16 @@
   bind:this={vid} 
   on:loadedmetadata|once={vidData}
 	src={src}
-	controls>
+	>
 	{#if transcript}
 	<track on:load={setupCues}
-	       kind="captions" 
-				 src={transcript}
-				 srclang={transcript_lang}
-				 default
-				 >
+	     kind="captions"
+	     type="text/vtt"
+	     crossorigin="anonymous"
+		 src={transcript}
+		 srclang={transcript_lang}
+		 default
+		 >
 	{/if}
 </video>
 </div>

@@ -14,6 +14,7 @@
 	let slider;
 	let sliderVal=1;
 	let activeRegion;
+	let previousRegion;
 	let keepRegions = false;
 	let regions = []
 
@@ -23,34 +24,15 @@
 		wavesurfer.load(vid)
 	}
 
-	// $: if($keypointDefined.end){
-	// 		activeRegion = wavesurfer.addRegion({
-	// 							start: $curKeypoint.start,
-	// 							end: $curKeypoint.end
-	// 						 });
-	// 		// console.log(activeRegion)
-	// }
-
-	$: console.log(activeRegion)
-
-
-	// $: console.log($curKeypoint, $keypointDefined.end)
-	// $: console.log(wavesurfer.regions.list);
-
-	// $: if(wavesurfer && !wavesurfer.regions && keypointDefined.start){
-	// 	console.log(wavesurfer.regions.list)
-	// 	let r  = wavesurfer.addRegion({start: $curKeypoint.start,
-	// 						  end: $curKeypoint.end})
-	// 		console.log(r)
-	// }
-	// $: if(wavesurfer && !$keypointDefined.start){
-	// 		console.log('here')
-	// 		console.log($curKeypoint)
-			// let r  = wavesurfer.addRegion({start: $curKeypoint.start,
-			// 				  end: $curKeypoint.end})
-			// console.log(r)
-	// 	}
-
+	$: if(activeRegion){ 
+		activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end}) 
+	}
+	$: if(!activeRegion && $curKeypoint.start){
+		activeRegion = wavesurfer.addRegion({
+								start: $curKeypoint.start,
+								end: $curKeypoint.end});
+	}
+	
 
 	onMount(async () => {
 	    wavesurfer = WaveSurfer.create({
@@ -105,12 +87,14 @@
 		wavesurfer.on('region-updated', (region) => {
 			$curKeypoint.start = region.start;
 			$curKeypoint.end = region.end;
-			console.log('updated')
+			activeRegion = region;
 		});
 
 		wavesurfer.on('region-update-end', (region) => {
-			activeRegion = region;
+			// activeRegion = region;
+			previousRegion = activeRegion;
 			console.log('end')
+			console.log(activeRegion)
 
 		})
 		
@@ -124,7 +108,7 @@
 <span>px/sec: {sliderVal}</span>
 </div>
 <button on:click={()=>{console.log($keypointDefined)}}> here</button>
-<button on:click={()=>{curKeypoint.resetKeypoint(); wavesurfer.clearRegions()}}> reset</button>
+<button on:click={()=>{curKeypoint.resetKeypoint(); wavesurfer.clearRegions(); activeRegion = null}}> reset</button>
 <button on:click={()=>{console.log(wavesurfer.regions); console.log(curKeypoint.getValues()) }}> vals</button>
 <button on:click={()=>{console.log(wavesurfer.regions); console.log(curKeypoint.getValues()) }}> vals</button>
 <span>{$keypointDefined.end ? "set": "notset"}</span>

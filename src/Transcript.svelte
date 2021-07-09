@@ -1,10 +1,15 @@
 <script>
 	import { onMount, tick } from 'svelte';
-	import { curTime, curKeypoint } from './stores';
+	import { curTime, curKeypoint, keypointDefined } from './stores';
 	let cueData;
 	let transcriptBox;
 	let currentCue;
-	export const onDataLoad = async (cues) => {
+	let vid;
+	let highlights = [];
+	let selecting = false;
+	export const onDataLoad = async (viddata) => {
+		const cues = viddata.textTracks[0].cues
+		vid = viddata
 		cueData = [...cues]
 		await tick()
 		cueData.forEach((cue)=> {
@@ -18,19 +23,50 @@
 		})
 	}
 
+
+	$: if($keypointDefined.start && $keypointDefined.end){
+		const nodes = [...transcriptBox.children]
+		// nodes.forEach(p => p.classList.remove('activeLine'))
+		const filtered = nodes.filter((p) => {
+			const startTime = parseFloat(p.dataset.starttime)
+			const endTime = parseFloat(p.dataset.endtime)
+			return  startTime >= $curKeypoint.start && endTime <= $curKeypoint.end
+		})
+		highlights = filtered.map(p=> parseInt(p.dataset.idx))
+	} else {
+		highlights = [];
+	}
+
+
+	const getNodeRange = (start, end) => {
+		if(start && end){
+		let nodes = [start];
+		let cur = start.nextSibling;
+		let endNode = end.nextSibling;
+		while(cur !== endNode){
+			console.log(cur)
+			nodes.push(cur)
+			cur = cur.nextSibling;
+		}
+		return nodes
+	}
+}
+
 	const selection = (e) => {
-		if(window.getSelection().toString()){
+		if(selecting && window.getSelection().toString()){
 			const selected = window.getSelection();
-			const nodes = [selected.anchorNode.parentNode.closest('p').dataset, 
-						   selected.focusNode.parentNode.closest('p').dataset]
-			const start = Math.min(...nodes.map(node=> parseFloat(node.starttime)))
-			const end = Math.max(...nodes.map(node=> parseFloat(node.endtime)))
-			console.log(start, end)
-			$curKeypoint.start=start
-			$curKeypoint.end=end
-			$curTime = start
+			const nodes = [selected.anchorNode.parentNode.closest('p'), 
+						   selected.focusNode.parentNode.closest('p')]
+			if(nodes.every(Boolean)){
+				const timeBounds = nodes.flatMap( p=> [parseFloat(p.dataset.starttime), parseFloat(p.dataset.endtime)])
+				const start = Math.min(...timeBounds);
+				const end = Math.max(...timeBounds);
+				$curKeypoint.start=start
+				$curKeypoint.end=end
+				$curTime = end
 		}
 	}
+}
 
 </script>
 <style>
@@ -41,24 +77,34 @@
 		overflow: auto;
 	}
 	.activeLine {
-		font-size: 1.2em;
-		background-color: yellow;
-}
+		font-size: 1.1em;
+	}
+	.highlighted {
+		background-color: yellow;	
+	}
+	.bold {
+		font-weight: bold;
+	}
+
 
 </style>
 <div class='transcript_container'
 	 bind:this={transcriptBox}
-	 on:mouseup={selection}
+	 on:mousedown={(e)=>{if(e.shiftKey){selecting=true;}}}
+	 on:mousemove={selection}
+	 on:mouseup={(e)=>{if(selecting){selection(e);selecting=false; window.getSelection().empty()}}}
 	 >
 
 	 {#if cueData}
 	 {#each cueData as cue, index}
-	 <p on:click={(e) => $curTime = parseFloat(e.path[0].dataset.starttime)} 
-	 	class:activeLine={index===currentCue}
+	 <p class:activeLine={index===currentCue}
+	 	class:highlighted = {highlights.includes(index)}
+	 	on:click ={()=>{$curTime = cue.startTime}}
 	 	data-startTime={cue.startTime}
 	 	data-endTime={cue.endTime}
+	 	data-idx={index}
 	 >
-	 	<b>{new Date(cue.startTime * 1000).toISOString().substr(11, 8)}-{new Date(cue.endTime * 1000).toISOString().substr(11, 8)}</b>: {cue.text};
+	 	<span class = 'bold'>{new Date(cue.startTime * 1000).toISOString().substr(11, 8)}-{new Date(cue.endTime * 1000).toISOString().substr(11, 8)}</span>: {cue.text}
 	 </p>
 	 {/each}
 	 {/if}

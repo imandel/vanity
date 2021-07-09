@@ -15,19 +15,23 @@
   let transcriptLang = createValue(model, 'transcript_lang', '')
   let mapStyle = createValue(model, 'map_style', '')
   let duration = createValue(model, 'duration', '')
-  
+
+
+  let map;
   let height;
   let topRow;
   $:if (topRow){ topRow.style.height =`${height}px` }
   let transcript;
   let timeline;
   
-  const handleTranscript = (cues) => {
-    transcript.onDataLoad(cues.detail) 
+  const handleTranscript = (vid) => {
+    transcript.onDataLoad(vid.detail) 
+
   }
 
   const handleTimeline = (vid) => {
     timeline.onDataLoad(vid.detail)
+    map.onDataLoad(vid.detail)
   }
 
 </script>
@@ -36,7 +40,7 @@
 </svelte:head>
 <style>
   .widget {
-    height: 90vh;
+    /*height: 90vh;*/
   }
   .container {
     display: flex;
@@ -60,10 +64,12 @@
       <Transcript bind:this={transcript}/>
     {/if}
     {#if $gps}
-      <Map gps={$gps} mapStyle={$mapStyle} />
+      <Map gps={$gps} mapStyle={$mapStyle} bind:this={map}/>
     {/if}
   </div>
   <WaveSurferControler bind:this={timeline}/>
+<!-- <button on:click={()=>{curKeypoint.resetKeypoint();}}> reset</button> -->
+<!-- <button on:click={()=>{console.log(curKeypoint.getValues()) }}> vals</button> -->
   <!-- <Timeline bind:this={timeline} />
   <button on:click={()=> $curKeypoint.start= $curTime}> start</button>
   <button on:click={()=> $curKeypoint.end= $curTime}> end</button>

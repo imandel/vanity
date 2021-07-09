@@ -4,7 +4,7 @@
   import { gpx } from "@tmcw/togeojson";
   import mapboxgl from 'mapbox-gl';
   import { onMount } from 'svelte';
-  import { curTime } from './stores.ts';
+  import { curTime, curKeypoint } from './stores.ts';
   import { point } from '@turf/helpers';
   import nearestPointOnLine from '@turf/nearest-point-on-line';
   let mapRef;
@@ -12,8 +12,13 @@
   let container
   let route;
   let start;
+  let vid;
   export let gps;
   export let mapStyle;
+  export const onDataLoad = async (viddata) => {
+    vid = viddata
+  }
+
   $: if (gps && typeof route ==='undefined'){
     route = gpx(new DOMParser().parseFromString(gps, "text/xml"));
     start = Date.parse(route.features[0].properties.time);
@@ -35,12 +40,12 @@
     if( time && mapRef && route.features[0].properties.coordinateProperties.times){
       const times = route.features[0].properties.coordinateProperties.times;
       const line = route.features[0].geometry.coordinates
-        let index = times.findIndex(n => n > time);
+      const index = times.findIndex(n => n > time);
 
         // finds next time (ordered)
-        let currentJson = line.slice(0,index);
-        let center = line[index];
-        let movingLine = {
+        const currentJson = line.slice(0,index);
+        const head = line[index];
+        const movingLine = {
             "type": "FeatureCollection",
             "features": [{
                 "type": "Feature",
@@ -51,15 +56,84 @@
             }]
         };
         mapRef.getSource('lineSource').setData(movingLine);
-        mapRef.getSource('pointSource').setData(point(center));
+        mapRef.getSource('pointSource').setData(point(head));
       }
   }
+
+  const updateKeypoint = (start, end) => {
+    if(mapRef && route.features[0].properties.coordinateProperties.times){
+    const times = route.features[0].properties.coordinateProperties.times;
+    const line = route.features[0].geometry.coordinates
+    const startIdx = times.findIndex(n => n > start);
+    const endIdx = times.findIndex(n => n > end);
+    const currentJson = line.slice(startIdx, endIdx);
+    const markedLine = {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": currentJson
+                }
+            }]
+        };
+    mapRef.getSource('keyLineSource').setData(markedLine);
+    }
+  }
+
+  // const handelClick = (e) => {
+  //   e.originalEvent.stopPropagation();
+  //   if(e.originalEvent.shiftKey && $curKeypoint.start){
+  //     $curTime = $curKeypoint.start
+  //     vid.play()
+  //     // TODO: this is janky. if you move the timeline the pause won't cancel....
+  //     setTimeout(()=> vid.pause(), ($curKeypoint.end-$curKeypoint.start)*1000)
+  //   }
+  //   else{
+  //     $curTime = parseFloat(e.path[0].dataset.starttime)
+  //   }
+  // }
+
+  const nearPointTime = (lngLat) => {
+    const nearPoint = nearestPointOnLine(route, Object.values(lngLat));
+    return route.features[0].properties.coordinateProperties.times[nearPoint.properties.index] / 1000;
+}
+
+  // TODO: fix/clean this
+  const updateLocation = (e) => {
+    const time = nearPointTime(e.lngLat)
+      if(e.originalEvent.shiftKey){
+        if($curKeypoint.start && time <= $curKeypoint.start){
+          $curKeypoint.start = time
+        }
+        else if($curKeypoint.start && time > $curKeypoint.start){
+          $curKeypoint.end = time
+        }
+        else {
+           $curKeypoint.start = time
+           $curKeypoint.end = time
+        }
+      }
+      $curTime = time
+    }
+
+    const onUp = (e) => {
+      mapRef.off('mousemove', updateLocation)
+    }
+
+  // these functions takes time in ms not s
   $: updatePos($curTime*1000)
+  $: updateKeypoint($curKeypoint.start*1000, $curKeypoint.end*1000)
 
   onMount(async () => {
     mapboxgl.accessToken = 'pk.eyJ1IjoiaW1hbmRlbCIsImEiOiJjankxdjU4ODMwYTViM21teGFpenpsbmd1In0.IN9K9rp8-I5pTbYTmwRJ4Q';
 
     // Create the map
+
+    let popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false
+    });
     mapRef = new mapboxgl.Map({
       container,
       style: mapStyle || 'mapbox://styles/mapbox/light-v10?optimize=true',
@@ -83,23 +157,14 @@
         "data": geojsonPoint
     });
 
+      mapRef.addSource('keyLineSource', {
+        "type": "geojson",
+        "data": geojsonPoint
+    });
+
       mapRef.addSource('fullLineSource', {
         "type": "geojson",
         "data": route
-    });
-
-      mapRef.addLayer({
-      "id": "staticLine",
-      "type": "line",
-      "source": "fullLineSource",
-      'paint': {
-            'line-opacity': 0.5,
-            'line-color': '#eba834',
-            'line-width': 4.5
-       },
-       'layout': {
-           // 'visibility': 'none'
-       }
     });
 
 
@@ -108,13 +173,42 @@
         "data": geojsonPoint
     });
 
+
+    mapRef.addLayer({
+      "id": "staticLine",
+      "type": "line",
+      "source": "fullLineSource",
+      'paint': {
+            // 'line-opacity': 0.5,
+            'line-color': '#76a9fa',
+            'line-width': 4.5
+       },
+       'layout': {
+           // 'visibility': 'none'
+       }
+    });
+
     mapRef.addLayer({
       "id": "animatedLine",
       "type": "line",
       "source": "lineSource",
       'paint': {
             'line-opacity': 1,
-            'line-color': '#eba834',
+            'line-color': '#1e429f',
+            'line-width': 4.5
+       },
+       'layout': {
+           // 'visibility': 'none'
+       }
+    });
+
+    mapRef.addLayer({
+      "id": "keyLine",
+      "type": "line",
+      "source": "keyLineSource",
+      'paint': {
+            // 'line-opacity': 0.5,
+            'line-color': '#FFFF00',
             'line-width': 4.5
        },
        'layout': {
@@ -129,39 +223,46 @@
       'paint': {
             'circle-radius': 5,
             'circle-opacity': 1,
-            'circle-color': '#eba834'
+            'circle-color': '#1e429f'
       },
       'layout': {
            // 'visibility': 'none'
        }
     });
 
-    mapRef.on('mouseenter', 'staticLine', () => {
+    mapRef.on('mouseenter', 'staticLine', (e) => {
       mapRef.getCanvasContainer().style.cursor = 'crosshair'
+      const time = nearPointTime(e.lngLat)
+      popup.setLngLat(e.lngLat).setText(new Date(time * 1000).toISOString().substr(11, 8)).addTo(mapRef);
     })
 
     mapRef.on('mouseleave', 'staticLine', () => {
       mapRef.getCanvasContainer().style.cursor = ''
+      popup.remove()
     })
-
-    const updateLocation = (e) => {
-      let nearPoint = nearestPointOnLine(route, Object.values(e.lngLat))
-      $curTime = route.features[0].properties.coordinateProperties.times[nearPoint.properties.index] / 1000
-    }
-
-    const onUp = (e) => {
-      mapRef.off('mousemove', updateLocation)
-    }
+    mapRef.on('mousemove', 'staticLine', (e) => {
+      const time = nearPointTime(e.lngLat)
+      popup.setText(new Date(time * 1000).toISOString().substr(11, 8)).setLngLat(e.lngLat)
+    })
 
     mapRef.on('mousedown', 'staticLine', (e) => {
       e.preventDefault();
-      updateLocation(e)
+      const time = nearPointTime(e.lngLat)
+       if(e.originalEvent.shiftKey){
+        $curKeypoint.start = time
+       }
+      $curTime = time
+      // updateLocation(e)
       mapRef.on('mousemove', updateLocation)
       mapRef.once('mouseup', onUp)
     })
+
+    // mapRef.on('click', 'keyLine', handelClick);
+
     mapRef.getSource('pointSource').setData(point(coordinates[0]))
     })
       });
+
 </script>
 <div class='map-container'>
 <div bind:this={container} class='map'></div>
