@@ -72,3 +72,12 @@ After a change wait for the build to finish and then refresh your browser and th
 #### Python:
 
 If you make a change to the python code then you will need to restart the notebook kernel to have it take effect.
+
+## TODO
+
+[ ] errors on firefox for vtt files 
+[ ] pip button? https://svelte.dev/repl/116237b19d094b3f8fd074cee7c00ff1?version=3.38.3
+[ ] convert this to svelte https://www.npmjs.com/package/react-annotation-tool
+[ ] switch main vid to using a store tather than passing props and events around
+[ ] convey when ttranscript is partially selected
+[ ] multiple videos
