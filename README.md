@@ -81,3 +81,13 @@ If you make a change to the python code then you will need to restart the notebo
 [ ] switch main vid to using a store tather than passing props and events around
 [ ] convey when ttranscript is partially selected
 [ ] multiple videos
+[ ] style wavesurfer px/sec
+[ ] key binding for moving around video faster
+[ ] dynamic assign color to tags?
+[ ] fix responseive top row (e.g. no map, no transcript)
+[ ] make divs collasible?
+[ ] add and remove tags from ui?
+[ ] load in potential tags for review
+[ ] format times for either s or hh:mm:ss
+[ ] keyboard shprtcuts for timestep?
+[ ] region coloring on update bug ugh
