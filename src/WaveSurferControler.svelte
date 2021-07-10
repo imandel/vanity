@@ -120,9 +120,9 @@
 <input on:mouseup={()=> wavesurfer.zoom(sliderVal)} type="range" min="0" max="500" bind:value={sliderVal} style="width: 100%" bind:this={slider}/>
 <span>px/sec: {sliderVal}</span>
 </div>
-<Tagbox tags={tags} activeRegion={activeRegion}/>
 
-<!-- <button on:click={()=>{console.log($keypointDefined)}}> here</button>
- --><button on:click={()=>{curKeypoint.resetKeypoint(); wavesurfer.clearRegions(); activeRegion = null}}> reset</button>
+<button on:click={()=>{curKeypoint.resetKeypoint(); wavesurfer.clearRegions(); activeRegion = null}}> reset</button>
 <button on:click={()=>{console.log(wavesurfer.regions, curKeypoint.getValues(), activeRegion, previousRegion) }}> vals</button>
-<!-- <span>{$keypointDefined.end ? "set": "notset"}</span> -->
+
+
+<Tagbox tags={tags} activeRegion={activeRegion}/>
