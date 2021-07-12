@@ -7,7 +7,8 @@
 	let vid;
 	let highlights = [];
 	let selecting = false;
-	export const onDataLoad = async (viddata) => {
+	let hidden = false;
+	export const onCuesLoad = async (viddata) => {
 		const cues = viddata.textTracks[0].cues
 		vid = viddata
 		cueData = [...cues]
@@ -22,7 +23,6 @@
 			}
 		})
 	}
-
 
 	$: if($keypointDefined.start && $keypointDefined.end){
 		const nodes = [...transcriptBox.children]
@@ -85,14 +85,24 @@
 	.bold {
 		font-weight: bold;
 	}
+	.bar {
+		width: 6px;
+		background-color: gray;
+	}
+
+	.hidden {
+		display: none;
+	}
 
 
 </style>
+<div class="bar" on:click={()=>{hidden=!hidden}}></div>
 <div class='transcript_container'
 	 bind:this={transcriptBox}
 	 on:mousedown={(e)=>{if(e.shiftKey){selecting=true;}}}
 	 on:mousemove={selection}
 	 on:mouseup={(e)=>{if(selecting){selection(e);selecting=false; window.getSelection().empty()}}}
+	 class:hidden
 	 >
 
 	 {#if cueData}

@@ -9,14 +9,16 @@
   import nearestPointOnLine from '@turf/nearest-point-on-line';
   let mapRef;
   let line;
-  let container
+  let map;
+  let container;
   let route;
   let start;
   let vid;
   let keyOrigin;
+  let hidden=false;
   export let gps;
   export let mapStyle;
-  export const onDataLoad = async (viddata) => {
+  export const onMapDataLoad = async (viddata) => {
     vid = viddata
   }
 
@@ -119,7 +121,7 @@
       closeOnClick: false
     });
     mapRef = new mapboxgl.Map({
-      container,
+      container: map,
       style: mapStyle || 'mapbox://styles/mapbox/light-v10?optimize=true',
       center: [-74.0059413, 40.7127837],
       zoom: 13
@@ -127,6 +129,7 @@
     mapRef.on('load', () => {
       mapRef.boxZoom.disable();
       new ResizeObserver(() => mapRef.resize()).observe(container);
+      new ResizeObserver(() => mapRef.resize()).observe(map);
       mapRef.resize()      
       const coordinates = route.features[0].geometry.coordinates
         const bounds = coordinates.reduce((bounds, coord) => {
@@ -249,9 +252,7 @@
       });
 
 </script>
-<div class='map-container'>
-<div bind:this={container} class='map'></div>
-</div>
+
 <style>
   .map {
     width: 100%;
@@ -261,4 +262,21 @@
      flex: 1000 1000;
      width: 100%;
   }
+    .bar {
+    width: 6px;
+    background-color: gray;
+  }
+
+  .hidden {
+    display: none;
+  }
 </style>
+
+<!-- <svelte:head>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.css' rel='stylesheet' />
+</svelte:head> -->
+
+<div class="bar" on:click={()=>{hidden=!hidden}}></div>
+<div class='map-container' bind:this={container} class:hidden>
+<div bind:this={map} class='map'></div>
+</div>
