@@ -11,7 +11,7 @@ interface pt {
 
 }
 function Keypoint(src: string='', author: string=''){
-  const store: Writable<pt> = writable({src, author, start:null, end:null, tags:[], comments:null})
+  const store: Writable<pt> = writable({src, author, start:null, end:null, tags:[], comments:''})
   return{
     set: store.set,
     subscribe: store.subscribe,    
@@ -63,4 +63,5 @@ export function createValue(model: any, name_: string, value_: any) {
 }
 
 export const curTime: Writable<any> = writable(0);
+export const tags: Writable<any> = writable([]);
 // export const activeRegion: Writable<any> = writable({});
