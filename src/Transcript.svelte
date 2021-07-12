@@ -88,6 +88,7 @@
 	.bar {
 		width: 6px;
 		background-color: gray;
+		border-left: 2px solid;
 	}
 
 	.hidden {

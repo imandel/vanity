@@ -9,8 +9,7 @@
   import nearestPointOnLine from '@turf/nearest-point-on-line';
   let mapRef;
   let line;
-  let map;
-  let container;
+  let container
   let route;
   let start;
   let vid;
@@ -121,7 +120,7 @@
       closeOnClick: false
     });
     mapRef = new mapboxgl.Map({
-      container: map,
+      container,
       style: mapStyle || 'mapbox://styles/mapbox/light-v10?optimize=true',
       center: [-74.0059413, 40.7127837],
       zoom: 13
@@ -129,7 +128,6 @@
     mapRef.on('load', () => {
       mapRef.boxZoom.disable();
       new ResizeObserver(() => mapRef.resize()).observe(container);
-      new ResizeObserver(() => mapRef.resize()).observe(map);
       mapRef.resize()      
       const coordinates = route.features[0].geometry.coordinates
         const bounds = coordinates.reduce((bounds, coord) => {
@@ -262,9 +260,10 @@
      flex: 1000 1000;
      width: 100%;
   }
-    .bar {
+  .bar {
     width: 6px;
     background-color: gray;
+    border-left: 2px solid;
   }
 
   .hidden {
@@ -272,11 +271,12 @@
   }
 </style>
 
-<!-- <svelte:head>
+
+<svelte:head>
 <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.css' rel='stylesheet' />
-</svelte:head> -->
+</svelte:head>
 
 <div class="bar" on:click={()=>{hidden=!hidden}}></div>
-<div class='map-container' bind:this={container} class:hidden>
-<div bind:this={map} class='map'></div>
+<div class='map-container'  class:hidden>
+<div bind:this={container} class='map'></div>
 </div>
