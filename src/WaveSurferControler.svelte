@@ -18,8 +18,11 @@
 	let previousRegion;
 	let keepRegions = false;
 	let regions = []
-	export let tags;
-	export const onDataLoad = async (viddata) => {
+	export let tags
+	export let tagChecks;
+	export let quickTag;
+	let shortcuts = "qwerasdfzxcvtyuighjk".slice(0,tags.length)
+	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
 		wavesurfer.load(vid)
 	}
@@ -114,6 +117,12 @@
 		})
 	})
 </script>
+
+<style>
+	
+</style>
+
+
 <div>
 <div bind:this={waveform} style="position: relative;"/>
 <div bind:this={timeline}></div>
@@ -125,4 +134,4 @@
 <button on:click={()=>{console.log(wavesurfer.regions, curKeypoint.getValues(), activeRegion, previousRegion) }}> vals</button>
 
 
-<Tagbox tags={tags} activeRegion={activeRegion}/>
+<Tagbox tags={tags} activeRegion={activeRegion} bind:tagChecks bind:quickTag/>
