@@ -58,6 +58,7 @@
 
   // i think this is the best way to handle keyboard shortcuts when the widget is in focus
   // I could be totally wrong about that but it seems like you want to capture keypresses at then pass them to the relevent componenets?
+  // do we want to "take up" the tab key like this?
   let onKeypress = (e) => {
       console.log(e)
       if(e.ctrlKey){
@@ -68,16 +69,25 @@
           default:
             break;
         }
-      } else if( e.key == 'Tab'){
-        e.preventDefault()
-        e.shiftKey ? selectPreviousTag() : selectNextTag()
+      } else if(e.shiftKey){
+        switch(e.key){
+          case " ":
+            e.preventDefault()
+            console.log('toggle playing')
+            break;
+          case "Tab":
+            e.preventDefault();
+            selectPreviousTag()
+            break;
+          default: 
+            break;
+        }
       }
-
       else{
         const idx = shortcuts.indexOf(e.key)
-        if (quickTag && idx >=0){
-          tagChecks.children[idx].firstElementChild.click()
-            }
+        if(e.key == "Tab") {e.preventDefault(); selectNextTag() }
+        
+        else if (quickTag && idx >=0){ tagChecks.children[idx].firstElementChild.click() }
           }
     }
 
@@ -117,8 +127,8 @@
       <Map gps={$gps} mapStyle={$mapStyle} bind:onMapDataLoad/>
     {/if}
   </div>
-  <WaveSurferControler bind:onTimelineDataLoad 
-                       tags={$tags} 
+  <WaveSurferControler tags={$tags} 
+                       bind:onTimelineDataLoad 
                        bind:tagChecks 
                        bind:quickTag 
                        bind:selectNextTag
