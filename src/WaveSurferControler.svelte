@@ -1,31 +1,56 @@
 <script>
 	import { curTime, curKeypoint, keypointDefined } from './stores';
 	import WaveSurfer from "wavesurfer.js";
-	// import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 	import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 	import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 	import MinimapPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.minimap.js';
 	import { onMount, onDestroy } from "svelte";
 	import Tagbox from './Tagbox.svelte';
 
-	let wavesurfer={regions:{list:[]}}
+	let wavesurfer;//={regions:{list:[]}}
 	let waveform;
 	let vid;
-	let timeline;
-	let slider;
+
 	let sliderVal=0;
 	let activeRegion;
 	let previousRegion;
-	let keepRegions = false;
-	let regions = []
+
 	export let tags
 	export let tagChecks;
 	export let quickTag;
-	let shortcuts = "qwerasdfzxcvtyuighjk".slice(0,tags.length)
+	let locked;
+	$: console.log(locked)
+
 	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
 		wavesurfer.load(vid)
 	}
+
+	export const selectNextTag = () => {
+		const sorted = Object.values(wavesurfer.regions.list).sort((a,b)=>{return a.start-b.start})
+		curKeypoint.resetKeypoint();
+		const tempKeypoint = sorted.find(region => region.start > previousRegion.start) || sorted[0]
+		previousRegion = activeRegion;
+		activeRegion = tempKeypoint;
+		resetPreviousRegion()
+		activeRegion.update({color: 'rgba(255, 255, 0, 0.4)'})
+		previousRegion = activeRegion;
+		$curTime = activeRegion.start
+	}
+
+	export const selectPreviousTag = () => {
+		const sorted = Object.values(wavesurfer.regions.list).sort((a,b)=>{return b.start-a.start})
+		curKeypoint.resetKeypoint();
+		const tempKeypoint = sorted.find(region => region.start < previousRegion.start) || sorted[0]
+		previousRegion = activeRegion;
+		activeRegion = tempKeypoint;
+		resetPreviousRegion()
+		activeRegion.update({color: 'rgba(255, 255, 0, 0.4)'})
+		previousRegion = activeRegion;
+		$curTime = activeRegion.start
+	}
+
+
 
 	$: if(activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){ 
 		activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
@@ -40,7 +65,36 @@
 								end: $curKeypoint.end,
 								color: 'rgba(255, 255, 0, 0.4)'});
 	}
-	const resetPreviousRegion = () => {if( previousRegion){ previousRegion.update({color: 'rgba(0, 0, 0, 0.1)'}) }}
+
+	const deleteTag = () => {
+		if(locked.size){
+			curKeypoint.resetKeypointTimes()
+		} else {
+			curKeypoint.resetKeypoint()
+		}
+		 activeRegion.remove(); 
+		 activeRegion=null;
+	}
+
+	const saveTag = () => {
+		activeRegion.update({
+			color:'rgba(255, 200, 0, 0.4)',
+			data: {color: 'rgba(255, 200, 0, 0.4)'}
+		})
+		if(locked.size){
+			curKeypoint.resetKeypointTimes()
+		} else {
+			curKeypoint.resetKeypoint()
+		}
+		activeRegion = null
+	}
+		
+
+	const resetPreviousRegion = () => {
+		if(previousRegion){ 
+			previousRegion.update({color: previousRegion.data.color || 'rgba(0, 0, 0, 0.1)'}) 
+		}
+	}
 	
 	onMount(async () => {
 	    wavesurfer = WaveSurfer.create({
@@ -65,18 +119,10 @@
                 'font-size': '10px'
             }
 	      }),
-	      // MinimapPlugin.create(
-	      // 	{
-       //      container: timeline,
-       //      waveColor: '#777',
-       //      progressColor: '#222',
-       //      height: 20
-       //  }),
-	      RegionsPlugin.create({dragSelection:true,
-	      						color: 'rgba(255, 255, 0, 0.4)' })
+	      RegionsPlugin.create({dragSelection:true, color: 'rgba(255, 255, 0, 0.4)' })
 	      	]
 	    });
-		wavesurfer.on('loading', (e)=>{console.log(e)})
+		// wavesurfer.on('loading', (e)=>{console.log(e)})
 		wavesurfer.on('waveform-ready', ()=>{
 			console.log('ready')
 			// TODO: this is a hacky fix, do better
@@ -119,19 +165,19 @@
 </script>
 
 <style>
-	
+
 </style>
 
 
 <div>
 <div bind:this={waveform} style="position: relative;"/>
-<div bind:this={timeline}></div>
-<input on:mouseup={()=> wavesurfer.zoom(sliderVal)} type="range" min="0" max="500" bind:value={sliderVal} style="width: 100%" bind:this={slider}/>
+<input on:mouseup={()=> wavesurfer.zoom(sliderVal)} type="range" min="0" max="500" bind:value={sliderVal} style="width: 100%"/>
 <span>px/sec: {sliderVal}</span>
 </div>
+<Tagbox tags={tags} activeRegion={activeRegion} bind:tagChecks bind:quickTag bind:locked>
+	<button on:click={deleteTag}> Delete Tag </button>
+	<button on:click={saveTag}> Save Tag </button>
+</Tagbox>
 
-<button on:click={()=>{curKeypoint.resetKeypoint(); wavesurfer.clearRegions(); activeRegion = null}}> reset</button>
-<button on:click={()=>{console.log(wavesurfer.regions, curKeypoint.getValues(), activeRegion, previousRegion) }}> vals</button>
+<!-- <button on:click={()=>{console.log(wavesurfer.regions, curKeypoint.getValues(), activeRegion, previousRegion) }}> vals</button> -->
 
-
-<Tagbox tags={tags} activeRegion={activeRegion} bind:tagChecks bind:quickTag/>

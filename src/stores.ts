@@ -17,10 +17,18 @@ function Keypoint(src: string='', author: string=''){
     subscribe: store.subscribe,    
     resetKeypoint: () => {
         store.update((state: pt)=> {
-          state.start=null
+          state.start = null
           state.end = null
           state.tags = []
           state.comments = null
+        return state
+      })},
+    resetKeypointTimes: () => {
+      store.update((state: pt)=> {
+        console.log(state)
+        state.start = null
+        state.end = null
+        console.log(state)
         return state
       })},
     getValues: () => {return get(store)}, //i can delete this?

@@ -3,14 +3,12 @@
 	import { curTime, curKeypoint, keypointDefined, tags} from './stores';
 
 	export let activeRegion
-	import Toggle from "svelte-toggle";
+	export let locked = new Set();
 	let start;
 	let end;
-	let container;
 	let newLabel;
-	let comments
-	$: console.log($curKeypoint.comments)
-
+	let comments;
+	
 	const addLabel = () => {
 		if(newLabel){
 				$tags = [...$tags, newLabel]
@@ -21,10 +19,22 @@
 
 	const lockTag = (e) => {
 		window.getSelection().empty(); 
- 		e.path[0].click();
- 		e.path[0].previousElementSibling.disabled= !e.path[0].previousElementSibling.disabled
- 		e.path[0].click();
+ 		const cBox = e.path[0].closest('div').querySelector('input')
+ 		if(cBox.disabled){
+ 			cBox.disabled= false;
+ 			cBox.checked = true
+ 			cBox.click()
+ 			locked.delete(cBox.value)
+ 			locked = locked;
+ 		} else {
+ 			cBox.checked = false
+ 			cBox.click()
+ 			cBox.disabled = true;
+ 			locked.add(cBox.value)
+ 			locked = locked;
+ 		}
 	}
+
 	export let tagChecks;
 	export let quickTag;
 	let shortcuts = "qwerasdfzxcvtyuighjk".slice(0,$tags.length)
@@ -56,9 +66,13 @@
 	.hidden {
 		visibility: hidden;
 	}
+	input[type="checkbox"]:disabled+label {
+	  color: #1e429f;
+	  font-weight: bolder;
+	}
 
 </style>
-<div class='bottom-container' bind:this={container}>
+<div class='bottom-container'>
 	<div class='keypoints'></div>
 	<div class='tagbox'>
 		{#if $keypointDefined.start}
@@ -77,13 +91,12 @@
 		 <label>end<input bind:value={end} type='number' min='0' step='0.01' placeholder="---"/></label>
 		{/if}
 		<label>quick tag: <input bind:checked={quickTag} type='checkbox'/></label>
-		<button>Save Tag</button>
-		<button>Delete Tag</button>
+		<slot></slot>
 		<div class='tagChecks' bind:this={tagChecks} >
 		{#each $tags as tag, index}
-			<div>
+			<div on:dblclick={lockTag}>
 		 		<input type='checkbox' bind:group={$curKeypoint.tags} value={tag} id={tag}/>
-		 		<label for={tag} on:dblclick={lockTag}>
+		 		<label for={tag}>
 		 			{tag} {quickTag? `[${[shortcuts[index]]}]`: ''}
 			 	</label>
 		 	</div>

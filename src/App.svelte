@@ -25,15 +25,16 @@
   $tags = [...$tgs]
   $: {
     $tgs = [...$tags]
+    // could othewise do "qwertasdfgzxcvb" or "qwerasdfzxcvtgbyhn..."
     shortcuts = "qwerasdfzxcvtyuighjk".slice(0,$tags.length)
   }
-
-  $: console.log($tgs)
 
   // for async passing data to componenents when video loads
   let onCuesLoad;
   let onTimelineDataLoad;
   let onMapDataLoad;
+  let selectNextTag
+  let selectPreviousTag
 
   let map;
   let height;
@@ -58,10 +59,26 @@
   // i think this is the best way to handle keyboard shortcuts when the widget is in focus
   // I could be totally wrong about that but it seems like you want to capture keypresses at then pass them to the relevent componenets?
   let onKeypress = (e) => {
-      const idx = shortcuts.indexOf(e.key)
-      if (quickTag && idx >=0){
-        tagChecks.children[idx].firstElementChild.click()
+      console.log(e)
+      if(e.ctrlKey){
+        switch (e.key) {
+          case "q":
+            quickTag = !quickTag
+            break;
+          default:
+            break;
+        }
+      } else if( e.key == 'Tab'){
+        e.preventDefault()
+        e.shiftKey ? selectPreviousTag() : selectNextTag()
       }
+
+      else{
+        const idx = shortcuts.indexOf(e.key)
+        if (quickTag && idx >=0){
+          tagChecks.children[idx].firstElementChild.click()
+            }
+          }
     }
 
   onMount(() => {widget.onkeydown =  e => onKeypress(e) })
@@ -83,7 +100,6 @@
 
 </style>
 
-
 <div class="widget" bind:this={widget} tabindex="-1">
  <div class="container" bind:this={topRow}>
   <div>
@@ -101,14 +117,10 @@
       <Map gps={$gps} mapStyle={$mapStyle} bind:onMapDataLoad/>
     {/if}
   </div>
-  <WaveSurferControler bind:onTimelineDataLoad tags={$tags} bind:tagChecks bind:quickTag/>
-<!-- <button on:click={()=>{curKeypoint.resetKeypoint();}}> reset</button> -->
-<!-- <button on:click={()=>{console.log(curKeypoint.getValues()) }}> vals</button> -->
-  <!-- <Timeline bind:this={timeline} />
-  <button on:click={()=> $curKeypoint.start= $curTime}> start</button>
-  <button on:click={()=> $curKeypoint.end= $curTime}> end</button>
-  <button on:click={()=> curKeypoint.resetKeypoint()}>reset</button>
-  <span>{$curKeypoint.start}</span>
-  <span>{$curKeypoint.end}</span> -->
+  <WaveSurferControler bind:onTimelineDataLoad 
+                       tags={$tags} 
+                       bind:tagChecks 
+                       bind:quickTag 
+                       bind:selectNextTag
+                       bind:selectPreviousTag/>
 </div>
-
