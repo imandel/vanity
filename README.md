@@ -24,6 +24,8 @@ the nbextension:
 jupyter nbextension enable --py [--sys-prefix|--user|--system] vanity
 ```
 
+
+
 ## Development Installation
 
 ```bash
@@ -73,22 +75,26 @@ After a change wait for the build to finish and then refresh your browser and th
 
 If you make a change to the python code then you will need to restart the notebook kernel to have it take effect.
 
-## TODO
+#### Example File
 
+The [introduction file](./examples/introduction.ipynb)
+
+## TODO
+- [ ] jump to next region
 - [ ] errors on firefox for vtt files 
-- [ ] pip button? https://svelte.dev/repl/116237b19d094b3f8fd074cee7c00ff1?version=3.38.3
-- [ ] convert this to svelte https://www.npmjs.com/package/react-annotation-tool
+- [ ] keyboard shprtcuts for timestep?
 - [ ] switch main vid to using a store tather than passing props and events around
 - [ ] convey when ttranscript is partially selected
 - [ ] multiple videos
 - [ ] style wavesurfer px/sec
 - [ ] key binding for moving around video faster
+- [ ] popup for shorcuts?
 - [ ] dynamic assign color to tags?
-- [ ] fix responseive top row (e.g. no map, no transcript)
-- [ ] make divs collasible?
+- [x] fix responseive top row (e.g. no map, no transcript)
+- [x] make divs collasible?
 - [ ] add and remove tags from ui?
 - [ ] load in potential tags for review
 - [ ] format times for either s or hh:mm:ss
-- [ ] keyboard shprtcuts for timestep?
-- [ ] region coloring on update bug ugh
-- [ ] jump to next region
+- [ ] pip button? https://svelte.dev/repl/116237b19d094b3f8fd074cee7c00ff1?version=3.38.3
+- [ ] convert this to svelte https://www.npmjs.com/package/react-annotation-tool
+- [ ] emulate disabled rather than use for inputs (clearer ux for locking)
