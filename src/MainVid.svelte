@@ -7,6 +7,7 @@
 	export let src;
 	export let transcript;
 	export let transcript_lang;
+	export const togglePlay = () => {vid.paused? vid.play(): vid.pause()}
 	import {createEventDispatcher} from 'svelte'
 	const dispatch = createEventDispatcher()
 

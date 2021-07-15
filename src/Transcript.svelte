@@ -70,7 +70,7 @@
 
 </script>
 <style>
-	.transcript_container {
+	.transcript-container {
 		flex: 1000 1000;
 		padding: 0.5em;
 		display: block;
@@ -86,7 +86,7 @@
 		font-weight: bold;
 	}
 	.bar {
-		width: 6px;
+		width: 8px;
 		background-color: gray;
 		border-left: 2px solid;
 	}
@@ -98,7 +98,7 @@
 
 </style>
 <div class="bar" on:click={()=>{hidden=!hidden}}></div>
-<div class='transcript_container'
+<div class='transcript-container'
 	 bind:this={transcriptBox}
 	 on:mousedown={(e)=>{if(e.shiftKey){selecting=true;}}}
 	 on:mousemove={selection}

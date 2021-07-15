@@ -6,6 +6,7 @@
   import MainVid from './MainVid.svelte';
   import Transcript from './Transcript.svelte'
   import WaveSurferControler from './WaveSurferControler.svelte'
+  import Views from './Views.svelte'
   
   export let model;
 
@@ -15,6 +16,10 @@
   let transcriptLang = createValue(model, 'transcript_lang', '')
   let mapStyle = createValue(model, 'map_style', '')
   let duration = createValue(model, 'duration', '')
+  let views = createValue(model, 'views', [])
+
+  let vid;
+  let togglePlay;
 
   let tagChecks;
   let quickTag;
@@ -73,7 +78,7 @@
         switch(e.key){
           case " ":
             e.preventDefault()
-            console.log('toggle playing')
+            togglePlay() 
             break;
           case "Tab":
             e.preventDefault();
@@ -104,7 +109,7 @@
   .container {
     display: flex;
     flex-direction: row;
-    overflow: auto;
+    /*overflow: auto;*/
     min-height: 25vh;
   }
 
@@ -116,10 +121,14 @@
       <MainVid src={$vidSrc}
                transcript={$transcriptSrc}
                transcript_lang={$transcriptLang}
-               bind:height 
+               bind:height
+               bind:togglePlay
                on:trackLoaded={handleTranscript}
                on:durationLoaded|once={handleTimeline}/>
     </div>
+    {#if $views}
+    <Views views={$views}/>
+    {/if}
     {#if $transcriptSrc}
       <Transcript bind:onCuesLoad/>
     {/if}

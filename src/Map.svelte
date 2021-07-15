@@ -261,7 +261,7 @@
      width: 100%;
   }
   .bar {
-    width: 6px;
+    width: 8px;
     background-color: gray;
     border-left: 2px solid;
   }
