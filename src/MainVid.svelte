@@ -1,13 +1,15 @@
 <script>
-	import { curTime } from './stores';
+	import { curTime, timingObject } from './stores';
 	import { onMount } from 'svelte';
+	import { setTimingsrc } from 'timingsrc';
 	let vid;
 	let container;
 	export let height;
 	export let src;
 	export let transcript;
 	export let transcript_lang;
-	export const togglePlay = () => {vid.paused? vid.play(): vid.pause()}
+
+	// export let timeSource;
 	import {createEventDispatcher} from 'svelte'
 	const dispatch = createEventDispatcher()
 
@@ -23,7 +25,8 @@
 	}
 
 	const vidData = () => { 
-		dispatch('durationLoaded', vid) 
+		dispatch('durationLoaded', vid)
+		setTimingsrc(vid, $timingObject); 
 	}
 
 </script>

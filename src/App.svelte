@@ -1,13 +1,13 @@
 <script lang="typescript">
   // Creates a Svelte store (https://svelte.dev/tutorial/writable-stores) that syncs with the named Traitlet in widget.ts and example.py.
-  import { createValue, curTime, curKeypoint, tags} from './stores';
+  import { createValue, curTime, curKeypoint, tags, timingObject } from './stores';
   import { onMount } from 'svelte';
   import Map from './Map.svelte';
   import MainVid from './MainVid.svelte';
   import Transcript from './Transcript.svelte'
   import WaveSurferControler from './WaveSurferControler.svelte'
   import Views from './Views.svelte'
-  
+
   export let model;
 
   let gps = createValue(model, 'gps', '')
@@ -19,7 +19,10 @@
   let views = createValue(model, 'views', [])
 
   let vid;
-  let togglePlay;
+  const togglePlay = () => {
+    console.log($timingObject.query().velocity)
+    $timingObject.query().velocity ? $timingObject.update({velocity:0}): $timingObject.update({velocity:1})
+  }
 
   let tagChecks;
   let quickTag;
@@ -122,12 +125,11 @@
                transcript={$transcriptSrc}
                transcript_lang={$transcriptLang}
                bind:height
-               bind:togglePlay
                on:trackLoaded={handleTranscript}
                on:durationLoaded|once={handleTimeline}/>
     </div>
     {#if $views}
-    <Views views={$views}/>
+    <Views views={$views} />
     {/if}
     {#if $transcriptSrc}
       <Transcript bind:onCuesLoad/>

@@ -1,6 +1,9 @@
 import type { Writable } from 'svelte/store';
 import { writable, get, derived } from 'svelte/store';
 
+import { TimingObject } from 'timing-object';
+export const timingObject: Writable<any> = writable(new TimingObject());
+
 interface pt {
   src: string;
   author: string;

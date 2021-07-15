@@ -52,6 +52,8 @@
     "mapbox-gl": "^2.3.0",
     "svelte-awesome": "^2.3.2",
     "svelte-range-slider-pips": "github:imandel/svelte-range-slider-pips",
+    "timing-object": "^3.1.31",
+    "timingsrc": "^1.1.12",
     "wavesurfer.js": "^5.1.0"
   },
   "devDependencies": {

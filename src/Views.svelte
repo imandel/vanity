@@ -1,8 +1,11 @@
 <script>
-	import { curTime } from './stores';
+	import { curTime, timingObject } from './stores';
+	import { onMount } from 'svelte';
 	export let views;
 	let hidden = false;
 	let height;
+	let vids =[]
+	// $: console.log(vids)
 	switch(views.length){
 		case 1:
 			height=50;
@@ -14,6 +17,13 @@
 			height=33;
 
 	}
+	import { setTimingsrc } from 'timingsrc';
+	// export let $timingObject;
+	onMount(async () => {
+		vids.forEach((vid) => {
+			setTimingsrc(vid, $timingObject); 
+		})
+	})
 </script>
 
 <style>
@@ -53,9 +63,9 @@
 <div class="bar" on:click={()=>{hidden=!hidden}}></div>
 <div class="views-container" class:hidden>
 	<div class="vids-container">
-	{#each views as src}
+	{#each views as src, i}
 		
-			<video bind:currentTime={$curTime}
+			<video bind:this={vids[i]}
 				   src={src} 
 			></video>
 	{/each}

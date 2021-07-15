@@ -4,7 +4,7 @@
   import { gpx } from "@tmcw/togeojson";
   import mapboxgl from 'mapbox-gl';
   import { onMount } from 'svelte';
-  import { curTime, curKeypoint } from './stores.ts';
+  import { curTime, curKeypoint, timingObject } from './stores.ts';
   import { point } from '@turf/helpers';
   import nearestPointOnLine from '@turf/nearest-point-on-line';
   let mapRef;
@@ -100,7 +100,8 @@
           $curKeypoint.start = time
         }
       }
-      $curTime = time
+      // $curTime = time
+      $timingObject.update({position:time}) 
     }
 
     const onUp = (e) => {
@@ -239,7 +240,8 @@
         $curKeypoint.start = time
          keyOrigin = time;
        }
-      $curTime = time
+      // $curTime = time
+      $timingObject.update({position:time})
       // updateLocation(e)
       mapRef.on('mousemove', updateLocation)
       mapRef.once('mouseup', onUp)

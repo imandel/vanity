@@ -1,6 +1,6 @@
 <script>
 	import { onMount, tick } from 'svelte';
-	import { curTime, curKeypoint, keypointDefined } from './stores';
+	import { curTime, curKeypoint, keypointDefined, timingObject } from './stores';
 	let cueData;
 	let transcriptBox;
 	let currentCue;
@@ -63,7 +63,8 @@
 				const end = Math.max(...timeBounds);
 				$curKeypoint.start=start
 				$curKeypoint.end=end
-				$curTime = end
+				// $curTime = end
+				timingObject.update({position:end}) 
 		}
 	}
 }
@@ -110,7 +111,7 @@
 	 {#each cueData as cue, index}
 	 <p class:activeLine={index===currentCue}
 	 	class:highlighted = {highlights.includes(index)}
-	 	on:click ={()=>{$curTime = cue.startTime}}
+	 	on:click ={()=>{$timingObject.update({position:cue.startTime})}}
 	 	data-startTime={cue.startTime}
 	 	data-endTime={cue.endTime}
 	 	data-idx={index}

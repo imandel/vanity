@@ -80,14 +80,16 @@ If you make a change to the python code then you will need to restart the notebo
 The [introduction file](./examples/introduction.ipynb)
 
 ## TODO
-- [ ] jump to next region
+- [x] end region on region play (shift click) with timingsrc
+- [x] jump to next region
+- [ ] fix tagbox for timingsrc
 - [ ] errors on firefox for vtt files 
-- [ ] keyboard shprtcuts for timestep?
-- [ ] switch main vid to using a store tather than passing props and events around
-- [ ] convey when ttranscript is partially selected
-- [ ] multiple videos
-- [ ] style wavesurfer px/sec
+- [ ] keyboard shprtcuts for timestep
 - [ ] key binding for moving around video faster
+- [ ] switch main vid to using a store tather than passing props and events around?
+- [ ] convey when ttranscript is partially selected
+- [x] multiple videos
+- [ ] style wavesurfer px/sec
 - [ ] popup for shorcuts?
 - [ ] dynamic assign color to tags?
 - [x] fix responseive top row (e.g. no map, no transcript)

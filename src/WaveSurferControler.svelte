@@ -1,5 +1,5 @@
 <script>
-	import { curTime, curKeypoint, keypointDefined } from './stores';
+	import { curTime, curKeypoint, keypointDefined, timingObject } from './stores';
 	import WaveSurfer from "wavesurfer.js";
 	import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 	import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
@@ -10,6 +10,7 @@
 	let wavesurfer;//={regions:{list:[]}}
 	let waveform;
 	let vid;
+	let regionPlayed;
 
 	let sliderVal=0;
 	let activeRegion;
@@ -19,7 +20,7 @@
 	export let tagChecks;
 	export let quickTag;
 	let locked;
-	$: console.log(locked)
+	// $: console.log(locked)
 
 	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
@@ -35,7 +36,8 @@
 		resetPreviousRegion()
 		activeRegion.update({color: 'rgba(255, 255, 0, 0.4)'})
 		previousRegion = activeRegion;
-		$curTime = activeRegion.start
+		// $curTime = activeRegion.start
+		$timingObject.update({position:activeRegion.start})
 	}
 
 	export const selectPreviousTag = () => {
@@ -47,7 +49,8 @@
 		resetPreviousRegion()
 		activeRegion.update({color: 'rgba(255, 255, 0, 0.4)'})
 		previousRegion = activeRegion;
-		$curTime = activeRegion.start
+		// $curTime = activeRegion.start
+		$timingObject.update({position:activeRegion.start})
 	}
 
 
@@ -139,9 +142,12 @@
 			$curKeypoint.start = region.start;
 			$curKeypoint.end = region.end;
 			previousRegion = region
+			// TODO have stop at end or region now that using timingsrc
 			if(e.shiftKey){ 
 				e.stopPropagation();
-				region.play();
+				$timingObject.update({position: region.start, velocity: 1})
+				regionPlayed = region;
+
 			}
 		});
 
@@ -159,8 +165,14 @@
 		wavesurfer.on('region-created', (region) => { 
 			resetPreviousRegion() 
 			activeRegion = region;
-
 		})
+
+		wavesurfer.on('region-out', (region) => {
+			if(region == regionPlayed){$timingObject.update({velocity:0})}
+			regionPlayed=null;
+		})
+		wavesurfer.on('seek', (pos)=>{ $timingObject.update({ position: pos * wavesurfer.getDuration()}) })
+		// wavesurfer.drawer.on('click', (e) => { console.log(e) })
 	})
 </script>
 
