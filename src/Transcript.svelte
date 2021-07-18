@@ -64,7 +64,7 @@
 				$curKeypoint.start=start
 				$curKeypoint.end=end
 				// $curTime = end
-				timingObject.update({position:end}) 
+				$timingObject.update({position:end}) 
 		}
 	}
 }
