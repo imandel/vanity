@@ -1,6 +1,7 @@
 # vanity
 
-A Custom Jupyter Widget Library
+A Custom Jupyter Widget Library for multi modal analysis of video. *Only tested on chrome/chromium based browsers*
+
 
 ## Installation
 
@@ -82,6 +83,7 @@ The [introduction file](./examples/introduction.ipynb)
 ## TODO
 - [x] end region on region play (shift click) with timingsrc
 - [x] jump to next region
+- [ ] views css is driving me crazy
 - [ ] fix tagbox for timingsrc
 - [ ] errors on firefox for vtt files 
 - [ ] keyboard shprtcuts for timestep
@@ -100,3 +102,5 @@ The [introduction file](./examples/introduction.ipynb)
 - [ ] pip button? https://svelte.dev/repl/116237b19d094b3f8fd074cee7c00ff1?version=3.38.3
 - [ ] convert this to svelte https://www.npmjs.com/package/react-annotation-tool
 - [ ] emulate disabled rather than use for inputs (clearer ux for locking)
+- [ ] stores pollute global namespace, multiple widgets conflict
+- [ ] fork wavesurfer and use timingsrc?
