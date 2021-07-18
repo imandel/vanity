@@ -1,33 +1,20 @@
 <script>
 	import { curTime, timingObject } from './stores';
 	import { onMount } from 'svelte';
+	import View from './View.svelte'
 	export let views;
 	let hidden = false;
-	let height;
-	let vids =[]
-	// $: console.log(vids)
-	switch(views.length){
-		case 1:
-			height=50;
-			break;
-		case 2:
-			height=50;
-			break;
-		case 3:
-			height=33;
 
-	}
-	import { setTimingsrc } from 'timingsrc';
-	// export let $timingObject;
-	onMount(async () => {
-		vids.forEach((vid) => {
-			setTimingsrc(vid, $timingObject); 
-		})
-	})
+	// import { setTimingsrc } from 'timingsrc';
+	// // export let $timingObject;
+	// onMount(async () => {
+	// 	vids.forEach((vid) => {
+	// 		setTimingsrc(vid, $timingObject); 
+	// 	})
+	// })
 </script>
-
 <style>
-		.bar {
+	.bar {
 		width: 8px;
 		background-color: gray;
 		border-left: 2px solid;
@@ -38,8 +25,9 @@
 	}
 
 	.views-container {
-		/*flex: 1000 1000;*/
+		/*flex: auto;*/
 		/*padding: 0.5em;*/
+		width: fit-content;
 	}
 	.vids-container {
 		display:inline-grid;
@@ -52,22 +40,19 @@
 		width:100%;
 		height:100%;
 	}
-	video{
+/*	video{
 		max-width: 100%; 
 	  	max-height: 100%;
 	  	width: auto;
 	  	height: auto;
-	}
+	}*/
 </style>
 
 <div class="bar" on:click={()=>{hidden=!hidden}}></div>
 <div class="views-container" class:hidden>
 	<div class="vids-container">
 	{#each views as src, i}
-		
-			<video bind:this={vids[i]}
-				   src={src} 
-			></video>
+			<View class='view' src={src} timingSrc={$timingObject}/>
 	{/each}
 	</div>
 </div>
