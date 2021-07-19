@@ -1,6 +1,6 @@
 <script lang="typescript">
   // Creates a Svelte store (https://svelte.dev/tutorial/writable-stores) that syncs with the named Traitlet in widget.ts and example.py.
-  import { createValue, curTime, curKeypoint, tags, timingObject } from './stores';
+  import { createValue, curKeypoint, tags, timingObject } from './stores';
   import { onMount } from 'svelte';
   import Map from './Map.svelte';
   import MainVid from './MainVid.svelte';
@@ -128,8 +128,8 @@
                on:trackLoaded={handleTranscript}
                on:durationLoaded|once={handleTimeline}/>
     </div>
-    {#if $views}
-    <Views views={$views} />
+    {#if $views[0]}
+      <Views views={$views} />
     {/if}
     {#if $transcriptSrc}
       <Transcript bind:onCuesLoad/>

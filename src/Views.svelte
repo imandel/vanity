@@ -5,13 +5,6 @@
 	export let views;
 	let hidden = false;
 
-	// import { setTimingsrc } from 'timingsrc';
-	// // export let $timingObject;
-	// onMount(async () => {
-	// 	vids.forEach((vid) => {
-	// 		setTimingsrc(vid, $timingObject); 
-	// 	})
-	// })
 </script>
 <style>
 	.bar {
@@ -27,7 +20,7 @@
 	.views-container {
 		/*flex: auto;*/
 		/*padding: 0.5em;*/
-		width: fit-content;
+		/*width: fit-content;*/
 	}
 	.vids-container {
 		display:inline-grid;
@@ -40,12 +33,6 @@
 		width:100%;
 		height:100%;
 	}
-/*	video{
-		max-width: 100%; 
-	  	max-height: 100%;
-	  	width: auto;
-	  	height: auto;
-	}*/
 </style>
 
 <div class="bar" on:click={()=>{hidden=!hidden}}></div>

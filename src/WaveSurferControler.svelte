@@ -20,7 +20,8 @@
 	export let tagChecks;
 	export let quickTag;
 	let locked;
-	// $: console.log(locked)
+	$: console.log($curKeypoint)
+	$: console.log($keypointDefined.start)
 
 	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
@@ -82,14 +83,22 @@
 	const saveTag = () => {
 		activeRegion.update({
 			color:'rgba(255, 200, 0, 0.4)',
-			data: {color: 'rgba(255, 200, 0, 0.4)'}
+			data: {
+				color: 'rgba(255, 200, 0, 0.4)',
+				tags:  $curKeypoint.tags,
+				comments: $curKeypoint.comments
+			}
 		})
+		activeRegion = null
 		if(locked.size){
 			curKeypoint.resetKeypointTimes()
 		} else {
-			curKeypoint.resetKeypoint()
+			$curKeypoint.tags=[]
+			$curKeypoint.start = null;
+			$curKeypoint.end = null;
+			// curKeypoint.resetKeypoint()
 		}
-		activeRegion = null
+		// activeRegion = null
 	}
 		
 
@@ -141,6 +150,11 @@
 			activeRegion = region;
 			$curKeypoint.start = region.start;
 			$curKeypoint.end = region.end;
+			if(region.data){
+				console.log(region.data)
+				$curKeypoint.tags = region.data.tags || [];
+				$curKeypoint.comments = region.data.comments	
+			}
 			previousRegion = region
 			// TODO have stop at end or region now that using timingsrc
 			if(e.shiftKey){ 
@@ -187,8 +201,10 @@
 <span>px/sec: {sliderVal}</span>
 </div>
 <Tagbox tags={tags} activeRegion={activeRegion} bind:tagChecks bind:quickTag bind:locked>
-	<button on:click={deleteTag}> Delete Tag </button>
-	<button on:click={saveTag}> Save Tag </button>
+	{#if $keypointDefined.start}
+		<button on:click={deleteTag}> Delete Tag </button>
+		<button on:click={saveTag}> Save Tag </button>
+	{/if}
 </Tagbox>
 
 <!-- <button on:click={()=>{console.log(wavesurfer.regions, curKeypoint.getValues(), activeRegion, previousRegion) }}> vals</button> -->

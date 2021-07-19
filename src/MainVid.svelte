@@ -42,7 +42,7 @@
 	    /*height: 30vh;*/
 	    /*width: 50%;*/
 	    flex: 1000 1000 auto;
-	    background-color: #dbdbdb;
+	    background-color: black;
   }
 </style>
 <div>
