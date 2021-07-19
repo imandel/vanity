@@ -5,7 +5,7 @@ A Custom Jupyter Widget Library for multi modal analysis of video. *Only tested 
 
 ## Installation
 
-You can install using `pip`:
+<!-- You can install using `pip`:
 
 ```bash
 pip install vanity
@@ -23,9 +23,9 @@ the nbextension:
 
 ```bash
 jupyter nbextension enable --py [--sys-prefix|--user|--system] vanity
-```
+``` -->
 
-
+TODO
 
 ## Development Installation
 
@@ -34,7 +34,7 @@ jupyter nbextension enable --py [--sys-prefix|--user|--system] vanity
 pip install -e .
 ```
 
-When developing your extensions, you need to manually enable your extensions with the
+<!-- When developing your extensions, you need to manually enable your extensions with the
 notebook / lab frontend. For lab, this is done by the command:
 
 ```
@@ -42,7 +42,7 @@ jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
 jupyter labextension install .
 ```
 
-For classic notebook, you can run:
+For classic notebook, you can run: -->
 
 ```
 jupyter nbextension install --sys-prefix --symlink --overwrite --py vanity
@@ -56,15 +56,16 @@ of those flags here.
 
 ### How to see your changes
 
-#### Typescript:
+#### Java/Typescript:
 
 To continuously monitor the project for changes and automatically trigger a rebuild, start Jupyter in watch mode:
 
-```bash
+<!-- ```bash
 jupyter lab --watch
 ```
 
-And in a separate session, begin watching the source directory for changes:
+And in a separate session,  -->
+begin watching the source directory for changes:
 
 ```bash
 npm run watch
@@ -78,7 +79,7 @@ If you make a change to the python code then you will need to restart the notebo
 
 #### Example File
 
-The [introduction file](./examples/introduction.ipynb)
+The [introduction file](./examples/introduction.ipynb) has a test example you should be able to download and get running.
 
 ## TODO
 - [x] end region on region play (shift click) with timingsrc
