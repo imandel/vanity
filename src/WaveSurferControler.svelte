@@ -20,8 +20,6 @@
 	export let tagChecks;
 	export let quickTag;
 	let locked;
-	$: console.log($curKeypoint)
-	$: console.log($keypointDefined.start)
 
 	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
@@ -70,7 +68,7 @@
 								color: 'rgba(255, 255, 0, 0.4)'});
 	}
 
-	const deleteTag = () => {
+	export const deleteTag = () => {
 		if(locked.size){
 			curKeypoint.resetKeypointTimes()
 		} else {
@@ -80,7 +78,7 @@
 		 activeRegion=null;
 	}
 
-	const saveTag = () => {
+	export const saveTag = () => {
 		activeRegion.update({
 			color:'rgba(255, 200, 0, 0.4)',
 			data: {
@@ -93,10 +91,11 @@
 		if(locked.size){
 			curKeypoint.resetKeypointTimes()
 		} else {
-			$curKeypoint.tags=[]
-			$curKeypoint.start = null;
-			$curKeypoint.end = null;
-			// curKeypoint.resetKeypoint()
+			// $curKeypoint.tags=[]
+			// $curKeypoint.start = null;
+			// $curKeypoint.end = null;
+			curKeypoint.resetKeypoint()
+			console.log('here')
 		}
 		// activeRegion = null
 	}
