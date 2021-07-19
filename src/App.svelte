@@ -43,6 +43,8 @@
   let onMapDataLoad;
   let selectNextTag
   let selectPreviousTag
+  let saveTag;
+  let deleteTag;
 
   let map;
   let height;
@@ -70,10 +72,15 @@
   let onKeypress = (e) => {
       console.log(e)
       if(e.ctrlKey){
-        switch (e.key) {
-          case "q":
+        switch (e.code) {
+          case "KeyQ":
             quickTag = !quickTag
             break;
+          case "KeyS":
+            saveTag()
+            break;
+          case "KeyD":
+            deleteTag()
           default:
             break;
         }
@@ -143,5 +150,7 @@
                        bind:tagChecks 
                        bind:quickTag 
                        bind:selectNextTag
-                       bind:selectPreviousTag/>
+                       bind:selectPreviousTag
+                       bind:saveTag
+                       bind:deleteTag/>
 </div>
