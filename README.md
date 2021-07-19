@@ -83,7 +83,10 @@ The [introduction file](./examples/introduction.ipynb)
 ## TODO
 - [x] end region on region play (shift click) with timingsrc
 - [x] jump to next region
-- [ ] views css is driving me crazy
+- [ ] additional views css is driving me crazy
+- [ ] UX logix for locked tags?
+- [x] mute buttons for additional views
+- [ ] mute all others
 - [ ] fix tagbox for timingsrc
 - [ ] errors on firefox for vtt files 
 - [ ] keyboard shprtcuts for timestep
@@ -99,7 +102,7 @@ The [introduction file](./examples/introduction.ipynb)
 - [ ] add and remove tags from ui?
 - [ ] load in potential tags for review
 - [ ] format times for either s or hh:mm:ss
-- [ ] pip button? https://svelte.dev/repl/116237b19d094b3f8fd074cee7c00ff1?version=3.38.3
+- [x] pip button? https://svelte.dev/repl/116237b19d094b3f8fd074cee7c00ff1?version=3.38.3
 - [ ] convert this to svelte https://www.npmjs.com/package/react-annotation-tool
 - [ ] emulate disabled rather than use for inputs (clearer ux for locking)
 - [ ] stores pollute global namespace, multiple widgets conflict
