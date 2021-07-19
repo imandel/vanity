@@ -30,9 +30,14 @@ TODO
 ## Development Installation
 
 ```bash
+# After cloning the repo, checkout the svelte branch
+git checkout svelte
+
 # First install the python package. This will also build the JS packages.
 pip install -e .
 ```
+
+If this fails, you may need to upgrade your version of node. Check your version with `node -v` and ensure it says `v16.5.0` or higher.
 
 <!-- When developing your extensions, you need to manually enable your extensions with the
 notebook / lab frontend. For lab, this is done by the command:
