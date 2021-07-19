@@ -29,23 +29,27 @@ class MapView(DOMWidget):
     transcript = Unicode("").tag(sync=True)
     transcript_lang = Unicode("").tag(sync=True)
     tags = List([]).tag(sync=True)
-
+    views = List([]).tag(sync=True)
+    author = Unicode("").tag(sync=True)
+    
     # duration = Float(0).tag(sync=True)
 
     def __init__(self, 
                  src, 
+                 author=None,
                  gps=None, 
                  map_style=None,
                  transcript=None,
                  transcript_lang='en',
                  tags = [],
+                 views = []
                  # duration=None
                  ):
         super().__init__()
 
         self.src = src
         self.tags = tags
-        # self.duration=duration
+        self.views = views
         
         if gps is not None:
             with open(gps, 'r') as inf:
@@ -58,3 +62,5 @@ class MapView(DOMWidget):
             self.transcript=transcript
             self.transcript_lang=transcript_lang
 
+        if author is not None:
+            self.author = author
