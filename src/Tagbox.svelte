@@ -8,7 +8,7 @@
 	let end;
 	let newLabel;
 	let comments;
-	$: console.log($curKeypoint)
+	// $: console.log($curKeypoint)
 	const addLabel = () => {
 		if(newLabel){
 				$tags = [...$tags, newLabel]

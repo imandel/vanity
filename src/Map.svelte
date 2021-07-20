@@ -6,6 +6,7 @@
   import { onMount } from 'svelte';
   import { curTime, curKeypoint, timingObject } from './stores.ts';
   import { point } from '@turf/helpers';
+  import { getId } from './util'
   import nearestPointOnLine from '@turf/nearest-point-on-line';
   let mapRef;
   let line;
@@ -239,6 +240,7 @@
        if(e.originalEvent.shiftKey){
         $curKeypoint.start = time
          keyOrigin = time;
+         $curKeypoint.id = getId('map_')
        }
       // $curTime = time
       $timingObject.update({position:time})

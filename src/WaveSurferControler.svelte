@@ -15,6 +15,7 @@
 	let sliderVal=0;
 	let activeRegion;
 	let previousRegion;
+	let mouseover = false;
 
 	export let tags
 	export let tagChecks;
@@ -65,7 +66,8 @@
 		activeRegion = wavesurfer.addRegion({
 								start: $curKeypoint.start,
 								end: $curKeypoint.end,
-								color: 'rgba(255, 255, 0, 0.4)'});
+								color: 'rgba(255, 255, 0, 0.4)',
+								id: $curKeypoint.id});
 	}
 
 	export const deleteTag = () => {
@@ -81,6 +83,7 @@
 	export const saveTag = () => {
 		activeRegion.update({
 			color:'rgba(255, 200, 0, 0.4)',
+			id: $curKeypoint.id || activeRegion.id,
 			data: {
 				color: 'rgba(255, 200, 0, 0.4)',
 				tags:  $curKeypoint.tags,
@@ -95,9 +98,10 @@
 			// $curKeypoint.start = null;
 			// $curKeypoint.end = null;
 			curKeypoint.resetKeypoint()
-			console.log('here')
+			// console.log('here')
 		}
 		// activeRegion = null
+		console.log(activeRegion)
 	}
 		
 
@@ -152,6 +156,7 @@
 			if(region.data){
 				console.log(region.data)
 				$curKeypoint.tags = region.data.tags || [];
+
 				$curKeypoint.comments = region.data.comments	
 			}
 			previousRegion = region
@@ -168,6 +173,10 @@
 			if (region === activeRegion){
 				$curKeypoint.start = region.start;
 				$curKeypoint.end = region.end;
+				// hacky way to ensure id from interaction with wavesurfer
+				if(mouseover){
+					$curKeypoint.id = region.id
+				}
 			}
 			// activeRegion = region;
 		});
@@ -176,8 +185,16 @@
 			previousRegion = activeRegion;})
 
 		wavesurfer.on('region-created', (region) => { 
-			resetPreviousRegion() 
+			
+			resetPreviousRegion()
+			if(locked.size){
+				// do think to handle locked kps
+			} else {
+				$curKeypoint.tags=[]
+			}
 			activeRegion = region;
+			$curKeypoint.id  = $curKeypoint.id || region.id
+			console.log('here')
 		})
 
 		wavesurfer.on('region-out', (region) => {
@@ -185,6 +202,8 @@
 			regionPlayed=null;
 		})
 		wavesurfer.on('seek', (pos)=>{ $timingObject.update({ position: pos * wavesurfer.getDuration()}) })
+		wavesurfer.on('region-mouseenter', (e)=>{mouseover=true})
+		wavesurfer.on('region-mouseleave', (e)=>{mouseover=false})
 		// wavesurfer.drawer.on('click', (e) => { console.log(e) })
 	})
 </script>

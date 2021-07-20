@@ -7,14 +7,15 @@ export const timingObject: Writable<any> = writable(new TimingObject());
 interface pt {
   src: string;
   author: string;
+  id: string | null |undefined;
   start: number | null | undefined;
   end: number | null | undefined;
   tags: Array<string>;
   comments: string | null | undefined;
 
 }
-function Keypoint(src: string='', author: string=''){
-  const store: Writable<pt> = writable({src, author, start:null, end:null, tags:[], comments:''})
+function Keypoint(){
+  const store: Writable<pt> = writable({src:'', author:'',id:'', start:null, end:null, tags:[], comments:''})
   return{
     set: store.set,
     subscribe: store.subscribe,    
@@ -23,6 +24,7 @@ function Keypoint(src: string='', author: string=''){
           state.start = null
           state.end = null
           state.tags = []
+          state.id = null
           state.comments = null
         return state
       })},
@@ -31,6 +33,7 @@ function Keypoint(src: string='', author: string=''){
         console.log(state)
         state.start = null
         state.end = null
+        state.id = null
         console.log(state)
         return state
       })},

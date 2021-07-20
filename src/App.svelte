@@ -17,6 +17,7 @@
   let mapStyle = createValue(model, 'map_style', '')
   let duration = createValue(model, 'duration', '')
   let views = createValue(model, 'views', [])
+  let author = createValue(model, 'author', '')
 
   let vid;
   const togglePlay = () => {
@@ -36,6 +37,8 @@
     // could othewise do "qwertasdfgzxcvb" or "qwerasdfzxcvtgbyhn..."
     shortcuts = "qwerasdfzxcvtyuighjk".slice(0,$tags.length)
   }
+
+  $: console.log($curKeypoint)
 
   // for async passing data to componenents when video loads
   let onCuesLoad;
@@ -79,7 +82,7 @@
           case "KeyS":
             saveTag()
             break;
-          case "KeyD":
+          case "Backspace":
             deleteTag()
           default:
             break;
@@ -106,7 +109,12 @@
           }
     }
 
-  onMount(() => {widget.onkeydown =  e => onKeypress(e) })
+  onMount(() => {
+    widget.onkeydown =  e => onKeypress(e) 
+    // setup static values of curKeypoint
+    curKeypoint.src = $vidSrc;
+    curKeypoint.author = $author;
+  })
   
 </script>
 

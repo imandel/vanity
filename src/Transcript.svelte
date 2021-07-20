@@ -1,6 +1,7 @@
 <script>
 	import { onMount, tick } from 'svelte';
 	import { curTime, curKeypoint, keypointDefined, timingObject } from './stores';
+	import { getId } from './util'
 	let cueData;
 	let transcriptBox;
 	let currentCue;
@@ -101,7 +102,7 @@
 <div class="bar" on:click={()=>{hidden=!hidden}}></div>
 <div class='transcript-container'
 	 bind:this={transcriptBox}
-	 on:mousedown={(e)=>{if(e.shiftKey){selecting=true;}}}
+	 on:mousedown={(e)=>{if(e.shiftKey){selecting=true; $curKeypoint.id = getId('transcript_')}}}
 	 on:mousemove={selection}
 	 on:mouseup={(e)=>{if(selecting){selection(e);selecting=false; window.getSelection().empty()}}}
 	 class:hidden
