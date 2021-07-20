@@ -15,7 +15,7 @@ interface pt {
 
 }
 function Keypoint(){
-  const store: Writable<pt> = writable({src:'', author:'',id:'', start:null, end:null, tags:[], comments:''})
+  const store: Writable<pt> = writable({src:'', author:'',id:'', start:null, end:null, tags:[], comments:null})
   return{
     set: store.set,
     subscribe: store.subscribe,    

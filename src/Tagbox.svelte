@@ -1,9 +1,10 @@
 <script>
 	import { onMount } from 'svelte';
-	import { curTime, curKeypoint, keypointDefined, tags} from './stores';
+	import { curTime, curKeypoint, keypointDefined} from './stores';
 
 	export let activeRegion
 	export let locked = new Set();
+	export let tags;
 	let start;
 	let end;
 	let newLabel;
@@ -11,9 +12,9 @@
 	// $: console.log($curKeypoint)
 	const addLabel = () => {
 		if(newLabel){
-				$tags = [...$tags, newLabel]
+				tags = [...tags, newLabel]
 				newLabel = ''
-				shortcuts = "qwerasdfzxcvtyuighjk".slice(0,$tags.length)
+				shortcuts = "qwerasdfzxcvtyuighjk".slice(0,tags.length)
 				}
 	}
 
@@ -37,7 +38,7 @@
 
 	export let tagChecks;
 	export let quickTag;
-	let shortcuts = "qwerasdfzxcvtyuighjk".slice(0,$tags.length)
+	let shortcuts = "qwerasdfzxcvtyuighjk".slice(0,tags.length)
 
 // the if for inputs is kinda hacky but ¯\_(°ペ)_/¯ 
 </script>
@@ -93,7 +94,7 @@
 		<label>quick tag: <input bind:checked={quickTag} type='checkbox'/></label>
 		<slot></slot>
 		<div class='tagChecks' bind:this={tagChecks} >
-		{#each $tags as tag, index}
+		{#each tags as tag, index}
 			<div on:dblclick={lockTag}>
 		 		<input type='checkbox' bind:group={$curKeypoint.tags} value={tag} id={tag}/>
 		 		<label for={tag}>

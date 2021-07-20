@@ -20,6 +20,7 @@
 	export let tags
 	export let tagChecks;
 	export let quickTag;
+	export let keypoints
 	let locked;
 
 	export const onTimelineDataLoad = async (viddata) => {
@@ -53,7 +54,15 @@
 		$timingObject.update({position:activeRegion.start})
 	}
 
-
+	const regionsToKeypoints = (regions) => {
+		return Object.entries(regions).filter(([id,region]) => region.data && region.data.saved)
+									  .flatMap(([id,region])=>{
+											const { start, end, data:{tags=[]},data:{comments} } = region
+											const shared = {id, start, end}
+											const tagValues = tags.map(tag => Object.assign({value:tag, type:'tag'}, shared))
+											return [...tagValues, Object.assign({value:comments, type:'comment'}, shared)]
+										})
+	}
 
 	$: if(activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){ 
 		activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
@@ -78,6 +87,7 @@
 		}
 		 activeRegion.remove(); 
 		 activeRegion=null;
+		 console.log(wavesurfer.regions.list)
 	}
 
 	export const saveTag = () => {
@@ -87,10 +97,14 @@
 			data: {
 				color: 'rgba(255, 200, 0, 0.4)',
 				tags:  $curKeypoint.tags,
-				comments: $curKeypoint.comments
+				comments: $curKeypoint.comments,
+				saved: true
 			}
 		})
+		// console.log(wavesurfer.regions.list)
 		activeRegion = null
+		keypoints = regionsToKeypoints(wavesurfer.regions.list)
+		// keypoints = [...keypoints, Object.assign({},$curKeypoint)]
 		if(locked.size){
 			curKeypoint.resetKeypointTimes()
 		} else {
@@ -98,10 +112,9 @@
 			// $curKeypoint.start = null;
 			// $curKeypoint.end = null;
 			curKeypoint.resetKeypoint()
-			// console.log('here')
 		}
 		// activeRegion = null
-		console.log(activeRegion)
+
 	}
 		
 
@@ -182,6 +195,7 @@
 		});
 
 		wavesurfer.on('region-update-end', (region) => {
+			keypoints = regionsToKeypoints(wavesurfer.regions.list)
 			previousRegion = activeRegion;})
 
 		wavesurfer.on('region-created', (region) => { 
@@ -194,7 +208,6 @@
 			}
 			activeRegion = region;
 			$curKeypoint.id  = $curKeypoint.id || region.id
-			console.log('here')
 		})
 
 		wavesurfer.on('region-out', (region) => {
@@ -218,7 +231,7 @@
 <input on:mouseup={()=> wavesurfer.zoom(sliderVal)} type="range" min="0" max="500" bind:value={sliderVal} style="width: 100%"/>
 <span>px/sec: {sliderVal}</span>
 </div>
-<Tagbox tags={tags} activeRegion={activeRegion} bind:tagChecks bind:quickTag bind:locked>
+<Tagbox bind:tags={tags} activeRegion={activeRegion} bind:tagChecks bind:quickTag bind:locked>
 	{#if $keypointDefined.start}
 		<button on:click={deleteTag}> Delete Tag </button>
 		<button on:click={saveTag}> Save Tag </button>

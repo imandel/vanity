@@ -1,6 +1,6 @@
 <script lang="typescript">
   // Creates a Svelte store (https://svelte.dev/tutorial/writable-stores) that syncs with the named Traitlet in widget.ts and example.py.
-  import { createValue, curKeypoint, tags, timingObject } from './stores';
+  import { createValue, curKeypoint, timingObject } from './stores';
   import { onMount } from 'svelte';
   import Map from './Map.svelte';
   import MainVid from './MainVid.svelte';
@@ -18,6 +18,11 @@
   let duration = createValue(model, 'duration', '')
   let views = createValue(model, 'views', [])
   let author = createValue(model, 'author', '')
+  let keypoints = createValue(model, 'keypoints', [])
+  $: console.log($keypoints)
+  // setup static values of curKeypoint
+  $curKeypoint.src = $vidSrc;
+  $curKeypoint.author = $author;
 
   let vid;
   const togglePlay = () => {
@@ -27,18 +32,19 @@
 
   let tagChecks;
   let quickTag;
-  let shortcuts = "qwerasdfzxcvtyuighjk".slice(0,$tags.length)
+  let shortcuts;
+  $: if($tags.length){ shortcuts= "qwerasdfzxcvtyuighjk".slice(0,$tags.length)}
   
   // hacky way of making python tag store acessible to all components and still reactive
-  let tgs = createValue(model, 'tags', [])
-  $tags = [...$tgs]
-  $: {
-    $tgs = [...$tags]
-    // could othewise do "qwertasdfgzxcvb" or "qwerasdfzxcvtgbyhn..."
-    shortcuts = "qwerasdfzxcvtyuighjk".slice(0,$tags.length)
-  }
+  let tags = createValue(model, 'tags', [])
+  // $tags = [...$tgs]
+  // $: {
+  //   $tgs = [...$tags]
+  //   // could othewise do "qwertasdfgzxcvb" or "qwerasdfzxcvtgbyhn..."
+  //   shortcuts = "qwerasdfzxcvtyuighjk".slice(0,$tags.length)
+  // }
 
-  $: console.log($curKeypoint)
+  // $: console.log($curKeypoint)
 
   // for async passing data to componenents when video loads
   let onCuesLoad;
@@ -108,12 +114,9 @@
         else if (quickTag && idx >=0){ tagChecks.children[idx].firstElementChild.click() }
           }
     }
-
+  $: console.log($author)
   onMount(() => {
     widget.onkeydown =  e => onKeypress(e) 
-    // setup static values of curKeypoint
-    curKeypoint.src = $vidSrc;
-    curKeypoint.author = $author;
   })
   
 </script>
@@ -132,7 +135,6 @@
   }
 
 </style>
-
 <div class="widget" bind:this={widget} tabindex="-1">
  <div class="container" bind:this={topRow}>
   <div>
@@ -153,7 +155,8 @@
       <Map gps={$gps} mapStyle={$mapStyle} bind:onMapDataLoad/>
     {/if}
   </div>
-  <WaveSurferControler tags={$tags} 
+  <WaveSurferControler bind:tags={$tags} 
+                       bind:keypoints={$keypoints}
                        bind:onTimelineDataLoad 
                        bind:tagChecks 
                        bind:quickTag 
