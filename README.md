@@ -84,6 +84,8 @@ The [introduction file](./examples/introduction.ipynb) has a test example you sh
 ## TODO
 - [x] end region on region play (shift click) with timingsrc
 - [x] jump to next region
+- [ ] fn keypoint2region & region2keypoint
+- [ ] better tracking modality for curkeypoint.id
 - [ ] additional views css is driving me crazy
 - [ ] UX logix for locked tags?
 - [x] mute buttons for additional views
