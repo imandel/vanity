@@ -21,6 +21,9 @@
 	export let tagChecks;
 	export let quickTag;
 	export let keypoints
+
+
+
 	let locked;
 
 	export const onTimelineDataLoad = async (viddata) => {
@@ -54,11 +57,52 @@
 		$timingObject.update({position:activeRegion.start})
 	}
 
+	// const keypointsToRegions = (keypointsList) => {
+	// 	keypointsList.forEach((keypoint)=>{
+	// 		if(keypoint.id in wavesurfer.regions.list){
+
+	// 		}
+	// 	})
+
+	// }
+
+	const updateData = (keypoint, region) => {
+		if(keypoint.type=='tag'){
+			region.data.tags=[...region.data.tags, keypoint.value]
+		} else if (keypoint.type=='comment'){
+			region.data.comments = keypoint.value
+		}
+	}
+
+	export const syncKeypoints = () => {
+		wavesurfer.clearRegions()
+		keypoints.forEach((keypoint)=>{
+			if(keypoint.id in wavesurfer.regions.list){
+				const region= wavesurfer.regions.list[keypoint.id]
+				updateData(keypoint, region)
+			} else{
+				const region = wavesurfer.addRegion({
+									start: keypoint.start,
+									end: keypoint.end,
+									color: 'rgba(255, 200, 0, 0.4)',
+									id: keypoint.id,
+									data: {
+										color: 'rgba(255, 200, 0, 0.4)',
+										saved: true,
+										tags: [],
+										comments:''
+									}
+								});
+				updateData(region)
+			}
+		})
+	}
+
 	const regionsToKeypoints = (regions) => {
 		return Object.entries(regions).filter(([id,region]) => region.data && region.data.saved)
 									  .flatMap(([id,region])=>{
 											const { start, end, data:{tags=[]},data:{comments} } = region
-											const shared = {id, start, end}
+											const shared = {id, start, end, src:$curKeypoint.src, author:$curKeypoint.author}
 											const tagValues = tags.map(tag => Object.assign({value:tag, type:'tag'}, shared))
 											return [...tagValues, Object.assign({value:comments, type:'comment'}, shared)]
 										})
@@ -87,7 +131,7 @@
 		}
 		 activeRegion.remove(); 
 		 activeRegion=null;
-		 console.log(wavesurfer.regions.list)
+		 keypoints = regionsToKeypoints(wavesurfer.regions.list)
 	}
 
 	export const saveTag = () => {
@@ -124,6 +168,12 @@
 		}
 	}
 	
+	onDestroy(async () => {
+		wavesurfer.destroy()
+		curKeypoint.resetKeypoint()
+		activeRegion = null;
+	})
+
 	onMount(async () => {
 	    wavesurfer = WaveSurfer.create({
 	      container: waveform,
@@ -167,7 +217,6 @@
 			$curKeypoint.start = region.start;
 			$curKeypoint.end = region.end;
 			if(region.data){
-				console.log(region.data)
 				$curKeypoint.tags = region.data.tags || [];
 
 				$curKeypoint.comments = region.data.comments	

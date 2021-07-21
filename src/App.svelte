@@ -8,6 +8,7 @@
   import WaveSurferControler from './WaveSurferControler.svelte'
   import Views from './Views.svelte'
 
+  window.model
   export let model;
 
   let gps = createValue(model, 'gps', '')
@@ -18,8 +19,8 @@
   let duration = createValue(model, 'duration', '')
   let views = createValue(model, 'views', [])
   let author = createValue(model, 'author', '')
-  let keypoints = createValue(model, 'keypoints', [])
-  $: console.log($keypoints)
+  let keypoints = createValue(model, '_keypoints', [])
+
   // setup static values of curKeypoint
   $curKeypoint.src = $vidSrc;
   $curKeypoint.author = $author;
@@ -54,6 +55,7 @@
   let selectPreviousTag
   let saveTag;
   let deleteTag;
+  let syncKeypoints;
 
   let map;
   let height;
@@ -73,6 +75,16 @@
   const handleTimeline = (vid) => {
     onTimelineDataLoad(vid.detail)
     if($gps){onMapDataLoad(vid.detail)}
+  }
+
+  const handleBackendMsg =(e) =>{
+    switch(e.type){
+      case 'keypoints_updated':
+        syncKeypoints();
+        break;
+      default:
+        break;
+    }
   }
 
   // i think this is the best way to handle keyboard shortcuts when the widget is in focus
@@ -114,9 +126,13 @@
         else if (quickTag && idx >=0){ tagChecks.children[idx].firstElementChild.click() }
           }
     }
-  $: console.log($author)
+
+
   onMount(() => {
     widget.onkeydown =  e => onKeypress(e) 
+
+    console.log(model)
+    model.on('msg:custom', handleBackendMsg);
   })
   
 </script>
@@ -163,5 +179,6 @@
                        bind:selectNextTag
                        bind:selectPreviousTag
                        bind:saveTag
-                       bind:deleteTag/>
+                       bind:deleteTag
+                       bind:syncKeypoints/>
 </div>
