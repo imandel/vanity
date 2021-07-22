@@ -130,8 +130,6 @@
 
   onMount(() => {
     widget.onkeydown =  e => onKeypress(e) 
-
-    console.log(model)
     model.on('msg:custom', handleBackendMsg);
   })
   

@@ -7,46 +7,62 @@ export const timingObject: Writable<any> = writable(new TimingObject());
 interface pt {
   src: string;
   author: string;
-  id: string | null |undefined;
+  id: string | null | undefined;
   start: number | null | undefined;
   end: number | null | undefined;
   tags: Array<string>;
   comments: string | null | undefined;
-
 }
-function Keypoint(){
-  const store: Writable<pt> = writable({src:'', author:'',id:'', start:null, end:null, tags:[], comments:null})
-  return{
+function Keypoint() {
+  const store: Writable<pt> = writable({
+    src: '',
+    author: '',
+    id: '',
+    start: null,
+    end: null,
+    tags: [],
+    comments: null,
+  });
+  return {
     set: store.set,
-    subscribe: store.subscribe,    
+    subscribe: store.subscribe,
     resetKeypoint: () => {
-        store.update((state: pt)=> {
-          state.start = null
-          state.end = null
-          state.tags = []
-          state.id = null
-          state.comments = null
-        return state
-      })},
+      store.update((state: pt) => {
+        state.start = null;
+        state.end = null;
+        state.tags = [];
+        state.id = null;
+        state.comments = null;
+        return state;
+      });
+    },
     resetKeypointTimes: () => {
-      store.update((state: pt)=> {
-        console.log(state)
-        state.start = null
-        state.end = null
-        state.id = null
-        console.log(state)
-        return state
-      })},
-    getValues: () => {return get(store)}, //i can delete this?
-  }
+      store.update((state: pt) => {
+        console.log(state);
+        state.start = null;
+        state.end = null;
+        state.id = null;
+        console.log(state);
+        return state;
+      });
+    },
+    getValues: () => {
+      return get(store);
+    }, //i can delete this?
+  };
 }
 export const curKeypoint = Keypoint();
 export const keypointDefined = derived(curKeypoint, ($curKeypoint) => {
-  return {start:($curKeypoint.start || $curKeypoint.start ===0) ? true : false,
-          end: ($curKeypoint.end || $curKeypoint.end ===0) ? true : false,
-          full:($curKeypoint.start || $curKeypoint.start ===0) && ($curKeypoint.end || $curKeypoint.end ===0) ? true : false
-    }
-  })
+  return {
+    start: $curKeypoint.start || $curKeypoint.start === 0 ? true : false,
+    end: $curKeypoint.end || $curKeypoint.end === 0 ? true : false,
+    full:
+      ($curKeypoint.start || $curKeypoint.start === 0) &&
+      ($curKeypoint.end || $curKeypoint.end === 0)
+        ? true
+        : false,
+  };
+});
 export function createValue(model: any, name_: string, value_: any) {
   const name: string = name_;
   // const curVal: Writable<any> = writable(value_);

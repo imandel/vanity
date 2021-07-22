@@ -118,3 +118,6 @@ The [introduction file](./examples/introduction.ipynb) has a test example you sh
 - [ ] emulate disabled rather than use for inputs (clearer ux for locking)
 - [ ] stores pollute global namespace, multiple widgets conflict
 - [ ] fork wavesurfer and use timingsrc?
+
+### backend
+- [ ] python-validator for df

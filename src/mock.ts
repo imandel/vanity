@@ -6,14 +6,12 @@ class MockModel {
   undo() {}
   // https://github.com/cabreraalex/widget-svelte-cookiecutter/pull/7/commits/a63f0151b198b86c7a4a9c533f4cb22a03b65f54
   get(name: string) {
-    if(name === 'src'){
-      return './GMT20201216-141014_Interview-_640x360.8cc97a33.mp4'
-    }
-    else if (name === 'gps'){
-      return './16-Dec-2020-0945.gpx'
-    }
-    else if(name =='transcript'){
-      return './GMT20201216-141014_Interview-.transcript.vtt'
+    if (name === 'src') {
+      return './GMT20201216-141014_Interview-_640x360.8cc97a33.mp4';
+    } else if (name === 'gps') {
+      return './16-Dec-2020-0945.gpx';
+    } else if (name == 'transcript') {
+      return './GMT20201216-141014_Interview-.transcript.vtt';
     }
   }
   on(variableName: string, callback: () => void, context: any) {}

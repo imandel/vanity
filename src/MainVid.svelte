@@ -2,13 +2,14 @@
 	import { curTime, timingObject } from './stores';
 	import { onMount } from 'svelte';
 	import { setTimingsrc } from 'timingsrc';
+	// import { Player, Video } from '@vime/svelte';
 	let vid;
 	let container;
 	export let height;
 	export let src;
 	export let transcript;
 	export let transcript_lang;
-
+	console.log(Player)
 	// export let timeSource;
 	import {createEventDispatcher} from 'svelte'
 	const dispatch = createEventDispatcher()
@@ -47,22 +48,24 @@
 </style>
 <div>
 <div class='mainVid' bind:this={container}>
- <video
-  bind:currentTime={$curTime}
-  bind:this={vid} 
-  on:loadedmetadata|once={vidData}
-	src={src}
-	>
-	{#if transcript}
-	<track on:load={setupCues}
-	     kind="captions"
-	     type="text/vtt"
-	     crossorigin="anonymous"
-		 src={transcript}
-		 srclang={transcript_lang}
-		 default
-		 >
-	{/if}
-</video>
+	<!-- <Player> -->
+	 <video
+		  bind:currentTime={$curTime}
+		  bind:this={vid} 
+		  on:loadedmetadata|once={vidData}
+			src={src}
+			>
+			{#if transcript}
+			<track on:load={setupCues}
+			     kind="captions"
+			     type="text/vtt"
+			     crossorigin="anonymous"
+				 src={transcript}
+				 srclang={transcript_lang}
+				 default
+				 >
+			{/if}
+		</video>
+	<!-- </Player> -->
 </div>
 </div>

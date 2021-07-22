@@ -29,10 +29,10 @@
 /*   	grid-auto-columns: minmax(250px, auto); */
 		height:100%;
 	}
-	.vid-container {
+/*	.vid-container {
 		width:100%;
 		height:100%;
-	}
+	}*/
 </style>
 
 <div class="bar" on:click={()=>{hidden=!hidden}}></div>
