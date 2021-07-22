@@ -87,6 +87,7 @@ module.exports = [
         'static'
       ),
       libraryTarget: 'amd',
+       publicPath: ''
     },
     module: {
       rules: rules,
