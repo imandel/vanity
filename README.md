@@ -87,8 +87,11 @@ If you make a change to the python code then you will need to restart the notebo
 The [introduction file](./examples/introduction.ipynb) has a test example you should be able to download and get running.
 
 ## TODO
+### frontend
 - [x] end region on region play (shift click) with timingsrc
 - [x] jump to next region
+- [ ] keyoint save not nulling active region (race condition?)
+- [ ] disable editing saved regions without updating backend
 - [ ] fn keypoint2region & region2keypoint
 - [ ] better tracking modality for curkeypoint.id
 - [ ] additional views css is driving me crazy
