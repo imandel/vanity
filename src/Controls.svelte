@@ -1,56 +1,43 @@
-<svelte:head>
-	<link rel="stylesheet" href="https://unpkg.com/mono-icons@1.0.5/iconfont/icons.css" >
-</svelte:head>
 <script>
-	import Hoverable from './Hoverable.svelte';
-	let a=1;
-	let count = true //COUNT=TRUE paused, COUNT = False playing
-	
-	function increase() {
-		count = ! count
-		
-	}
-	function current(e) {
-		console.log(e.currentTarget)
-	}
+	import { onMount } from 'svelte';
+	import { curTime, curKeypoint, keypointDefined, timingObject } from './stores';
+
+
+	export let velocity;
+	export let position;
+	export let volume=1;
+	export let updateZoom;
+	let pxSec=0;
+	let previousVelocity=1;
+	let speeds = [0.25, 0.5, 1, 1.25, 1.5, 1.75, 2, 4, 8]
+	let volHidden = true;
+	let zoomHidden = true;
+	$: console.log(updateZoom)
 </script>
 
-<button
-  on:click={increase}
-  on:click={current}
->
-	{#if count}
-			<i class="mi mi-play"><span class="u-sr-only">Play</span></i>
-		{:else}
-			<i class="mi mi-pause"><span class="u-sr-only">Pause</span></i>
-		{/if}
-</button>
-
-<Hoverable let:hovering={active}>
-	<i class="mi mi-volume-up"><span class="u-sr-only">Volume up</span></i>
-	<div class:active>
-		{#if active}
-			<input type=range bind:value={a} min=0 max=10>
-		{:else}
-			<p> </p>
-		{/if}
-	</div>
-</Hoverable>
-
-
 <style>
-	div {
-		padding: 0;
-		margin: 0 0 0em;
+	.hidden {
+		display: none;
 	}
-	.mi {
-		font-size: 2rem;
-	}
-	.u-sr-only {
-		position: absolute;
-    left: -100px;
-    top: auto;
-    width:1px;
-    height:1px;
-	}
+	input[type="range"] { 
+		transform: rotate(90deg);
+		transform-origin: left;
+		width: 70px;
+		/*position: absolute;*/
+	 }
+
+	 .popup {
+	 	position: absolute;
+	 	display: inline-block;
+	 }
 </style>
+
+<button on:click={()=>{velocity ? $timingObject.update({velocity:0}) : $timingObject.update({velocity:previousVelocity})}}>{velocity ? 'pause' : 'play'}</button>
+<select bind:value={previousVelocity} on:change={()=>{if(velocity){$timingObject.update({velocity:previousVelocity})}}}>
+	{#each speeds as speed}
+		<option value={speed}>{speed}</option>
+	{/each}
+</select>
+<span>{new Date(position*1000).toISOString().substr(11, 8)}</span>
+<div style="display: inline-block;" on:mouseover={()=>{volHidden=false;}} on:mouseout={()=>{volHidden=true;}}>🔈 <div class="popup" class:hidden={volHidden}><input type="range" min="0" max="1" step="0.01" bind:value={volume}><span>{volume}</span></div></div>
+<div style="display: inline-block;" on:mouseover={()=>{zoomHidden=false;}} on:mouseout={()=>{zoomHidden=true;}}>🔍 <div class="popup" class:hidden={zoomHidden}><input on:mouseup={()=>{updateZoom(pxSec)}} type="range" min="0" max="500" step="1" bind:value={pxSec}><span>{pxSec}</span></div></div>

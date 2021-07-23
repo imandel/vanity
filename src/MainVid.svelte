@@ -2,14 +2,14 @@
 	import { curTime, timingObject } from './stores';
 	import { onMount } from 'svelte';
 	import { setTimingsrc } from 'timingsrc';
-	// import { Player, Video } from '@vime/svelte';
 	let vid;
 	let container;
 	export let height;
 	export let src;
 	export let transcript;
 	export let transcript_lang;
-	console.log(Player)
+	export let volume=1;
+
 	// export let timeSource;
 	import {createEventDispatcher} from 'svelte'
 	const dispatch = createEventDispatcher()
@@ -48,10 +48,9 @@
 </style>
 <div>
 <div class='mainVid' bind:this={container}>
-	<!-- <Player> -->
 	 <video
-		  bind:currentTime={$curTime}
-		  bind:this={vid} 
+		  bind:this={vid}
+		  bind:volume
 		  on:loadedmetadata|once={vidData}
 			src={src}
 			>
@@ -66,6 +65,5 @@
 				 >
 			{/if}
 		</video>
-	<!-- </Player> -->
 </div>
 </div>

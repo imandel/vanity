@@ -12,8 +12,8 @@
 	let vid;
 	let regionPlayed;
 
-	let sliderVal=0;
-	let activeRegion;
+	let pxSec=0;
+	export let activeRegion;
 	let previousRegion;
 	let mouseover = false;
 
@@ -21,15 +21,14 @@
 	export let tagChecks;
 	export let quickTag;
 	export let keypoints
-
-
-
-	let locked;
+	export let locked;
 
 	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
 		wavesurfer.load(vid)
 	}
+
+	export const updateZoom = (pxSec)=> {wavesurfer.zoom(pxSec)}
 
 	export const selectNextTag = () => {
 		const sorted = Object.values(wavesurfer.regions.list).sort((a,b)=>{return a.start-b.start})
@@ -149,14 +148,11 @@
 		activeRegion = null
 		keypoints = regionsToKeypoints(wavesurfer.regions.list)
 		// keypoints = [...keypoints, Object.assign({},$curKeypoint)]
-		if(locked.size){
-			curKeypoint.resetKeypointTimes()
-		} else {
-			// $curKeypoint.tags=[]
-			// $curKeypoint.start = null;
-			// $curKeypoint.end = null;
+		// if(locked.size){
+			// curKeypoint.resetKeypointTimes()
+		// } else {
 			curKeypoint.resetKeypoint()
-		}
+		// }
 		// activeRegion = null
 
 	}
@@ -204,9 +200,9 @@
 		wavesurfer.on('waveform-ready', ()=>{
 			console.log('ready')
 			// TODO: this is a hacky fix, do better
-			sliderVal = 1;
+			pxSec = 1;
 			// slider.min= wavesurfer.params.minPxPerSec;
-			wavesurfer.zoom(sliderVal)
+			wavesurfer.zoom(pxSec)
 		})
 		wavesurfer.on('error', (err)=>{console.log(err)})
 
@@ -250,11 +246,11 @@
 		wavesurfer.on('region-created', (region) => { 
 			
 			resetPreviousRegion()
-			if(locked.size){
+			// if(locked.size){
 				// do think to handle locked kps
-			} else {
+			// } else {
 				$curKeypoint.tags=[]
-			}
+			// }
 			activeRegion = region;
 			$curKeypoint.id  = $curKeypoint.id || region.id
 		})
@@ -274,18 +270,12 @@
 
 </style>
 
-
 <div>
 <div bind:this={waveform} style="position: relative;"/>
-<input on:mouseup={()=> wavesurfer.zoom(sliderVal)} type="range" min="0" max="500" bind:value={sliderVal} style="width: 100%"/>
-<span>px/sec: {sliderVal}</span>
+<!-- <input on:mouseup={()=> wavesurfer.zoom(pxSec)} type="range" min="0" max="500" bind:value={pxSec} style="width: 100%"/>
+<span>px/sec: {pxSec}</span> -->
 </div>
-<Tagbox bind:tags={tags} activeRegion={activeRegion} bind:tagChecks bind:quickTag bind:locked>
-	{#if $keypointDefined.start}
-		<button on:click={deleteTag}> Delete Tag </button>
-		<button on:click={saveTag}> Save Tag </button>
-	{/if}
-</Tagbox>
+
 
 <!-- <button on:click={()=>{console.log(wavesurfer.regions, curKeypoint.getValues(), activeRegion, previousRegion) }}> vals</button> -->
 

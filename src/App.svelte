@@ -1,12 +1,14 @@
 <script lang="typescript">
   // Creates a Svelte store (https://svelte.dev/tutorial/writable-stores) that syncs with the named Traitlet in widget.ts and example.py.
-  import { createValue, curKeypoint, timingObject } from './stores';
+  import { createValue, curKeypoint, timingObject, keypointDefined } from './stores';
   import { onMount } from 'svelte';
   import Map from './Map.svelte';
   import MainVid from './MainVid.svelte';
   import Transcript from './Transcript.svelte'
   import WaveSurferControler from './WaveSurferControler.svelte'
   import Views from './Views.svelte'
+  import Tagbox from './Tagbox.svelte'
+  import Controls from './Controls.svelte'
 
   window.model
   export let model;
@@ -27,13 +29,30 @@
 
   let vid;
   const togglePlay = () => {
-    console.log($timingObject.query().velocity)
+    // console.log($timingObject.query().velocity)
     $timingObject.query().velocity ? $timingObject.update({velocity:0}): $timingObject.update({velocity:1})
   }
 
   let tagChecks;
   let quickTag;
   let shortcuts;
+  let activeRegion;
+  let locked;
+
+  let velocity;
+  let position = 0;
+  let volume;
+  let updateZoom;
+  const updateTiming = (timestamp) =>{
+    ({velocity, position} =  $timingObject.query());
+    // console.log(timeString)
+
+    requestAnimationFrame(updateTiming)
+  }
+  
+
+
+
   $: if($tags.length){ shortcuts= "qwerasdfzxcvtyuighjk".slice(0,$tags.length)}
   
   // hacky way of making python tag store acessible to all components and still reactive
@@ -131,6 +150,7 @@
   onMount(() => {
     widget.onkeydown =  e => onKeypress(e) 
     model.on('msg:custom', handleBackendMsg);
+    requestAnimationFrame(updateTiming);
   })
   
 </script>
@@ -148,6 +168,12 @@
     min-height: 25vh;
   }
 
+  .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 10px;
+  }
+
 </style>
 <div class="widget" bind:this={widget} tabindex="-1">
  <div class="container" bind:this={topRow}>
@@ -156,6 +182,7 @@
                transcript={$transcriptSrc}
                transcript_lang={$transcriptLang}
                bind:height
+               bind:volume
                on:trackLoaded={handleTranscript}
                on:durationLoaded|once={handleTimeline}/>
     </div>
@@ -178,5 +205,20 @@
                        bind:selectPreviousTag
                        bind:saveTag
                        bind:deleteTag
-                       bind:syncKeypoints/>
+                       bind:syncKeypoints
+                       bind:locked
+                       bind:updateZoom/>
+  
+  <div class='bottom-row'>
+    <div>
+      <!-- <button>Play</button> -->
+      <Controls bind:velocity bind:position bind:volume bind:updateZoom/>
+    </div>
+    <Tagbox bind:tags={$tags} bind:activeRegion bind:tagChecks bind:quickTag bind:locked bind:position>
+      {#if $keypointDefined.start}
+        <button on:click={deleteTag}> Delete Tag </button>
+        <button on:click={saveTag}> Save Tag </button>
+      {/if}
+    </Tagbox >
+  </div>
 </div>

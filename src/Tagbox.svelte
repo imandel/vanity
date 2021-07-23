@@ -5,6 +5,8 @@
 	// export let activeRegion
 	export let locked = new Set();
 	export let tags;
+	export let velocity;
+	export let position;
 	let start;
 	let end;
 	let newLabel;
@@ -54,11 +56,11 @@
 		margin-right: 3px;
 		margin-left: 3px; 
 	}
-	.bottom-container {
+/*	.bottom-container {
 	    display: grid;
 	    grid-template-columns: 1fr 1fr;
 	    grid-gap: 10px;
-	}
+	}*/
 	.tagChecks {
 		display: flex;
 		flex-flow: row wrap;
@@ -73,15 +75,14 @@
 	}
 
 </style>
-<div class='bottom-container'>
-	<div class='keypoints'></div>
+<!-- <div class='bottom-container'> -->
 	<div class='tagbox'>
 		{#if $keypointDefined.start}
 		 <label>start:
-		 	<input bind:value={$curKeypoint.start} type='number' min='0' max={$curKeypoint.end} step='0.01' placeholder={$curTime} />
+		 	<input bind:value={$curKeypoint.start} type='number' min='0' max={$curKeypoint.end} step='0.01' placeholder={position} />
 		 </label>
 		 {:else}
-		 <label>start<input bind:value={start} type='number' min='0' step='0.01' placeholder={$curTime} /></label>
+		 <label>start<input bind:value={start} type='number' min='0' step='0.01' placeholder={position} /></label>
 		 {/if}
 
 		 {#if $keypointDefined.end}
@@ -109,4 +110,4 @@
 		 	<textarea bind:value={$curKeypoint.comments} class:hidden={quickTag}></textarea>
 		 
 	</div>
-</div>
+<!-- </div> -->
