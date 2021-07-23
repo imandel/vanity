@@ -23,12 +23,14 @@
 	export let keypoints
 	export let locked;
 
+	$: console.log(activeRegion)
+
 	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
 		wavesurfer.load(vid)
 	}
 
-	export const updateZoom = (pxSec)=> {wavesurfer.zoom(pxSec)}
+	export const updateZoom = (pxSec) => {wavesurfer.zoom(pxSec)}
 
 	export const selectNextTag = () => {
 		const sorted = Object.values(wavesurfer.regions.list).sort((a,b)=>{return a.start-b.start})
@@ -107,14 +109,16 @@
 										})
 	}
 
-	$: if(activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){ 
-		activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
-		// https://svelte.dev/tutorial/updating-arrays-and-objects
-		activeRegion = activeRegion;
-		previousRegion = activeRegion;
+	// $: if(wavesurfer && activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){ 
+	// 	console.log('here')
+	// 	activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
+	// 	// https://svelte.dev/tutorial/updating-arrays-and-objects
+	// 	activeRegion = activeRegion;
+	// 	previousRegion = activeRegion;
 
-	}
-	$: if(!activeRegion && $curKeypoint.start){
+	// }
+	$: if(wavesurfer && !activeRegion && $curKeypoint.start){
+		console.log('here2')
 		activeRegion = wavesurfer.addRegion({
 								start: $curKeypoint.start,
 								end: $curKeypoint.end,
@@ -123,12 +127,13 @@
 	}
 
 	export const deleteTag = () => {
-		if(locked.size){
-			curKeypoint.resetKeypointTimes()
-		} else {
+		// if(locked.size){
+			// curKeypoint.resetKeypointTimes()
+		// } else {
 			curKeypoint.resetKeypoint()
-		}
-		 activeRegion.remove(); 
+		// }
+		 const temp = activeRegion
+		 temp.remove();
 		 activeRegion=null;
 		 keypoints = regionsToKeypoints(wavesurfer.regions.list)
 	}
@@ -153,7 +158,7 @@
 		// } else {
 			curKeypoint.resetKeypoint()
 		// }
-		// activeRegion = null
+		activeRegion = null
 
 	}
 		
@@ -165,12 +170,16 @@
 	}
 	
 	onDestroy(async () => {
+		console.log('here')
 		wavesurfer.destroy()
 		curKeypoint.resetKeypoint()
 		activeRegion = null;
 	})
 
 	onMount(async () => {
+		curKeypoint.resetKeypoint()
+		activeRegion=null
+		console.log('mounted')
 	    wavesurfer = WaveSurfer.create({
 	      container: waveform,
 	      waveColor: "#76a9fa",
@@ -199,6 +208,7 @@
 		// wavesurfer.on('loading', (e)=>{console.log(e)})
 		wavesurfer.on('waveform-ready', ()=>{
 			console.log('ready')
+			window.wavesurfer = wavesurfer
 			// TODO: this is a hacky fix, do better
 			pxSec = 1;
 			// slider.min= wavesurfer.params.minPxPerSec;

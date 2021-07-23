@@ -26,7 +26,8 @@
 	}
 
 	$: if($keypointDefined.start && $keypointDefined.end){
-		const nodes = [...transcriptBox.children]
+		const children = transcriptBox?.children || []
+		const nodes = [...children]
 		// nodes.forEach(p => p.classList.remove('activeLine'))
 		const filtered = nodes.filter((p) => {
 			const startTime = parseFloat(p.dataset.starttime)

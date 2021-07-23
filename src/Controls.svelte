@@ -7,12 +7,19 @@
 	export let position;
 	export let volume=1;
 	export let updateZoom;
+
+	export const updatePos = (timeDelta) => {
+		const newTime = Math.max($timingObject.query().position + timeDelta, 0)
+		$timingObject.update({position: newTime})
+	}
 	let pxSec=0;
 	let previousVelocity=1;
 	let speeds = [0.25, 0.5, 1, 1.25, 1.5, 1.75, 2, 4, 8]
 	let volHidden = true;
 	let zoomHidden = true;
-	$: console.log(updateZoom)
+	
+
+
 </script>
 
 <style>
@@ -31,8 +38,11 @@
 	 	display: inline-block;
 	 }
 </style>
-
+<button on:click={()=>{updatePos(-10)}}> &lt&lt </button>
+<button on:click={()=>{updatePos(-0.03333333333)}}> &lt </button>
 <button on:click={()=>{velocity ? $timingObject.update({velocity:0}) : $timingObject.update({velocity:previousVelocity})}}>{velocity ? 'pause' : 'play'}</button>
+<button on:click={()=>{updatePos(0.03333333333)}}> &gt; </button>
+<button on:click={()=>{updatePos(10)}}> &gt;&gt; </button>
 <select bind:value={previousVelocity} on:change={()=>{if(velocity){$timingObject.update({velocity:previousVelocity})}}}>
 	{#each speeds as speed}
 		<option value={speed}>{speed}</option>

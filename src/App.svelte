@@ -29,7 +29,6 @@
 
   let vid;
   const togglePlay = () => {
-    // console.log($timingObject.query().velocity)
     $timingObject.query().velocity ? $timingObject.update({velocity:0}): $timingObject.update({velocity:1})
   }
 
@@ -38,7 +37,7 @@
   let shortcuts;
   let activeRegion;
   let locked;
-
+  let updatePos;
   let velocity;
   let position = 0;
   let volume;
@@ -49,22 +48,9 @@
 
     requestAnimationFrame(updateTiming)
   }
-  
-
-
 
   $: if($tags.length){ shortcuts= "qwerasdfzxcvtyuighjk".slice(0,$tags.length)}
-  
-  // hacky way of making python tag store acessible to all components and still reactive
   let tags = createValue(model, 'tags', [])
-  // $tags = [...$tgs]
-  // $: {
-  //   $tgs = [...$tags]
-  //   // could othewise do "qwertasdfgzxcvb" or "qwerasdfzxcvtgbyhn..."
-  //   shortcuts = "qwerasdfzxcvtyuighjk".slice(0,$tags.length)
-  // }
-
-  // $: console.log($curKeypoint)
 
   // for async passing data to componenents when video loads
   let onCuesLoad;
@@ -134,6 +120,14 @@
             e.preventDefault();
             selectPreviousTag()
             break;
+          case "ArrowLeft":
+            e.preventDefault();
+            updatePos(-10)
+            break;
+          case "ArrowRight":
+            e.preventDefault();
+            updatePos(10)
+            break;
           default: 
             break;
         }
@@ -145,7 +139,6 @@
         else if (quickTag && idx >=0){ tagChecks.children[idx].firstElementChild.click() }
           }
     }
-
 
   onMount(() => {
     widget.onkeydown =  e => onKeypress(e) 
@@ -212,7 +205,7 @@
   <div class='bottom-row'>
     <div>
       <!-- <button>Play</button> -->
-      <Controls bind:velocity bind:position bind:volume bind:updateZoom/>
+      <Controls bind:velocity bind:position bind:volume bind:updateZoom bind:updatePos/>
     </div>
     <Tagbox bind:tags={$tags} bind:activeRegion bind:tagChecks bind:quickTag bind:locked bind:position>
       {#if $keypointDefined.start}

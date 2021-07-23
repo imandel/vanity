@@ -80,7 +80,7 @@
                 }
             }]
         };
-    mapRef.getSource('keyLineSource').setData(markedLine);
+    mapRef.getSource('keyLineSource')?.setData(markedLine);
     }
   }
   const nearPointTime = (lngLat) => {
@@ -110,8 +110,8 @@
     }
 
   // these functions takes time in ms not s
-  $: updatePos($curTime*1000)
-  $: updateKeypoint($curKeypoint.start*1000, $curKeypoint.end*1000)
+  $: if(mapRef){updatePos($curTime*1000)}
+  $: if(mapRef){updateKeypoint($curKeypoint.start*1000, $curKeypoint.end*1000)}
 
   onMount(async () => {
     mapboxgl.accessToken = 'pk.eyJ1IjoiaW1hbmRlbCIsImEiOiJjankxdjU4ODMwYTViM21teGFpenpsbmd1In0.IN9K9rp8-I5pTbYTmwRJ4Q';
