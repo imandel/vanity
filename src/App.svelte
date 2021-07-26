@@ -57,10 +57,10 @@
   let onTimelineDataLoad;
   let onMapDataLoad;
   let selectNextTag
-  let selectPreviousTag
-  let saveTag;
-  let deleteTag;
+  let tagAction
   let syncKeypoints;
+  let toggleHideSaved;
+  let hideSaved;
 
   let map;
   let height;
@@ -103,10 +103,10 @@
             quickTag = !quickTag
             break;
           case "KeyS":
-            saveTag()
+            tagAction('save')
             break;
           case "Backspace":
-            deleteTag()
+            tagAction('delete')
           default:
             break;
         }
@@ -118,7 +118,7 @@
             break;
           case "Tab":
             e.preventDefault();
-            selectPreviousTag()
+            selectNextTag('reverse')
             break;
           case "ArrowLeft":
             e.preventDefault();
@@ -134,7 +134,7 @@
       }
       else{
         const idx = shortcuts.indexOf(e.key)
-        if(e.key == "Tab") {e.preventDefault(); selectNextTag() }
+        if(e.key == "Tab") {e.preventDefault(); selectNextTag('forward') }
         
         else if (quickTag && idx >=0){ tagChecks.children[idx].firstElementChild.click() }
           }
@@ -195,22 +195,21 @@
                        bind:tagChecks 
                        bind:quickTag 
                        bind:selectNextTag
-                       bind:selectPreviousTag
-                       bind:saveTag
-                       bind:deleteTag
+                       bind:tagAction
                        bind:syncKeypoints
                        bind:locked
-                       bind:updateZoom/>
+                       bind:updateZoom
+                       bind:toggleHideSaved
+                       bind:hideSaved/>
   
   <div class='bottom-row'>
     <div>
-      <!-- <button>Play</button> -->
-      <Controls bind:velocity bind:position bind:volume bind:updateZoom bind:updatePos/>
+      <Controls bind:velocity bind:position bind:volume bind:updateZoom bind:updatePos bind:toggleHideSaved bind:hideSaved/>
     </div>
     <Tagbox bind:tags={$tags} bind:activeRegion bind:tagChecks bind:quickTag bind:locked bind:position>
       {#if $keypointDefined.start}
-        <button on:click={deleteTag}> Delete Tag </button>
-        <button on:click={saveTag}> Save Tag </button>
+        <button on:click={()=>{tagAction('save')}}> Delete Tag </button>
+        <button on:click={()=>{tagAction('delete')}}> Save Tag </button>
       {/if}
     </Tagbox >
   </div>

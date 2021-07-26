@@ -73,6 +73,9 @@
 	  color: #1e429f;
 	  font-weight: bolder;
 	}
+	textarea {
+		resize: vertical;
+	}
 
 </style>
 <!-- <div class='bottom-container'> -->

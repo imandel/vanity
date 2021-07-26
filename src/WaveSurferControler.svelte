@@ -7,7 +7,7 @@
 	import { onMount, onDestroy } from "svelte";
 	import Tagbox from './Tagbox.svelte';
 
-	let wavesurfer;//={regions:{list:[]}}
+	let wavesurfer
 	let waveform;
 	let vid;
 	let regionPlayed;
@@ -16,14 +16,23 @@
 	export let activeRegion;
 	let previousRegion;
 	let mouseover = false;
-
+	export let hideSaved = false;
 	export let tags
 	export let tagChecks;
 	export let quickTag;
 	export let keypoints
 	export let locked;
 
-	$: console.log(activeRegion)
+	export const toggleHideSaved = () => {
+		if(hideSaved){
+
+			Object.values(wavesurfer.regions.list).filter((region) => region?.data?.saved && region!==activeRegion).forEach((region)=>region.element.style.visibility='hidden')
+		} else {
+			Object.values(wavesurfer.regions.list).forEach((region) => region.element.style.visibility='visible')
+		}
+		// hideSaved = !hideSaved
+		console.log(hideSaved)
+	}
 
 	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
@@ -32,40 +41,25 @@
 
 	export const updateZoom = (pxSec) => {wavesurfer.zoom(pxSec)}
 
-	export const selectNextTag = () => {
-		const sorted = Object.values(wavesurfer.regions.list).sort((a,b)=>{return a.start-b.start})
+	export const selectNextTag = (direction) => {
+		let sorted;
+		let tempKeypoint;
+		let visible = Object.values(wavesurfer.regions.list).filter(region => region.element.style.visibility !== 'hidden');
+		if(direction === 'forward') {
+			sorted = visible.sort((a,b)=>{return a.start-b.start})
+			tempKeypoint = sorted.find(region => region.start > previousRegion.start) || sorted[0]
+		} else if (direction==='reverse') {
+			sorted = visible.sort((a,b)=>{return b.start-a.start})
+			tempKeypoint = sorted.find(region => region.start < previousRegion.start) || sorted[0]
+		}
 		curKeypoint.resetKeypoint();
-		const tempKeypoint = sorted.find(region => region.start > previousRegion.start) || sorted[0]
 		previousRegion = activeRegion;
 		activeRegion = tempKeypoint;
 		resetPreviousRegion()
 		activeRegion.update({color: 'rgba(255, 255, 0, 0.4)'})
 		previousRegion = activeRegion;
-		// $curTime = activeRegion.start
 		$timingObject.update({position:activeRegion.start})
 	}
-
-	export const selectPreviousTag = () => {
-		const sorted = Object.values(wavesurfer.regions.list).sort((a,b)=>{return b.start-a.start})
-		curKeypoint.resetKeypoint();
-		const tempKeypoint = sorted.find(region => region.start < previousRegion.start) || sorted[0]
-		previousRegion = activeRegion;
-		activeRegion = tempKeypoint;
-		resetPreviousRegion()
-		activeRegion.update({color: 'rgba(255, 255, 0, 0.4)'})
-		previousRegion = activeRegion;
-		// $curTime = activeRegion.start
-		$timingObject.update({position:activeRegion.start})
-	}
-
-	// const keypointsToRegions = (keypointsList) => {
-	// 	keypointsList.forEach((keypoint)=>{
-	// 		if(keypoint.id in wavesurfer.regions.list){
-
-	// 		}
-	// 	})
-
-	// }
 
 	const updateData = (keypoint, region) => {
 		if(keypoint.type=='tag'){
@@ -109,16 +103,14 @@
 										})
 	}
 
-	// $: if(wavesurfer && activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){ 
-	// 	console.log('here')
-	// 	activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
-	// 	// https://svelte.dev/tutorial/updating-arrays-and-objects
-	// 	activeRegion = activeRegion;
-	// 	previousRegion = activeRegion;
+	$: if(wavesurfer && activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){ 
+		activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
+		// https://svelte.dev/tutorial/updating-arrays-and-objects
+		activeRegion = activeRegion;
+		previousRegion = activeRegion;
 
-	// }
+	}
 	$: if(wavesurfer && !activeRegion && $curKeypoint.start){
-		console.log('here2')
 		activeRegion = wavesurfer.addRegion({
 								start: $curKeypoint.start,
 								end: $curKeypoint.end,
@@ -126,7 +118,21 @@
 								id: $curKeypoint.id});
 	}
 
-	export const deleteTag = () => {
+	export const tagAction = (action) => {
+		switch(action){
+			case 'save':
+				saveTag()
+				break;
+			case 'delete':
+				deleteTag()
+				break;
+			default:
+				break;
+		}
+
+	}
+
+	const deleteTag = () => {
 		// if(locked.size){
 			// curKeypoint.resetKeypointTimes()
 		// } else {
@@ -138,7 +144,7 @@
 		 keypoints = regionsToKeypoints(wavesurfer.regions.list)
 	}
 
-	export const saveTag = () => {
+	const saveTag = () => {
 		activeRegion.update({
 			color:'rgba(255, 200, 0, 0.4)',
 			id: $curKeypoint.id || activeRegion.id,
@@ -149,7 +155,6 @@
 				saved: true
 			}
 		})
-		// console.log(wavesurfer.regions.list)
 		activeRegion = null
 		keypoints = regionsToKeypoints(wavesurfer.regions.list)
 		// keypoints = [...keypoints, Object.assign({},$curKeypoint)]
@@ -205,7 +210,7 @@
 	      RegionsPlugin.create({dragSelection:true, color: 'rgba(255, 255, 0, 0.4)' })
 	      	]
 	    });
-		// wavesurfer.on('loading', (e)=>{console.log(e)})
+	
 		wavesurfer.on('waveform-ready', ()=>{
 			console.log('ready')
 			window.wavesurfer = wavesurfer
@@ -272,7 +277,6 @@
 		wavesurfer.on('seek', (pos)=>{ $timingObject.update({ position: pos * wavesurfer.getDuration()}) })
 		wavesurfer.on('region-mouseenter', (e)=>{mouseover=true})
 		wavesurfer.on('region-mouseleave', (e)=>{mouseover=false})
-		// wavesurfer.drawer.on('click', (e) => { console.log(e) })
 	})
 </script>
 
@@ -282,10 +286,5 @@
 
 <div>
 <div bind:this={waveform} style="position: relative;"/>
-<!-- <input on:mouseup={()=> wavesurfer.zoom(pxSec)} type="range" min="0" max="500" bind:value={pxSec} style="width: 100%"/>
-<span>px/sec: {pxSec}</span> -->
 </div>
-
-
-<!-- <button on:click={()=>{console.log(wavesurfer.regions, curKeypoint.getValues(), activeRegion, previousRegion) }}> vals</button> -->
 
