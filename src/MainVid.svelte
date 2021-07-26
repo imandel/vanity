@@ -6,7 +6,10 @@
 	let container;
 	export let height;
 	export let src;
-	export let transcript;
+	
+	export let transcript; 
+	
+
 	export let transcript_lang;
 	export let volume=1;
 
@@ -35,7 +38,7 @@
 	video {
 			height: 100%;
 			width: 100%;
-	    max-width: none;
+	    	max-width: none;
     }
     .mainVid{
 	    resize: horizontal;

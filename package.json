@@ -50,6 +50,7 @@
     "@turf/nearest-point-on-line": "^6.3.0",
     "@vime/core": "^5.0.33",
     "@vime/svelte": "^5.0.33",
+    "eslint-plugin-svelte3": "^3.2.0",
     "mapbox-gl": "^2.3.0",
     "svelte-awesome": "^2.3.2",
     "timing-object": "^3.1.31",

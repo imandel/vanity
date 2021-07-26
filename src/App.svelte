@@ -9,8 +9,6 @@
   import Views from './Views.svelte'
   import Tagbox from './Tagbox.svelte'
   import Controls from './Controls.svelte'
-
-  window.model
   export let model;
 
   let gps = createValue(model, 'gps', '')
@@ -204,13 +202,27 @@
   
   <div class='bottom-row'>
     <div>
-      <Controls bind:velocity bind:position bind:volume bind:updateZoom bind:updatePos bind:toggleHideSaved bind:hideSaved/>
+      <Controls bind:velocity 
+                bind:position 
+                bind:volume 
+                bind:updateZoom 
+                bind:updatePos 
+                bind:toggleHideSaved 
+                bind:hideSaved/>
     </div>
-    <Tagbox bind:tags={$tags} bind:activeRegion bind:tagChecks bind:quickTag bind:locked bind:position>
+    <Tagbox 
+    bind:tags={$tags} 
+    bind:activeRegion 
+    bind:tagChecks 
+    bind:quickTag 
+    bind:locked 
+    bind:position>
+
       {#if $keypointDefined.start}
         <button on:click={()=>{tagAction('save')}}> Delete Tag </button>
         <button on:click={()=>{tagAction('delete')}}> Save Tag </button>
       {/if}
-    </Tagbox >
+      
+    </Tagbox>
   </div>
 </div>
