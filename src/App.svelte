@@ -186,7 +186,7 @@
       <Transcript bind:onCuesLoad/>
     {/if}
     {#if $gps}
-      <Map gps={$gps} mapStyle={$mapStyle} bind:onMapDataLoad/>
+      <Map gps={$gps} mapStyle={$mapStyle} bind:onMapDataLoad bind:position/>
     {/if}
   </div>
   <WaveSurferControler bind:tags={$tags} 

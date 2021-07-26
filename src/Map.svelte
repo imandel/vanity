@@ -16,6 +16,7 @@
   let vid;
   let keyOrigin;
   let hidden=false;
+  export let position;
   export let gps;
   export let mapStyle;
   export const onMapDataLoad = async (viddata) => {
@@ -110,7 +111,7 @@
     }
 
   // these functions takes time in ms not s
-  $: if(mapRef){updatePos($curTime*1000)}
+  $: if(mapRef){updatePos(position*1000)}
   $: if(mapRef){updateKeypoint($curKeypoint.start*1000, $curKeypoint.end*1000)}
 
   onMount(async () => {
