@@ -33,6 +33,8 @@
 		transform: rotate(90deg);
 		transform-origin: left;
 		width: 70px;
+		margin-top: 12px;
+		margin-left: -6px;
 		/*position: absolute;*/
 	 }
 
