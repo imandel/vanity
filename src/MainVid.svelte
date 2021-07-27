@@ -6,10 +6,7 @@
 	let container;
 	export let height;
 	export let src;
-	
-	export let transcript; 
-	
-
+	export let transcript;
 	export let transcript_lang;
 	export let volume=1;
 

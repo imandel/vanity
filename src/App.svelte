@@ -188,29 +188,24 @@
       <Map gps={$gps} mapStyle={$mapStyle} bind:onMapDataLoad bind:position/>
     {/if}
   </div>
-  <WaveSurferControler bind:tags={$tags} 
-                       bind:keypoints={$keypoints}
+  <WaveSurferControler bind:keypoints={$keypoints}
                        bind:onTimelineDataLoad 
-                       bind:tagChecks 
-                       bind:quickTag 
                        bind:selectNextTag
                        bind:tagAction
                        bind:syncKeypoints
-                       bind:locked
                        bind:updateZoom
                        bind:toggleHideSaved
                        bind:hideSaved/>
-  
-  <div class='bottom-row'>
-    <div>
-      <Controls bind:velocity 
+        <Controls bind:velocity 
                 bind:position 
                 bind:volume 
                 bind:updateZoom 
                 bind:updatePos 
                 bind:toggleHideSaved 
                 bind:hideSaved/>
-      <DataTable/>
+  <div class='bottom-row'>
+    <div>
+      <DataTable bind:keypoints={$keypoints}/>
     </div>
     <Tagbox 
     bind:tags={$tags} 
@@ -221,8 +216,8 @@
     bind:position>
 
       {#if $keypointDefined.start}
-        <button on:click={()=>{tagAction('save')}}> Delete Tag </button>
-        <button on:click={()=>{tagAction('delete')}}> Save Tag </button>
+        <button on:click={()=>{tagAction('delete')}}> Delete Tag </button>
+        <button on:click={()=>{tagAction('save')}}> Save Tag </button>
       {/if}
 
     </Tagbox>

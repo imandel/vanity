@@ -17,11 +17,12 @@
 	let previousRegion;
 	let mouseover = false;
 	export let hideSaved = false;
-	export let tags
-	export let tagChecks;
-	export let quickTag;
+	// export let tags
+	// export let tagChecks;
+	// export let quickTag;
 	export let keypoints
-	export let locked;
+	// todo fix this
+	// export let locked;
 
 	export const toggleHideSaved = () => {
 		if(hideSaved){

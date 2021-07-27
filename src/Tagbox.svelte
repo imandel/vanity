@@ -76,10 +76,18 @@
 	textarea {
 		resize: vertical;
 	}
+	.topRow {
+		background-color: #d6d3ff;
+		padding-left: 10px;
+    	padding-bottom: 2px;
+    	padding-top: 8px;
+    	margin-bottom: 6px;
+	}
 
 </style>
-<!-- <div class='bottom-container'> -->
+
 	<div class='tagbox'>
+		<div class="topRow">
 		{#if $keypointDefined.start}
 		 <label>start:
 		 	<input bind:value={$curKeypoint.start} type='number' min='0' max={$curKeypoint.end} step='0.01' placeholder={position} />
@@ -97,6 +105,7 @@
 		{/if}
 		<label>quick tag: <input bind:checked={quickTag} type='checkbox'/></label>
 		<slot></slot>
+		</div>
 		<div class='tagChecks' bind:this={tagChecks} >
 		{#each tags as tag, index}
 			<div on:dblclick={lockTag}>
@@ -113,4 +122,3 @@
 		 	<textarea bind:value={$curKeypoint.comments} class:hidden={quickTag}></textarea>
 		 
 	</div>
-<!-- </div> -->
