@@ -100,7 +100,7 @@ The [introduction file](./examples/introduction.ipynb) has a test example you sh
 - [x] mute buttons for additional views
 - [ ] mute all others
 - [x] fix tagbox for timingsrc
-- [ ] errors on firefox for vtt files 
+- [x] errors on firefox for vtt files 
 - [ ] keyboard shprtcuts for timestep
 - [x] key binding for moving around video faster
 - [ ] switch main vid to using a store tather than passing props and events around?
