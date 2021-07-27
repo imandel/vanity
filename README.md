@@ -90,18 +90,19 @@ The [introduction file](./examples/introduction.ipynb) has a test example you sh
 ### frontend
 - [x] end region on region play (shift click) with timingsrc
 - [x] jump to next region
-- [ ] keyoint save not nulling active region (race condition?)
-- [ ] disable editing saved regions without updating backend
+- [x] disable editing saved regions without updating backend
 - [ ] fn keypoint2region & region2keypoint
+- [x] hide saved
+- [ ] hide/filter by tag, temp, etc
 - [ ] better tracking modality for curkeypoint.id
 - [ ] additional views css is driving me crazy
 - [ ] UX logix for locked tags?
 - [x] mute buttons for additional views
 - [ ] mute all others
-- [ ] fix tagbox for timingsrc
+- [x] fix tagbox for timingsrc
 - [ ] errors on firefox for vtt files 
 - [ ] keyboard shprtcuts for timestep
-- [ ] key binding for moving around video faster
+- [x] key binding for moving around video faster
 - [ ] switch main vid to using a store tather than passing props and events around?
 - [ ] convey when ttranscript is partially selected
 - [x] multiple videos
@@ -110,14 +111,17 @@ The [introduction file](./examples/introduction.ipynb) has a test example you sh
 - [ ] dynamic assign color to tags?
 - [x] fix responseive top row (e.g. no map, no transcript)
 - [x] make divs collasible?
-- [ ] add and remove tags from ui?
+- [x] add and remove tags from ui?
 - [ ] load in potential tags for review
 - [ ] format times for either s or hh:mm:ss
 - [x] pip button? https://svelte.dev/repl/116237b19d094b3f8fd074cee7c00ff1?version=3.38.3
 - [ ] convert this to svelte https://www.npmjs.com/package/react-annotation-tool
+- [ ] updates from cookiecutter with cruft https://github.com/cruft/cruft
 - [ ] emulate disabled rather than use for inputs (clearer ux for locking)
 - [ ] stores pollute global namespace, multiple widgets conflict
 - [ ] fork wavesurfer and use timingsrc?
+- [ ] better datatable? https://vincjo.fr/svelte-simple-datatables/#/
+- [ ] user prefs in localstore?
 
 ### backend
 - [ ] python-validator for df
