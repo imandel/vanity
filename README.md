@@ -2,57 +2,67 @@
 
 A Custom Jupyter Widget Library for multi modal analysis of video. *Only tested on chrome/chromium based browsers*
 
+## Requirements
 
-## Installation
+* Node version 15
+* Python 3.8
 
-<!-- You can install using `pip`:
-
-```bash
-pip install vanity
-```
-
-Or if you use jupyterlab:
-
-```bash
-pip install vanity
-jupyter labextension install @jupyter-widgets/jupyterlab-manager
-```
-
-If you are using Jupyter Notebook 5.2 or earlier, you may also need to enable
-the nbextension:
-
-```bash
-jupyter nbextension enable --py [--sys-prefix|--user|--system] vanity
-``` -->
-
-TODO
 
 ## Development Installation
 
-```bash
-# After cloning the repo, checkout the svelte branch
-git checkout svelte
+```bach 
+$ git clone git@github.com:imandel/vanity.git
 
-# First install the python package. This will also build the JS packages.
+```
+Now install the dependencies:
+```bash
+$ npm i
+$ pip install pandas
+```
+
+First install the python package. This will also build the JS packages.
+
+```bash
 pip install -e .
 ```
+<!-- 
+If this fails, you may need to upgrade your version of node. Check your version with `node -v` and ensure it says `v16.5.0` or higher. -->
 
-If this fails, you may need to upgrade your version of node. Check your version with `node -v` and ensure it says `v16.5.0` or higher.
+Enable the extension
 
-<!-- When developing your extensions, you need to manually enable your extensions with the
-notebook / lab frontend. For lab, this is done by the command:
+```bash
+$ jupyter nbextension install --sys-prefix --symlink --overwrite --py vanity
+$ jupyter nbextension enable --sys-prefix --py vanity
+```
+
+Run these command in **two separate** windows:
+```bash
+$ npm run watch
+```
+and the second command:
+```bash
+$ jupyter notebook
+```
+
+Open your browser by clicking the link provided in the jupyter terminal.
+Navigate to "examples" and then click the "introduction.ipynp" link.
+
+### Firefox support
+
+There is a weird bug running this app with firefox. 
 
 ```
-jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
-jupyter labextension install .
+jupyter notebook --generate-config
 ```
+Edit the config file :
+```
+vi .jupyter/jupyter_notebook_config.py
+```
+Change "c.NotebookApp.allow_origin" from "" to "*"
 
-For classic notebook, you can run: -->
+See [this issue](https://github.com/jupyter/notebook/issues/5067) for more information: 
 
-```
-jupyter nbextension install --sys-prefix --symlink --overwrite --py vanity
-jupyter nbextension enable --sys-prefix --py vanity
-```
+### Windows support
 
 Note that the `--symlink` flag doesn't work on Windows, so you will here have to run
 the `install` command every time that you rebuild your extension. For certain installations
