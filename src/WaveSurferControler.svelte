@@ -190,7 +190,7 @@
 	      backend: 'MediaElement',
 	      partialRender: true,
 	      zoomDebounce: 100,
-	      hideScrollbar: true,
+	      // hideScrollbar: true,
 	      plugins: [
 	      CursorPlugin.create({
 	      	showTime: true,
