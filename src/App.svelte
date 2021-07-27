@@ -11,6 +11,7 @@
   import Controls from './Controls.svelte'
   import DataTable from './DataTable.svelte'
   export let model;
+  $: console.log(setActiveRegion)
 
   let gps = createValue(model, 'gps', '')
   let vidSrc= createValue(model, 'src', '')
@@ -58,8 +59,8 @@
   let selectNextTag
   let tagAction
   let syncKeypoints;
-  let toggleHideSaved;
   let hideSaved;
+  let setActiveRegion;
 
   let map;
   let height;
@@ -106,6 +107,8 @@
             break;
           case "Backspace":
             tagAction('delete')
+          case 'KeyH':
+            toggleHideSaved()
           default:
             break;
         }
@@ -194,18 +197,17 @@
                        bind:tagAction
                        bind:syncKeypoints
                        bind:updateZoom
-                       bind:toggleHideSaved
-                       bind:hideSaved/>
+                       bind:hideSaved
+                       bind:setActiveRegion/>
         <Controls bind:velocity 
                 bind:position 
                 bind:volume 
                 bind:updateZoom 
                 bind:updatePos 
-                bind:toggleHideSaved 
                 bind:hideSaved/>
   <div class='bottom-row'>
     <div>
-      <DataTable bind:keypoints={$keypoints}/>
+      <DataTable bind:keypoints={$keypoints} bind:setActiveRegion/>
     </div>
     <Tagbox 
     bind:tags={$tags} 

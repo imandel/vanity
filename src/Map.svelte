@@ -169,7 +169,7 @@
       "source": "fullLineSource",
       'paint': {
             // 'line-opacity': 0.5,
-            'line-color': '#76a9fa',
+            'line-color': '#9f98ff',
             'line-width': 4.5
        },
        'layout': {

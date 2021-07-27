@@ -17,23 +17,12 @@
 	let previousRegion;
 	let mouseover = false;
 	export let hideSaved = false;
-	// export let tags
-	// export let tagChecks;
-	// export let quickTag;
 	export let keypoints
 	// todo fix this
 	// export let locked;
+	let toggleHideSaved = () => {}
 
-	export const toggleHideSaved = () => {
-		if(hideSaved){
-
-			Object.values(wavesurfer.regions.list).filter((region) => region?.data?.saved && region!==activeRegion).forEach((region)=>region.element.style.visibility='hidden')
-		} else {
-			Object.values(wavesurfer.regions.list).forEach((region) => region.element.style.visibility='visible')
-		}
-		// hideSaved = !hideSaved
-		console.log(hideSaved)
-	}
+	$: toggleHideSaved(hideSaved)
 
 	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
@@ -44,21 +33,16 @@
 
 	export const selectNextTag = (direction) => {
 		let sorted;
-		let tempKeypoint;
+		let nextRegion;
 		let visible = Object.values(wavesurfer.regions.list).filter(region => region.element.style.visibility !== 'hidden');
 		if(direction === 'forward') {
 			sorted = visible.sort((a,b)=>{return a.start-b.start})
-			tempKeypoint = sorted.find(region => region.start > previousRegion.start) || sorted[0]
+			nextRegion = sorted.find(region => region.start > previousRegion.start) || sorted[0]
 		} else if (direction==='reverse') {
 			sorted = visible.sort((a,b)=>{return b.start-a.start})
-			tempKeypoint = sorted.find(region => region.start < previousRegion.start) || sorted[0]
+			nextRegion = sorted.find(region => region.start < previousRegion.start) || sorted[0]
 		}
-		curKeypoint.resetKeypoint();
-		previousRegion = activeRegion;
-		activeRegion = tempKeypoint;
-		resetPreviousRegion()
-		activeRegion.update({color: 'rgba(255, 255, 0, 0.4)'})
-		previousRegion = activeRegion;
+		setActiveRegion(nextRegion)
 		$timingObject.update({position:activeRegion.start})
 	}
 
@@ -130,7 +114,24 @@
 			default:
 				break;
 		}
+	}
 
+	export const setActiveRegion = (region) => {
+		if(typeof region === 'string'){
+			// allow for id or region
+			region= wavesurfer.regions.list[region]
+		}
+		resetPreviousRegion() 
+		region.update({color: 'rgba(255, 255, 0, 0.4)'})
+		activeRegion = region;
+		$curKeypoint.start = region.start;
+		$curKeypoint.end = region.end;
+		if(region.data){
+			$curKeypoint.tags = region.data.tags || [];
+
+			$curKeypoint.comments = region.data.comments	
+		}
+		previousRegion = region
 	}
 
 	const deleteTag = () => {
@@ -174,21 +175,13 @@
 			previousRegion.update({color: previousRegion.data.color || 'rgba(0, 0, 0, 0.1)'}) 
 		}
 	}
-	
-	onDestroy(async () => {
-		console.log('here')
-		wavesurfer.destroy()
-		curKeypoint.resetKeypoint()
-		activeRegion = null;
-	})
 
-	onMount(async () => {
+	onMount(async () => {	
 		curKeypoint.resetKeypoint()
 		activeRegion=null
-		console.log('mounted')
 	    wavesurfer = WaveSurfer.create({
 	      container: waveform,
-	      waveColor: "#76a9fa",
+	      waveColor: "#bab5ff",
 	      progressColor: "#1e429f",
 	      cursorColor: "#1e429f",
 	      height: 30,
@@ -197,6 +190,7 @@
 	      backend: 'MediaElement',
 	      partialRender: true,
 	      zoomDebounce: 100,
+	      hideScrollbar: true,
 	      plugins: [
 	      CursorPlugin.create({
 	      	showTime: true,
@@ -214,32 +208,27 @@
 	
 		wavesurfer.on('waveform-ready', ()=>{
 			console.log('ready')
-			window.wavesurfer = wavesurfer
 			// TODO: this is a hacky fix, do better
 			pxSec = 1;
 			// slider.min= wavesurfer.params.minPxPerSec;
 			wavesurfer.zoom(pxSec)
+			toggleHideSaved = (shown) => {
+				if(shown){
+					Object.values(wavesurfer.regions.list).filter((region) => region?.data?.saved && region!==activeRegion).forEach((region)=>region.element.style.visibility='hidden')
+				} else {
+					Object.values(wavesurfer.regions.list).forEach((region) => region.element.style.visibility='visible')
+				}
+			}
 		})
 		wavesurfer.on('error', (err)=>{console.log(err)})
 
 		wavesurfer.on('region-click', (region, e) => {
-			resetPreviousRegion() 
-			region.update({color: 'rgba(255, 255, 0, 0.4)'})
-			activeRegion = region;
-			$curKeypoint.start = region.start;
-			$curKeypoint.end = region.end;
-			if(region.data){
-				$curKeypoint.tags = region.data.tags || [];
-
-				$curKeypoint.comments = region.data.comments	
-			}
-			previousRegion = region
+			setActiveRegion(region);
 			// TODO have stop at end or region now that using timingsrc
 			if(e.shiftKey){ 
 				e.stopPropagation();
 				$timingObject.update({position: region.start, velocity: 1})
 				regionPlayed = region;
-
 			}
 		});
 

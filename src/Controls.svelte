@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import { curTime, curKeypoint, keypointDefined, timingObject } from './stores';
 
-
 	export let velocity;
 	export let position;
 	export let volume=1;
@@ -99,5 +98,5 @@
 	<span>{new Date(position*1000).toISOString().substr(11, 8)}</span>
 	<div style="display: inline-block;" on:mouseover={()=>{volHidden=false;}} on:mouseout={()=>{volHidden=true;}}>🔈 <div class="popup" class:hidden={volHidden}><input type="range" min="0" max="1" step="0.01" bind:value={volume}><span>{volume}</span></div></div>
 	<div style="display: inline-block;" on:mouseover={()=>{zoomHidden=false;}} on:mouseout={()=>{zoomHidden=true;}}>🔍 <div class="popup" class:hidden={zoomHidden}><input on:mouseup={()=>{updateZoom(pxSec)}} type="range" min="0" max="500" step="1" bind:value={pxSec}><span>{pxSec}</span></div></div>
-	<label>hide saved <input type="checkbox" bind:checked={hideSaved} on:change={toggleHideSaved} /></label>
+	<label>hide saved <input type="checkbox" bind:checked={hideSaved}/></label>
 </div>
