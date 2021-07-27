@@ -122,6 +122,7 @@ The [introduction file](./examples/introduction.ipynb) has a test example you sh
 - [ ] fork wavesurfer and use timingsrc?
 - [ ] better datatable? https://vincjo.fr/svelte-simple-datatables/#/
 - [ ] user prefs in localstore?
+- [ ] collapse cols in datatable
 
 ### backend
 - [ ] python-validator for df
