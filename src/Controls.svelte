@@ -20,8 +20,6 @@
 	let speeds = [0.25, 0.5, 1, 1.25, 1.5, 1.75, 2, 4, 8]
 	let volHidden = true;
 	let zoomHidden = true;
-	
-
 
 </script>
 
@@ -34,13 +32,57 @@
 		transform-origin: left;
 		width: 70px;
 		margin-top: 12px;
-		margin-left: -6px;
+		margin-left: -12px;
+		cursor: pointer;
+	    width: 100px !important;
+	    -webkit-appearance: none;
+	    z-index: 9000;
+	    width:50px;
+	    border: 1px solid #e6e6e6;
+	    background-color: #e6e6e6;
+	    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%,from(#e6e6e6), to(#d2d2d2));
+	    background-image: -webkit-linear-gradient(right, #e6e6e6, #d2d2d2);
+	    background-image: -moz-linear-gradient(right, #e6e6e6, #d2d2d2);
+	    background-image: -ms-linear-gradient(right, #e6e6e6, #d2d2d2);
+	    background-image: -o-linear-gradient(right, #e6e6e6, #d2d2d2);
+	    -webkit-border-radius: 20px;
+     	-moz-border-radius: 20px;
+     	border-radius: 20px;
+     	overflow: hidden;
 		/*position: absolute;*/
 	 }
+
+	 input[type="range"]:focus {
+	 	border: 0 !imporant;
+		outline: none !important;
+	 }
+	 input[type=range]::-webkit-slider-runnable-track {
+	    box-shadow: none;
+	    border: none;
+	    background: transparent;
+	    -webkit-appearance: none;
+}
+
+	input[type="range"].range::-webkit-slider-thumb {
+     -webkit-appearance: none;
+    	width: 10px;
+    	height: 10px;
+		background-color: #555;
+    	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#4DDBFF), to(#00CCFF));
+    	background-image: -webkit-linear-gradient(right, #4DDBFF, #00CCFF);
+    	background-image: -moz-linear-gradient(right, #4DDBFF, #00CCFF);
+    	background-image: -ms-linear-gradient(right, #4DDBFF, #00CCFF);
+    	background-image: -o-linear-gradient(right, #4DDBFF, #00CCFF);
+    	-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
+        -o-border-radius: 5px;
+    }
+
 
 	 .popup {
 	 	position: absolute;
 	 	display: inline-block;
+	 	z-index: 9000;
 	 }
 </style>
 <div class='container'>
