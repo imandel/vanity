@@ -1,4 +1,4 @@
-<script lang="typescript">
+<script>
   // Creates a Svelte store (https://svelte.dev/tutorial/writable-stores) that syncs with the named Traitlet in widget.ts and example.py.
   import { createValue, curKeypoint, timingObject, keypointDefined } from './stores';
   import { onMount } from 'svelte';
@@ -9,6 +9,7 @@
   import Views from './Views.svelte'
   import Tagbox from './Tagbox.svelte'
   import Controls from './Controls.svelte'
+  import DataTable from './DataTable.svelte'
   export let model;
 
   let gps = createValue(model, 'gps', '')
@@ -209,6 +210,7 @@
                 bind:updatePos 
                 bind:toggleHideSaved 
                 bind:hideSaved/>
+      <DataTable/>
     </div>
     <Tagbox 
     bind:tags={$tags} 
@@ -222,7 +224,7 @@
         <button on:click={()=>{tagAction('save')}}> Delete Tag </button>
         <button on:click={()=>{tagAction('delete')}}> Save Tag </button>
       {/if}
-      
+
     </Tagbox>
   </div>
 </div>
