@@ -41,7 +41,6 @@
   let velocity;
   let position = 0;
   let volume;
-  let updateZoom;
   const updateTiming = (timestamp) =>{
     ({velocity, position} =  $timingObject.query());
     // console.log(timeString)
@@ -196,13 +195,13 @@
                        bind:selectNextTag
                        bind:tagAction
                        bind:syncKeypoints
-                       bind:updateZoom
+                       bind:toggleHideSaved
                        bind:hideSaved
-                       bind:setActiveRegion/>
+                       bind:setActiveRegion
+                       />
         <Controls bind:velocity 
                 bind:position 
                 bind:volume 
-                bind:updateZoom 
                 bind:updatePos 
                 bind:hideSaved/>
   <div class='bottom-row'>
