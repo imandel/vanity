@@ -1,4 +1,5 @@
 <script>
+    //ideas taken from https://adamlynch.com/flexible-data-tables-with-css-grid/
     export let setActiveRegion
     export let keypoints
     let rows;
