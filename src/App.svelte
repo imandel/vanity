@@ -5,9 +5,9 @@
     curKeypoint,
     timingObject,
     keypointDefined,
-  } from './stores';
+  } from './lib/stores';
   import { onMount } from 'svelte';
-  import Map from './componenets/Map.sveltes/Map.svelte';
+  import Map from './componenets/Map.svelte';
   import MainVid from './componenets/MainVid.svelte';
   import Transcript from './componenets/Transcript.svelte';
   import WaveSurferControler from './componenets/WaveSurferControler.svelte';
@@ -109,53 +109,24 @@
   // i think this is the best way to handle keyboard shortcuts when the widget is in focus
   // I could be totally wrong about that but it seems like you want to capture keypresses at then pass them to the relevent componenets?
   // do we want to "take up" the tab key like this?
-  let onKeypress = (e) => {
-    console.log(e);
-    if (e.ctrlKey) {
-      switch (e.code) {
-        case 'KeyQ':
-          quickTag = !quickTag;
-          break;
-        case 'KeyS':
-          tagAction('save');
-          break;
-        case 'Backspace':
-          tagAction('delete');
-        case 'KeyH':
-          toggleHideSaved();
-        default:
-          break;
-      }
-    } else if (e.shiftKey) {
-      switch (e.key) {
-        case ' ':
-          e.preventDefault();
-          togglePlay();
-          break;
-        case 'Tab':
-          e.preventDefault();
-          selectNextTag('reverse');
-          break;
-        case 'ArrowLeft':
-          e.preventDefault();
-          updatePos(-10);
-          break;
-        case 'ArrowRight':
-          e.preventDefault();
-          updatePos(10);
-          break;
-        default:
-          break;
-      }
-    } else {
-      const idx = shortcuts.indexOf(e.key);
-      if (e.key == 'Tab') {
-        e.preventDefault();
-        selectNextTag('forward');
-      } else if (quickTag && idx >= 0) {
-        tagChecks.children[idx].firstElementChild.click();
-      }
-    }
+
+  const onKeypress = (e) => {
+    
+    const idx = shortcuts.indexOf(e.key);
+
+    if (e.ctrlKey && e.code === 'KeyQ') return quickTag = !quickTag;
+    if (e.ctrlKey && e.code === 'KeyS') return tagAction('save');
+    if (e.ctrlKey && e.code === 'Backspace') return tagAction('delete');
+    if (e.ctrlKey && e.code === 'KeyH') return toggleHideSaved();
+
+    if (e.shiftKey && e.key === ' ') {e.preventDefault(); return toggleHideSaved();}
+    if (e.shiftKey && e.key === 'Tab') {e.preventDefault(); return selectNextTag('reverse');}
+    if (e.shiftKey && e.key === 'ArrowLeft') {e.preventDefault(); return updatePos(-10);}
+    if (e.shiftKey && e.key === 'ArrowRight') {e.preventDefault(); return updatePos(10);}
+
+    if (e.key == 'Tab') { e.preventDefault(); return selectNextTag('forward'); }
+    if (quickTag && idx >= 0) tagChecks.children[idx].firstElementChild.click();
+
   };
 
   onMount(() => {
@@ -164,6 +135,8 @@
     requestAnimationFrame(updateTiming);
   });
 </script>
+
+<svelte:window on:onKeypress={onKeypress}/>
 
 <div class="widget" bind:this={widget} tabindex="-1">
   <div class="container" bind:this={topRow}>
