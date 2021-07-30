@@ -1,7 +1,9 @@
 <script>
-	import { curTime, timingObject } from './stores';
-	import { onMount } from 'svelte';
-	import { setTimingsrc } from 'timingsrc';
+		import { onMount } from 'svelte';
+		import { setTimingsrc } from 'timingsrc';
+
+	import { curTime, timingObject } from '../lib/stores';
+
 	let vid;
 	let container;
 	export let height;

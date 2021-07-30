@@ -1,7 +1,9 @@
 <script>
-	import { curTime, timingObject } from './stores';
 	import { onMount } from 'svelte';
 	import View from './View.svelte'
+
+	import { curTime, timingObject } from '../lib/stores';
+
 	export let views;
 	let hidden = false;
 

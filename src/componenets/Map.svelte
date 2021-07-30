@@ -4,10 +4,12 @@
   import { gpx } from "@tmcw/togeojson";
   import mapboxgl from 'mapbox-gl';
   import { onMount } from 'svelte';
-  import { curTime, curKeypoint, timingObject } from './stores.ts';
-  import { point } from '@turf/helpers';
-  import { getId } from './util'
   import nearestPointOnLine from '@turf/nearest-point-on-line';
+  import { point } from '@turf/helpers';
+
+  import { curTime, curKeypoint, timingObject } from '../lib/stores.ts';
+  import { getId } from '../lib/util'
+  
   let mapRef;
   let line;
   let container

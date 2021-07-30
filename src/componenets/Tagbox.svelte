@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { curTime, curKeypoint, keypointDefined} from './stores';
+	import { curTime, curKeypoint, keypointDefined} from '../lib/stores';
 
 	// export let activeRegion
 	export let locked = new Set();

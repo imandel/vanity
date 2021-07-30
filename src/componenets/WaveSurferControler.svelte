@@ -1,10 +1,11 @@
 <script>
-	import { curTime, curKeypoint, keypointDefined, timingObject } from './stores';
 	import WaveSurfer from "wavesurfer.js";
 	import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 	import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
 	import MinimapPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.minimap.js';
 	import { onMount, onDestroy } from "svelte";
+	import { curTime, curKeypoint, keypointDefined, timingObject } from '../lib/stores';
+
 	import Tagbox from './Tagbox.svelte';
 
 	let wavesurfer

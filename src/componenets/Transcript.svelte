@@ -1,7 +1,7 @@
 <script>
 	import { onMount, tick } from 'svelte';
-	import { curTime, curKeypoint, keypointDefined, timingObject } from './stores';
-	import { getId } from './util'
+	import { curTime, curKeypoint, keypointDefined, timingObject } from '../lib/stores';
+	import { getId } from '../lib/util'
 	let cueData;
 	let transcriptBox;
 	let currentCue;
