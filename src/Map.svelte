@@ -23,13 +23,6 @@
     vid = viddata
   }
 
-  $: if (gps && typeof route ==='undefined'){
-    route = gpx(new DOMParser().parseFromString(gps, "text/xml"));
-    start = Date.parse(route.features[0].properties.time);
-    route.features[0].properties.coordinateProperties.times = route.features[0].properties.coordinateProperties.times.map((time)=> Date.parse(time) - start);
-    gps=JSON.stringify(route)
-  }
-
   let geojsonPoint = {
     "type": "FeatureCollection",
     "features": [{
@@ -111,10 +104,15 @@
     }
 
   // these functions takes time in ms not s
-  $: if(mapRef){updatePos(position*1000)}
+  $: if(mapRef && mapRef.getSource('lineSource')){updatePos(position*1000)}
   $: if(mapRef){updateKeypoint($curKeypoint.start*1000, $curKeypoint.end*1000)}
 
   onMount(async () => {
+    console.log('mount map')
+    route = gpx(new DOMParser().parseFromString(gps, "text/xml"));
+    start = Date.parse(route.features[0].properties.time);
+    route.features[0].properties.coordinateProperties.times = route.features[0].properties.coordinateProperties.times.map((time)=> Date.parse(time) - start);
+    gps=JSON.stringify(route)
     mapboxgl.accessToken = 'pk.eyJ1IjoiaW1hbmRlbCIsImEiOiJjankxdjU4ODMwYTViM21teGFpenpsbmd1In0.IN9K9rp8-I5pTbYTmwRJ4Q';
 
     // Create the map
@@ -129,6 +127,7 @@
       zoom: 13
     });
     mapRef.on('load', () => {
+      console.log('load map')
       mapRef.boxZoom.disable();
       new ResizeObserver(() => mapRef.resize()).observe(container);
       mapRef.resize()      

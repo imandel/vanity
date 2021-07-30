@@ -89,6 +89,7 @@
 	}
 
 	$: if(wavesurfer && activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){ 
+		console.log('here')
 		activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
 		// https://svelte.dev/tutorial/updating-arrays-and-objects
 		activeRegion = activeRegion;
@@ -96,6 +97,7 @@
 
 	}
 	$: if(wavesurfer && !activeRegion && $curKeypoint.start){
+		console.log('here2')
 		activeRegion = wavesurfer.addRegion({
 								start: $curKeypoint.start,
 								end: $curKeypoint.end,
@@ -147,6 +149,9 @@
 	}
 
 	const saveTag = () => {
+		console.log(activeRegion)
+		console.log(previousRegion)
+		console.log
 		activeRegion.update({
 			color:'rgba(255, 200, 0, 0.4)',
 			id: $curKeypoint.id || activeRegion.id,
@@ -157,7 +162,6 @@
 				saved: true
 			}
 		})
-		activeRegion = null
 		keypoints = regionsToKeypoints(wavesurfer.regions.list)
 		// keypoints = [...keypoints, Object.assign({},$curKeypoint)]
 		// if(locked.size){
@@ -176,9 +180,10 @@
 		}
 	}
 
-	onMount(async () => {	
+	onMount(async () => {
 		curKeypoint.resetKeypoint()
 		activeRegion=null
+		console.log('here', activeRegion, previousRegion)
 	    wavesurfer = WaveSurfer.create({
 	      container: waveform,
 	      waveColor: "#bab5ff",
@@ -205,6 +210,8 @@
 	      RegionsPlugin.create({dragSelection:true, color: 'rgba(255, 255, 0, 0.4)' })
 	      	]
 	    });
+
+	    if(wavesurfer.regions.length){console.log('ws')}
 	
 		wavesurfer.on('waveform-ready', ()=>{
 			console.log('ready')
@@ -274,4 +281,3 @@
 </style>
 
 <div bind:this={waveform} style="position: relative;"/>
-

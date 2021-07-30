@@ -11,8 +11,7 @@
   import Controls from './Controls.svelte'
   import DataTable from './DataTable.svelte'
   export let model;
-  $: console.log(setActiveRegion)
-
+  if($curKeypoint.end){curKeypoint.resetKeypoint()}
   let gps = createValue(model, 'gps', '')
   let vidSrc= createValue(model, 'src', '')
   let transcriptSrc = createValue(model, 'transcript', '');
@@ -53,8 +52,8 @@
   let tags = createValue(model, 'tags', [])
 
   // for async passing data to componenents when video loads
-  let onCuesLoad;
-  let onTimelineDataLoad;
+  let onCuesLoad = () =>{};
+  let onTimelineDataLoad= () =>{};
   let onMapDataLoad;
   let selectNextTag
   let tagAction

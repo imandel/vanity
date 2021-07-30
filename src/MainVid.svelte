@@ -21,13 +21,17 @@
 	})
 
 	const setupCues = () => {
-		vid.textTracks[0].mode='hidden'
+		console.log('cues loaded')
+		// vid.textTracks[0].mode='hidden'
 		dispatch('trackLoaded', vid)
 	}
 
 	const vidData = () => { 
+		console.log('vid loaded')
 		dispatch('durationLoaded', vid)
-		setTimingsrc(vid, $timingObject); 
+		setTimingsrc(vid, $timingObject);
+		vid.textTracks[0].mode='hidden'
+
 	}
 
 </script>
