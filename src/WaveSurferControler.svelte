@@ -1,5 +1,5 @@
 <script>
-	import { curTime, curKeypoint, keypointDefined, timingObject } from './stores';
+	import { curKeypoint, keypointDefined, timingObject } from './stores';
 	import WaveSurfer from "wavesurfer.js";
 	import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 	import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';

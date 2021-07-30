@@ -1,5 +1,5 @@
 <script>
-	import { curTime, timingObject } from './stores';
+	import { timingObject } from './stores';
 	import { onMount } from 'svelte';
 	import { setTimingsrc } from 'timingsrc';
 	let vid;

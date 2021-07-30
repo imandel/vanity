@@ -90,6 +90,5 @@ export function createValue(model: any, name_: string, value_: any) {
   };
 }
 
-export const curTime: Writable<any> = writable(0);
 export const tags: Writable<any> = writable([]);
 // export const activeRegion: Writable<any> = writable({});

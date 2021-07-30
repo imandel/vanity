@@ -4,7 +4,7 @@
   import { gpx } from "@tmcw/togeojson";
   import mapboxgl from 'mapbox-gl';
   import { onMount } from 'svelte';
-  import { curTime, curKeypoint, timingObject } from './stores.ts';
+  import { curKeypoint, timingObject } from './stores.ts';
   import { point } from '@turf/helpers';
   import { getId } from './util'
   import nearestPointOnLine from '@turf/nearest-point-on-line';
@@ -95,7 +95,6 @@
           $curKeypoint.start = time
         }
       }
-      // $curTime = time
       $timingObject.update({position:time}) 
     }
 
@@ -127,7 +126,6 @@
       zoom: 13
     });
     mapRef.on('load', () => {
-      console.log('load map')
       mapRef.boxZoom.disable();
       new ResizeObserver(() => mapRef.resize()).observe(container);
       mapRef.resize()      

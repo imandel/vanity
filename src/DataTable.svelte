@@ -2,8 +2,9 @@
     //ideas taken from https://adamlynch.com/flexible-data-tables-with-css-grid/
     export let setActiveRegion
     export let keypoints
-    let rows;
+    let rows= {};
     let hoverIdx;
+    $: if(keypoints){rows = keypointsToRows(keypoints);}
 
     const keypointsToRows = (keypointsArray) => {
         return keypoints.reduce((acc, keypoint) => {

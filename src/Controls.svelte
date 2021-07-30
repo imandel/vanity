@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { curTime, curKeypoint, keypointDefined, timingObject } from './stores';
+	import { curKeypoint, keypointDefined, timingObject } from './stores';
 
 	export let velocity;
 	export let position;
