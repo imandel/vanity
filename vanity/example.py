@@ -73,8 +73,9 @@ class MapView(DOMWidget):
 
         
         if gps is not None:
-            with open(gps, 'r') as inf:
-                self.gps= inf.read()
+            self.gps = gps
+            # with open(gps, 'r') as inf:
+            #     self.gps= inf.read()
 
         if map_style is not None:
             self.map_style = map_style

@@ -17,8 +17,9 @@
   let keyOrigin;
   let hidden=false;
   export let position;
-  export let gps;
+  export let gpsPath;
   export let mapStyle;
+
   export const onMapDataLoad = async (viddata) => {
     vid = viddata
   }
@@ -34,7 +35,7 @@
         }]
       };
   const updatePos = (time) => {
-    if( time && mapRef && route.features[0].properties.coordinateProperties.times){
+    if( time && route.features[0].properties.coordinateProperties.times){
       const times = route.features[0].properties.coordinateProperties.times;
       const line = route.features[0].geometry.coordinates
       const index = times.findIndex(n => n > time);
@@ -58,7 +59,7 @@
   }
 
   const updateKeypoint = (start, end) => {
-    if(mapRef && route.features[0].properties.coordinateProperties.times){
+    if(route.features[0].properties.coordinateProperties.times){
     const times = route.features[0].properties.coordinateProperties.times;
     const line = route.features[0].geometry.coordinates
     const startIdx = times.findIndex(n => n > start);
@@ -79,7 +80,7 @@
   }
   const nearPointTime = (lngLat) => {
     const nearPoint = nearestPointOnLine(route, Object.values(lngLat));
-    return route.features[0].properties.coordinateProperties.times[nearPoint.properties.index] / 1000;
+    return route.features[0].properties.coordinateProperties.times[nearPoint.properties.index];
 }
 
   // TODO: fix/clean this
@@ -102,16 +103,30 @@
       mapRef.off('mousemove', updateLocation)
     }
 
-  // these functions takes time in ms not s
-  $: if(mapRef && mapRef.getSource('lineSource')){updatePos(position*1000)}
-  $: if(mapRef){updateKeypoint($curKeypoint.start*1000, $curKeypoint.end*1000)}
+  $: if(mapRef && mapRef.getSource('lineSource')){updatePos(position)}
+  $: if(mapRef){updateKeypoint($curKeypoint.start, $curKeypoint.end)}
 
   onMount(async () => {
-    console.log('mount map')
-    route = gpx(new DOMParser().parseFromString(gps, "text/xml"));
-    start = Date.parse(route.features[0].properties.time);
-    route.features[0].properties.coordinateProperties.times = route.features[0].properties.coordinateProperties.times.map((time)=> Date.parse(time) - start);
-    gps=JSON.stringify(route)
+    const res = await fetch(gpsPath).catch((err) => { console.error(err); });;
+    const fileType = (res.headers.get('Content-Type'));
+    console.log(fileType)
+    if( fileType === 'application/gpx+xml' ){
+      const routeString = await res.text()
+      route = await gpx(new DOMParser().parseFromString(routeString, "text/xml"));
+    } else {
+      route = await res.json()
+    }
+    if(route.features[0].properties.time!==0){
+        if(typeof route.features[0].properties.time =='string')
+        start = Date.parse(route.features[0].properties.time);
+        route.features[0].properties.coordinateProperties.times = route.features[0].properties.coordinateProperties.times.map((time)=> (Date.parse(time) - start)/1000);
+      }
+            // let bb = new Blob([JSON.stringify(route) ], { type: 'application/json' });
+      // let a = document.createElement('a');
+      // a.download = 'download.txt';
+      // a.href = window.URL.createObjectURL(bb);
+      // a.click();
+
     mapboxgl.accessToken = 'pk.eyJ1IjoiaW1hbmRlbCIsImEiOiJjankxdjU4ODMwYTViM21teGFpenpsbmd1In0.IN9K9rp8-I5pTbYTmwRJ4Q';
 
     // Create the map
@@ -153,12 +168,10 @@
         "data": route
     });
 
-
     mapRef.addSource('pointSource', {
         "type": "geojson",
         "data": geojsonPoint
     });
-
 
     mapRef.addLayer({
       "id": "staticLine",
@@ -220,7 +233,7 @@
       mapRef.getCanvasContainer().style.cursor = 'crosshair'
       
       const time = nearPointTime(e.lngLat)
-      popup.setLngLat(e.lngLat).setText(new Date(time * 1000).toISOString().substr(11, 8)).addTo(mapRef);
+      popup.setLngLat(e.lngLat).setText(new Date(time*1000).toISOString().substr(11, 8)).addTo(mapRef);
     })
 
     mapRef.on('mouseleave', 'staticLine', () => {
@@ -229,7 +242,7 @@
     })
     mapRef.on('mousemove', 'staticLine', (e) => {
       const time = nearPointTime(e.lngLat)
-      popup.setText(new Date(time * 1000).toISOString().substr(11, 8)).setLngLat(e.lngLat)
+      popup.setText(new Date(time*1000).toISOString().substr(11, 8)).setLngLat(e.lngLat)
     })
 
     mapRef.on('mousedown', 'staticLine', (e) => {

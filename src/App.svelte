@@ -145,7 +145,7 @@
     model.on('msg:custom', handleBackendMsg);
     requestAnimationFrame(updateTiming);
   })
-  
+
 </script>
 
 
@@ -186,7 +186,7 @@
       <Transcript bind:onCuesLoad/>
     {/if}
     {#if $gps}
-      <Map gps={$gps} mapStyle={$mapStyle} bind:onMapDataLoad bind:position/>
+      <Map gpsPath={$gps} mapStyle={$mapStyle} bind:onMapDataLoad bind:position/>
     {/if}
   </div>
   <WaveSurferControler bind:keypoints={$keypoints}
