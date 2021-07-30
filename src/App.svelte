@@ -106,6 +106,7 @@
             break;
           case "Backspace":
             tagAction('delete')
+            break;
           case 'KeyH':
             hideSaved=!hideSaved;
           default:
