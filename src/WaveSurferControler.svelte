@@ -18,6 +18,7 @@
 	let mouseover = false;
 	export let hideSaved = false;
 	export let keypoints
+	let actionState = false;
 	// todo fix this
 	// export let locked;
 	let toggleHideSaved = () => {}
@@ -88,24 +89,24 @@
 										})
 	}
 
-	$: if(wavesurfer && activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){ 
-		console.log('here')
-		activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
-		// https://svelte.dev/tutorial/updating-arrays-and-objects
-		activeRegion = activeRegion;
-		previousRegion = activeRegion;
 
-	}
-	$: if(wavesurfer && !activeRegion && $curKeypoint.start){
-		console.log('here2')
-		activeRegion = wavesurfer.addRegion({
-								start: $curKeypoint.start,
-								end: $curKeypoint.end,
-								color: 'rgba(255, 255, 0, 0.4)',
-								id: $curKeypoint.id});
-	}
+
+	$: if(wavesurfer && $curKeypoint.start){
+		if(activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){
+				activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
+			} else if(!activeRegion){
+				activeRegion = wavesurfer.addRegion({
+							start: $curKeypoint.start,
+							end: $curKeypoint.end,
+							color: 'rgba(255, 255, 0, 0.4)',
+							id: $curKeypoint.id});
+				activeRegion = activeRegion;
+				previousRegion = activeRegion;
+			}
+		}
 
 	export const tagAction = (action) => {
+		actionState=true;
 		switch(action){
 			case 'save':
 				saveTag()
@@ -116,6 +117,7 @@
 			default:
 				break;
 		}
+		actionState = false;
 	}
 
 	export const setActiveRegion = (region) => {
@@ -124,7 +126,7 @@
 			region= wavesurfer.regions.list[region]
 		}
 		resetPreviousRegion() 
-		region.update({color: 'rgba(255, 255, 0, 0.4)'})
+		region.update({color: 'rgba(255, 255, 0, 0.4)', drag:true, resize:true})
 		activeRegion = region;
 		$curKeypoint.start = region.start;
 		$curKeypoint.end = region.end;
@@ -144,17 +146,17 @@
 		// }
 		 const temp = activeRegion
 		 temp.remove();
-		 activeRegion=null;
+		 // activeRegion=null;
 		 keypoints = regionsToKeypoints(wavesurfer.regions.list)
+		 activeRegion=null;
 	}
 
 	const saveTag = () => {
-		console.log(activeRegion)
-		console.log(previousRegion)
-		console.log
 		activeRegion.update({
 			color:'rgba(255, 200, 0, 0.4)',
 			id: $curKeypoint.id || activeRegion.id,
+			drag: false,
+			resize: false,
 			data: {
 				color: 'rgba(255, 200, 0, 0.4)',
 				tags:  $curKeypoint.tags,
@@ -162,6 +164,8 @@
 				saved: true
 			}
 		})
+		if(hideSaved){activeRegion.element.style.visibility='hidden'}
+		activeRegion = null
 		keypoints = regionsToKeypoints(wavesurfer.regions.list)
 		// keypoints = [...keypoints, Object.assign({},$curKeypoint)]
 		// if(locked.size){
@@ -169,21 +173,23 @@
 		// } else {
 			curKeypoint.resetKeypoint()
 		// }
-		activeRegion = null
+		// activeRegion = null
 
 	}
 		
 
 	const resetPreviousRegion = () => {
-		if(previousRegion){ 
-			previousRegion.update({color: previousRegion.data.color || 'rgba(0, 0, 0, 0.1)'}) 
+		if(previousRegion?.data?.saved){ 
+			previousRegion.update({color: previousRegion.data.color, drag:false, resize:false}) 
+		} else if(previousRegion){
+			previousRegion.update({color: 'rgba(0, 0, 0, 0.1)'})
 		}
 	}
 
 	onMount(async () => {
 		curKeypoint.resetKeypoint()
 		activeRegion=null
-		console.log('here', activeRegion, previousRegion)
+		wavesurfer = null
 	    wavesurfer = WaveSurfer.create({
 	      container: waveform,
 	      waveColor: "#bab5ff",
@@ -211,14 +217,12 @@
 	      	]
 	    });
 
-	    if(wavesurfer.regions.length){console.log('ws')}
-	
 		wavesurfer.on('waveform-ready', ()=>{
 			console.log('ready')
+			activeRegion=null
 			// TODO: this is a hacky fix, do better
-			pxSec = 1;
-			// slider.min= wavesurfer.params.minPxPerSec;
-			wavesurfer.zoom(pxSec)
+			wavesurfer.zoom(1)
+			wavesurfer.zoom(0)
 			toggleHideSaved = (shown) => {
 				if(shown){
 					Object.values(wavesurfer.regions.list).filter((region) => region?.data?.saved && region!==activeRegion).forEach((region)=>region.element.style.visibility='hidden')
@@ -274,6 +278,7 @@
 		wavesurfer.on('seek', (pos)=>{ $timingObject.update({ position: pos * wavesurfer.getDuration()}) })
 		wavesurfer.on('region-mouseenter', (e)=>{mouseover=true})
 		wavesurfer.on('region-mouseleave', (e)=>{mouseover=false})
+
 	})
 </script>
 

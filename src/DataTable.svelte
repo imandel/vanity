@@ -4,7 +4,6 @@
     export let keypoints
     let rows;
     let hoverIdx;
-    $: if(keypoints){rows = keypointsToRows(keypoints);}
 
     const keypointsToRows = (keypointsArray) => {
         return keypoints.reduce((acc, keypoint) => {

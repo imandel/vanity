@@ -38,11 +38,9 @@ function Keypoint() {
     },
     resetKeypointTimes: () => {
       store.update((state: pt) => {
-        console.log(state);
         state.start = null;
         state.end = null;
         state.id = null;
-        console.log(state);
         return state;
       });
     },

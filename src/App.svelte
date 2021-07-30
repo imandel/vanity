@@ -43,8 +43,6 @@
   let updateZoom;
   const updateTiming = (timestamp) =>{
     ({velocity, position} =  $timingObject.query());
-    // console.log(timeString)
-
     requestAnimationFrame(updateTiming)
   }
 
