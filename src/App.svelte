@@ -41,6 +41,7 @@
   let velocity;
   let position = 0;
   let volume;
+  let updateZoom;
   const updateTiming = (timestamp) =>{
     ({velocity, position} =  $timingObject.query());
     // console.log(timeString)
@@ -107,7 +108,7 @@
           case "Backspace":
             tagAction('delete')
           case 'KeyH':
-            toggleHideSaved()
+            hideSaved=!hideSaved;
           default:
             break;
         }
@@ -195,14 +196,15 @@
                        bind:selectNextTag
                        bind:tagAction
                        bind:syncKeypoints
-                       bind:toggleHideSaved
+                       bind:updateZoom
                        bind:hideSaved
                        bind:setActiveRegion
                        />
         <Controls bind:velocity 
                 bind:position 
                 bind:volume 
-                bind:updatePos 
+                bind:updatePos
+                bind:updateZoom
                 bind:hideSaved/>
   <div class='bottom-row'>
     <div>

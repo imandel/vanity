@@ -29,6 +29,8 @@
 		wavesurfer.load(vid)
 	}
 
+	export const updateZoom = (pxSec) => {wavesurfer.zoom(pxSec)}
+
 	export const selectNextTag = (direction) => {
 		let sorted;
 		let nextRegion;
@@ -266,39 +268,10 @@
 		wavesurfer.on('region-mouseenter', (e)=>{mouseover=true})
 		wavesurfer.on('region-mouseleave', (e)=>{mouseover=false})
 	})
-
-	let zoom = 0;
-	const handleZoom = e => {
-		if ((Number(e.deltaY) >= 1 || Number(e.deltaY) <= -1) && (Number(e.deltaX) < 2 && Number(e.deltaX > -2))) {
-			e.preventDefault();
-			zoom += e.deltaY;
-			wavesurfer.zoom(Number(zoom));
-		}
-	};
-
-	let hide = true;
 </script>
 
 <style>
-	.hidden {
-		visibility:hidden;
-	}
-
-	.tooltip-text {
-		position:absolute;
-		z-index:3;
-		background-color: #a9a9a9a3;
-		padding: 10px;
-		border-radius: 10px;
-		color: white;
-		margin-top: -35px;
-	}
 </style>
 
-<div on:mouseenter={() => hide=false}
-	 on:mouseleave={() => hide=true}
-	 >
-<div class:hidden={hide}><b class="tooltip-text">Scroll to Zoom Waveform</b></div>
-<div bind:this={waveform} style="position: relative;" on:wheel={handleZoom}/>
-</div>
+<div bind:this={waveform} style="position: relative;"/>
 
