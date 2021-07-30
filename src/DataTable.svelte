@@ -1,5 +1,6 @@
 <script>
-    //ideas taken from https://adamlynch.com/flexible-data-tables-with-css-grid/
+    import { timingObject } from './stores';
+    //formatting ideas taken from https://adamlynch.com/flexible-data-tables-with-css-grid/
     export let setActiveRegion
     export let keypoints
     let rows= {};
@@ -33,10 +34,7 @@ table {
   display: grid;
   border-collapse: collapse;
   min-width: 100%;
-  grid-template-columns: 
-    repeat(4, 1fr)
-    3fr
-    4fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 3fr 4fr
 }
 
 thead,
@@ -96,11 +94,11 @@ td {
   </thead>
   <tbody>
     {#each Object.values(rows) as row, index}
-     <tr on:mouseover={()=>{hoverIdx=index}} on:mouseout={()=>{hoverIdx=null}} on:click={()=>{setActiveRegion(row.id)}}>
+     <tr on:mouseover={()=>{hoverIdx=index}} on:mouseout={()=>{hoverIdx=null}} on:click={()=>{setActiveRegion(row.id); $timingObject.update({position:row.start})}}>
       <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>{row.id}}</td>
       <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>{row.author}</td>
-      <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>{row.start}</td>
-      <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>{row.end}</td>
+      <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>{row.start.toFixed(3)}</td>
+      <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>{row.end.toFixed(3)}</td>
       <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>
         {#each row.tags as tag}
             <span> {tag+''} </span>
