@@ -158,3 +158,6 @@ vanity/labextension
 **/*.gpx
 **/*.vtt
 mock/
+examples/client_secret.json
+examples/sheets.googleapis.com-python.json
+examples/*.zip
