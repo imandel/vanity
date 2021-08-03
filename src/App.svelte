@@ -68,6 +68,11 @@
   let transcript;
   let timeline;
   let widget;
+
+  const mapLoaded = (gpsPath) => {
+    console.log('map loaded');
+    model.send({event: 'map_loaded', value: gpsPath});
+}
   
   const handleTranscript = (vid) => {
     onCuesLoad(vid.detail) 
@@ -76,10 +81,11 @@
 
   const handleTimeline = (vid) => {
     onTimelineDataLoad(vid.detail)
-    if($gps){onMapDataLoad(vid.detail)}
+    // if($gps){onMapDataLoad(vid.detail)}
   }
 
   const handleBackendMsg =(e) =>{
+    console.log(e)
     switch(e.type){
       case 'keypoints_updated':
         syncKeypoints();
@@ -142,7 +148,9 @@
 
   onMount(() => {
     widget.onkeydown =  e => onKeypress(e) 
+    // https://www.grizzly-hills.com/2020/08/05/jupyter-widgets-sending-custom-event-to-frontend-from-backend/
     model.on('msg:custom', handleBackendMsg);
+    model.send({event:'thing'})
     requestAnimationFrame(updateTiming);
   })
 
@@ -186,7 +194,7 @@
       <Transcript bind:onCuesLoad/>
     {/if}
     {#if $gps}
-      <Map gpsPath={$gps} mapStyle={$mapStyle} bind:onMapDataLoad bind:position/>
+      <Map gpsPath={$gps} mapStyle={$mapStyle} mapLoaded={mapLoaded} bind:position/>
     {/if}
   </div>
   <WaveSurferControler bind:keypoints={$keypoints}

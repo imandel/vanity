@@ -13,16 +13,12 @@
   let container
   let route;
   let start;
-  let vid;
   let keyOrigin;
   let hidden=false;
   export let position;
   export let gpsPath;
   export let mapStyle;
-
-  export const onMapDataLoad = async (viddata) => {
-    vid = viddata
-  }
+  export let mapLoaded;
 
   let geojsonPoint = {
     "type": "FeatureCollection",
@@ -107,13 +103,13 @@
   $: if(mapRef){updateKeypoint($curKeypoint.start, $curKeypoint.end)}
 
   onMount(async () => {
-    const res = await fetch(gpsPath).catch((err) => { console.error(err); });;
+    const res = await fetch(gpsPath).catch((err) => { console.error(err); });
     const fileType = (res.headers.get('Content-Type'));
-    console.log(fileType)
     if( fileType === 'application/gpx+xml' ){
       const routeString = await res.text()
       route = await gpx(new DOMParser().parseFromString(routeString, "text/xml"));
     } else {
+      console.log(res, fileType)
       route = await res.json()
     }
     if(route.features[0].properties.time!==0){
@@ -121,11 +117,6 @@
         start = Date.parse(route.features[0].properties.time);
         route.features[0].properties.coordinateProperties.times = route.features[0].properties.coordinateProperties.times.map((time)=> (Date.parse(time) - start)/1000);
       }
-            // let bb = new Blob([JSON.stringify(route) ], { type: 'application/json' });
-      // let a = document.createElement('a');
-      // a.download = 'download.txt';
-      // a.href = window.URL.createObjectURL(bb);
-      // a.click();
 
     mapboxgl.accessToken = 'pk.eyJ1IjoiaW1hbmRlbCIsImEiOiJjankxdjU4ODMwYTViM21teGFpenpsbmd1In0.IN9K9rp8-I5pTbYTmwRJ4Q';
 
@@ -228,6 +219,7 @@
            // 'visibility': 'none'
        }
     });
+    setTimeout(()=>mapLoaded(gpsPath), 1000)
 
     mapRef.on('mouseenter', 'staticLine', (e) => {
       mapRef.getCanvasContainer().style.cursor = 'crosshair'
@@ -253,7 +245,7 @@
          keyOrigin = time;
          $curKeypoint.id = getId('map_')
        }
-      // $curTime = time
+
       $timingObject.update({position:time})
       // updateLocation(e)
       mapRef.on('mousemove', updateLocation)

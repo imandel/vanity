@@ -13,6 +13,7 @@ from traitlets import Integer, Unicode, Float, List, observe
 from ._frontend import module_name, module_version
 from pathlib import Path
 import pandas as pd
+import json
 
 
 # todo: take in df, check cols, types, tidy, and null issues. add random ID (python_alksfjao131) if not given
@@ -43,12 +44,15 @@ class MapView(DOMWidget):
     views = List([]).tag(sync=True)
     author = Unicode("").tag(sync=True)
     _keypoints = List([]).tag(sync=True)
-    test=Integer(0).tag(sync=True)
     @observe('_keypoints')
     def _observe_keypoints(self, change):
         self.df= pd.DataFrame(self._keypoints)
 
-    # duration = Float(0).tag(sync=True)
+    def _handle_custom_msg(self, content, buffers):
+        if content['event'] == 'map_loaded':
+            if not self.save_tempfiles:
+                tempPath = Path(content['value'])
+                tempPath.unlink()
 
     def __init__(self, 
                  src, 
@@ -60,22 +64,26 @@ class MapView(DOMWidget):
                  tags = [],
                  views = [],
                  df = None,
-                 # duration=None
+                 data = None,
+                 save_tempfiles = False,
                  ):
         
         super().__init__()
+        self.on_msg(self._handle_custom_msg)
+
 
         self.src = src
         self.tags = tags
         self.views = views
-        # self._keypoints=[]
-        # self.on_msg(self._handle_keypoint_click)
+        self.save_tempfiles = save_tempfiles
 
-        
+        if data is not None:
+            self.data = data
         if gps is not None:
-            self.gps = gps
-            # with open(gps, 'r') as inf:
-            #     self.gps= inf.read()
+            if type(gps) == str:
+                self.gps = gps
+            elif type(gps) == dict:
+                self.gps = self._datadf2geojson(gps)
 
         if map_style is not None:
             self.map_style = map_style
@@ -110,6 +118,25 @@ class MapView(DOMWidget):
         self.df = pandas_validator(new_df)
         self._keypoints = self.df.to_dict(orient='records')
         self.send({"method": "custom", "type": "keypoints_updated"})
+        print('hello')
+
+    def _datadf2geojson(self, column_dict):
+        wide = self.data.pivot(index='timestamp', columns='variable', values='value').reset_index()
+        geojson = {'type': 'FeatureCollection',
+                    'features': [{'type': 'Feature',
+                                   'properties': {'time': 0, 'coordinateProperties': {'times': wide['timestamp'].tolist()}},
+                                    'geometry': {'type': 'LineString', 'coordinates': wide[[column_dict['lng'], column_dict['lat']]].values.tolist()}}]}
+        out_file = './temp_gps.geojson'
+        with open(out_file, 'w') as of:
+            json.dump(geojson, of)
+            self.temp_gps_path = out_file
+        return self.temp_gps_path
+
+    def _on_custom_msg(self, content, buffers):
+        self.content = content
+        if content['event']=='map_loaded':
+            if self.temp_gps_path and content['value'] == self.temp_gps_path:
+                Path(self.temp_gps_path).unlink()
 
     # def _handle_keypoint_click(self, _, content, buffers):
     #     self.v=(_, content, buffers)
