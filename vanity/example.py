@@ -12,6 +12,7 @@ from ipywidgets import DOMWidget
 from traitlets import Integer, Unicode, Float, List, observe
 from ._frontend import module_name, module_version
 from pathlib import Path
+from warnings import warn
 import pandas as pd
 import json
 
@@ -49,6 +50,11 @@ class MapView(DOMWidget):
         self.df= pd.DataFrame(self._keypoints)
         if self.update_callback:
             self.update_callback(change, *self.args, **self.kwargs)
+        if self._out_file:
+            if '.csv' in self._out_file.suffix:
+                self.df.to_csv(self._out_file, index=False)
+            elif  '.json' in self._out_file.suffix:
+                self.df.to_json(self._out_file, orient='records')
 
     def _handle_custom_msg(self, content, buffers):
         if content['event'] == 'map_loaded':
@@ -69,6 +75,7 @@ class MapView(DOMWidget):
                  data = None,
                  save_tempfiles = False,
                  update_callback= None,
+                 autosave = False,
                  *args,
                  **kwargs
                  ):
@@ -84,6 +91,8 @@ class MapView(DOMWidget):
         self.update_callback=update_callback
         self.args=args
         self.kwargs=kwargs
+        self.df = pd.DataFrame(columns=['id','start', 'end', 'type', 'value', 'author', 'src'])
+        self._out_file = False
 
         if data is not None:
             self.data = data
@@ -105,26 +114,40 @@ class MapView(DOMWidget):
 
         if df is not None:
             if isinstance(df, pd.DataFrame):
-                df = pandas_validator(df)
-            else:
-                try:
-                    df_path = Path(df)
-                    if df_path.suffix == 'csv':
-                        self.df = pandas_validator(pd.read_csv(df_path))
-                    elif df_path.suffix == 'json':
-                        with open(df, 'r') as kp:
-                            self.df = pandas_validator(kp)
-                except Exception as e:
-                    print('df must be a Pandas DataFrame, a path to a csv, or a path to a JSON file')
-                    raise e
-            self._keypoints.extend(self.df.to_dict(orient='records'))
+                self.df = pandas_validator(df)
+            elif Path(df).is_file():
+                df_path = Path(df)
+                if  '.csv' in df_path.suffix:
+                    self.df = pandas_validator(pd.read_csv(df_path, na_values=['nan'], keep_default_na=False))
+                elif '.json' in df_path.suffix:
+                    self.df = pandas_validator(pd.read_json(df_path))
+            self._keypoints= self.df.to_dict(orient='records')
         else:
-            self.df = pd.DataFrame(columns=['id','start', 'end', 'type', 'value', 'author', 'src'])
+            self._keypoints = []
+
+
+        if autosave:
+            if autosave == True:
+                self._out_file = Path('./keypoints.json')
+            else:
+                self._out_file = Path(autosave)
+            if self._out_file.is_file():
+                if df and self._out_file != Path(df):
+                    warn(f"autosave file already exits and will be overwritten. This warning can be supressed by setting df=\'{self._out_file}\' or autosave=\'{df}\'",stacklevel=2)
+                if not df:
+                    warn(f"autosave file already exits and will be overwritten. This warning can be supressed by setting df=\'{self._out_file}\'",stacklevel=2)
+                # if self._out_file.suffix == '.csv':
+                #     temp_df = pd.read_csv(self._out_file, na_values=['nan'], keep_default_na=False)
+                # elif self._out_file.suffix == '.json':
+                #     temp_df = pd.read_json(self._out_file)
+                # self.update_dataframe(temp_df)
+
 
 
     def update_dataframe(self, new_df):
         self.df = pandas_validator(new_df)
         self._keypoints = self.df.to_dict(orient='records')
+        self.kp = self.df.to_dict(orient='records')
         self.send({"method": "custom", "type": "keypoints_updated"})
 
     def _data_df_2_geojson(self, column_dict):
@@ -133,10 +156,10 @@ class MapView(DOMWidget):
                     'features': [{'type': 'Feature',
                                    'properties': {'time': 0, 'coordinateProperties': {'times': wide['timestamp'].tolist()}},
                                     'geometry': {'type': 'LineString', 'coordinates': wide[[column_dict['lng'], column_dict['lat']]].values.tolist()}}]}
-        out_file = './temp_gps.geojson'
-        with open(out_file, 'w') as of:
+        temp_file = './temp_gps.geojson'
+        with open(temp_file, 'w') as of:
             json.dump(geojson, of)
-            self.temp_gps_path = out_file
+            self.temp_gps_path = temp_file
         return self.temp_gps_path
 
 

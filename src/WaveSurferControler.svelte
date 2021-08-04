@@ -59,7 +59,8 @@
 		wavesurfer.clearRegions()
 		let tempKeypoints = Object.values(keypointsToRegions(keypoints, true))
 		tempKeypoints.forEach((keypoint)=>{
-			wavesurfer.addRegion(keypoint)
+			const region = wavesurfer.addRegion(keypoint)
+			region.update({drag: false, resize: false})
 		})
 	}
 
