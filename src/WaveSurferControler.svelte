@@ -57,26 +57,36 @@
 
 	export const syncKeypoints = () => {
 		wavesurfer.clearRegions()
-		keypoints.forEach((keypoint)=>{
-			if(keypoint.id in wavesurfer.regions.list){
-				const region= wavesurfer.regions.list[keypoint.id]
-				updateData(keypoint, region)
-			} else{
-				const region = wavesurfer.addRegion({
-									start: keypoint.start,
-									end: keypoint.end,
-									color: 'rgba(255, 200, 0, 0.4)',
-									id: keypoint.id,
-									data: {
-										color: 'rgba(255, 200, 0, 0.4)',
-										saved: true,
-										tags: [],
-										comments:''
-									}
-								});
-				updateData(region)
-			}
+		let tempKeypoints = Object.values(keypointsToRegions(keypoints, true))
+		tempKeypoints.forEach((keypoint)=>{
+			wavesurfer.addRegion(keypoint)
 		})
+	}
+
+	const keypointsToRegions = (keypointArray, saved) =>{
+		const outObj = {}
+		const color = saved? 'rgba(255, 200, 0, 0.4)' : 'rgba(0, 0, 0, 0.1)'
+		keypointArray.forEach((keypoint)=>{
+			let region;
+			if(keypoint.id in outObj){
+				region= outObj[keypoint.id]
+			} else {
+				region = {  start: keypoint.start,
+							end: keypoint.end,
+							color: color,
+							id: keypoint.id,
+							data: {
+								color: color,
+								saved: saved,
+								tags: [],
+								comments:''
+							}
+						};
+				outObj[keypoint.id]=region
+			}
+			updateData(keypoint, region)
+		})
+		return outObj;
 	}
 
 	const regionsToKeypoints = (regions) => {
@@ -219,6 +229,7 @@
 
 		wavesurfer.on('waveform-ready', ()=>{
 			console.log('ready')
+			syncKeypoints()
 			activeRegion=null
 			// TODO: this is a hacky fix, do better
 			wavesurfer.zoom(1)

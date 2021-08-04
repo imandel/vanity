@@ -32,7 +32,7 @@ function Keypoint() {
         state.end = null;
         state.tags = [];
         state.id = null;
-        state.comments = null;
+        state.comments = '';
         return state;
       });
     },
