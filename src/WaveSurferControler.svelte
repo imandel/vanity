@@ -61,6 +61,8 @@
 		tempKeypoints.forEach((keypoint)=>{
 			const region = wavesurfer.addRegion(keypoint)
 			region.update({drag: false, resize: false})
+			activeRegion=null
+			curKeypoint.resetKeypoint()
 		})
 	}
 
