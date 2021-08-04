@@ -47,6 +47,8 @@ class MapView(DOMWidget):
     @observe('_keypoints')
     def _observe_keypoints(self, change):
         self.df= pd.DataFrame(self._keypoints)
+        if self.update_callback:
+            self.update_callback(change, *self.args, **self.kwargs)
 
     def _handle_custom_msg(self, content, buffers):
         if content['event'] == 'map_loaded':
@@ -66,6 +68,9 @@ class MapView(DOMWidget):
                  df = None,
                  data = None,
                  save_tempfiles = False,
+                 update_callback= None,
+                 *args,
+                 **kwargs
                  ):
         
         super().__init__()
@@ -76,6 +81,9 @@ class MapView(DOMWidget):
         self.tags = tags
         self.views = views
         self.save_tempfiles = save_tempfiles
+        self.update_callback=update_callback
+        self.args=args
+        self.kwargs=kwargs
 
         if data is not None:
             self.data = data
@@ -83,7 +91,7 @@ class MapView(DOMWidget):
             if type(gps) == str:
                 self.gps = gps
             elif type(gps) == dict:
-                self.gps = self._datadf2geojson(gps)
+                self.gps = self._data_df_2_geojson(gps)
 
         if map_style is not None:
             self.map_style = map_style
@@ -118,9 +126,8 @@ class MapView(DOMWidget):
         self.df = pandas_validator(new_df)
         self._keypoints = self.df.to_dict(orient='records')
         self.send({"method": "custom", "type": "keypoints_updated"})
-        print('hello')
 
-    def _datadf2geojson(self, column_dict):
+    def _data_df_2_geojson(self, column_dict):
         wide = self.data.pivot(index='timestamp', columns='variable', values='value').reset_index()
         geojson = {'type': 'FeatureCollection',
                     'features': [{'type': 'Feature',
@@ -132,11 +139,8 @@ class MapView(DOMWidget):
             self.temp_gps_path = out_file
         return self.temp_gps_path
 
-    def _on_custom_msg(self, content, buffers):
-        self.content = content
-        if content['event']=='map_loaded':
-            if self.temp_gps_path and content['value'] == self.temp_gps_path:
-                Path(self.temp_gps_path).unlink()
+
+
 
     # def _handle_keypoint_click(self, _, content, buffers):
     #     self.v=(_, content, buffers)
