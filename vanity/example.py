@@ -44,6 +44,7 @@ class MapView(DOMWidget):
     tags = List([]).tag(sync=True)
     views = List([]).tag(sync=True)
     author = Unicode("").tag(sync=True)
+    review =  List([]).tag(sync=True)
     _keypoints = List([]).tag(sync=True)
     @observe('_keypoints')
     def _observe_keypoints(self, change):
@@ -76,6 +77,7 @@ class MapView(DOMWidget):
                  save_tempfiles = False,
                  update_callback= None,
                  autosave = False,
+                 review =None,
                  *args,
                  **kwargs
                  ):
@@ -141,6 +143,16 @@ class MapView(DOMWidget):
                 # elif self._out_file.suffix == '.json':
                 #     temp_df = pd.read_json(self._out_file)
                 # self.update_dataframe(temp_df)
+
+        if review is not None:
+            if isinstance(review, pd.DataFrame):
+                self.review = pandas_validator(review)
+            elif Path(review).is_file():
+                review_path = Path(review)
+                if  '.csv' in review_path.suffix:
+                    self.review = pandas_validator(pd.read_csv(review_path, na_values=['nan'], keep_default_na=False)).to_dict(orient='records')
+                elif '.json' in review_path.suffix:
+                    self.review = pandas_validator(pd.read_json(review_path)).to_dict(orient='records')
 
 
 
