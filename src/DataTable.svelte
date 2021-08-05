@@ -1,14 +1,17 @@
 <script>
-    import { timingObject } from './stores';
+    import { timingObject, curKeypoint } from './stores';
     //formatting ideas taken from https://adamlynch.com/flexible-data-tables-with-css-grid/
     export let setActiveRegion
     export let keypoints
+    export let review
     let rows= {};
     let hoverIdx;
-    $: if(keypoints){rows = keypointsToRows(keypoints);}
-
+    let reviewIds;
+    $: if(keypoints){rows = keypointsToRows([...keypoints, ...review]);}
+    $: reviewIds = review.map(kp=>kp.id)
+    $: console.log($curKeypoint.id)
     const keypointsToRows = (keypointsArray) => {
-        return keypoints.reduce((acc, keypoint) => {
+        return keypointsArray.reduce((acc, keypoint) => {
         const key = keypoint.id;
         if(!acc[keypoint.id]){
             const { start, end, id, author, src} = keypoint
@@ -79,6 +82,15 @@ td {
     white-space: normal;
     overflow-wrap: break-word;
 }
+
+.review {
+  font-style: italic;
+}
+
+.active{
+  background-color: yellow !important;
+}
+
 </style>
 <div class="container">
 <table>
@@ -94,17 +106,17 @@ td {
   </thead>
   <tbody>
     {#each Object.values(rows) as row, index}
-     <tr on:mouseover={()=>{hoverIdx=index}} on:mouseout={()=>{hoverIdx=null}} on:click={()=>{setActiveRegion(row.id); $timingObject.update({position:row.start})}}>
-      <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>{row.id}}</td>
-      <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>{row.author}</td>
-      <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>{row.start.toFixed(3)}</td>
-      <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>{row.end.toFixed(3)}</td>
-      <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>
+     <tr class:review={reviewIds.includes(row.id)} on:mouseover={()=>{hoverIdx=index}} on:mouseout={()=>{hoverIdx=null}} on:click={()=>{setActiveRegion(row.id); $timingObject.update({position:row.start})}}>
+      <td class:hover-idx={hoverIdx===index} class:active={row.id===$curKeypoint.id} class:even={index%2===0}>{row.id}}</td>
+      <td class:hover-idx={hoverIdx===index} class:active={row.id===$curKeypoint.id} class:even={index%2===0}>{row.author}</td>
+      <td class:hover-idx={hoverIdx===index} class:active={row.id===$curKeypoint.id} class:even={index%2===0}>{row.start.toFixed(3)}</td>
+      <td class:hover-idx={hoverIdx===index} class:active={row.id===$curKeypoint.id} class:even={index%2===0}>{row.end.toFixed(3)}</td>
+      <td class:hover-idx={hoverIdx===index} class:active={row.id===$curKeypoint.id} class:even={index%2===0}>
         {#each row.tags as tag}
             <span> {tag+''} </span>
         {/each}
         </td>
-      <td class:hover-idx={hoverIdx===index} class:even={index%2===0}>{row.comments}</td>
+      <td class:hover-idx={hoverIdx===index} class:active={row.id===$curKeypoint.id} class:even={index%2===0}>{row.comments}</td>
     </tr>
     {/each}
   </tbody>

@@ -18,14 +18,13 @@
 	let mouseover = false;
 	export let hideSaved = false;
 	export let keypoints
+	export let review
 	let actionState = false;
 	// todo fix this
 	// export let locked;
 	let toggleHideSaved = () => {}
 
 	$: toggleHideSaved(hideSaved)
-
-
 
 	$: if(wavesurfer && $curKeypoint.start){
 		if(activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){
@@ -73,8 +72,11 @@
 
 	export const syncKeypoints = () => {
 		wavesurfer.clearRegions()
-		let tempKeypoints = Object.values(keypointsToRegions(keypoints, true))
-		tempKeypoints.forEach((keypoint)=>{
+		window.review = review
+		const tempKeypoints = Object.values(keypointsToRegions(keypoints, true))
+		const tempReview = Object.values(keypointsToRegions(review, false))
+		const combined = [...tempKeypoints, ...tempReview]
+		combined.forEach((keypoint)=>{
 			const region = wavesurfer.addRegion(keypoint)
 			region.update({drag: false, resize: false})
 			activeRegion=null
@@ -145,15 +147,19 @@
 		activeRegion = region;
 		$curKeypoint.start = region.start;
 		$curKeypoint.end = region.end;
+		$curKeypoint.id = region.id;
 		if(region.data){
 			$curKeypoint.tags = region.data.tags || [];
 
 			$curKeypoint.comments = region.data.comments	
 		}
 		previousRegion = region
+		return activeRegion
 	}
 
 	const deleteTag = () => {
+
+		review = review.filter( kp  =>  kp.id !== activeRegion.id);
 		// if(locked.size){
 			// curKeypoint.resetKeypointTimes()
 		// } else {
@@ -167,6 +173,7 @@
 	}
 
 	const saveTag = () => {
+		review = review.filter( kp  =>  kp.id !== activeRegion.id);
 		activeRegion.update({
 			color:'rgba(255, 200, 0, 0.4)',
 			id: $curKeypoint.id || activeRegion.id,

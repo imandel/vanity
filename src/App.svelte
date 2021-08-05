@@ -21,6 +21,7 @@
   let views = createValue(model, 'views', [])
   let author = createValue(model, 'author', '')
   let keypoints = createValue(model, '_keypoints', [])
+  let review = createValue(model, 'review', [])
 
   // setup static values of curKeypoint
   $curKeypoint.src = $vidSrc;
@@ -34,7 +35,6 @@
   let tagChecks;
   let quickTag;
   let shortcuts;
-  let activeRegion;
   let locked;
   let updatePos;
   let velocity;
@@ -198,6 +198,7 @@
     {/if}
   </div>
   <WaveSurferControler bind:keypoints={$keypoints}
+                       bind:review={$review}
                        bind:onTimelineDataLoad 
                        bind:selectNextTag
                        bind:tagAction
@@ -214,11 +215,10 @@
                 bind:hideSaved/>
   <div class='bottom-row'>
     <div>
-      <DataTable bind:keypoints={$keypoints} bind:setActiveRegion/>
+      <DataTable bind:keypoints={$keypoints} bind:review={$review} bind:setActiveRegion/>
     </div>
     <Tagbox 
     bind:tags={$tags} 
-    bind:activeRegion 
     bind:tagChecks 
     bind:quickTag 
     bind:locked 
