@@ -101,7 +101,7 @@ The [introduction file](./examples/introduction.ipynb) has a test example you sh
 - [x] end region on region play (shift click) with timingsrc
 - [x] jump to next region
 - [x] disable editing saved regions without updating backend
-- [ ] fn keypoint2region & region2keypoint
+- [x] fn keypoint2region & region2keypoint
 - [x] hide saved
 - [ ] hide/filter by tag, temp, etc
 - [ ] better tracking modality for curkeypoint.id
@@ -111,23 +111,24 @@ The [introduction file](./examples/introduction.ipynb) has a test example you sh
 - [ ] mute all others
 - [x] fix tagbox for timingsrc
 - [x] errors on firefox for vtt files 
-- [ ] keyboard shprtcuts for timestep
+- [x] keyboard shprtcuts for timestep
 - [x] key binding for moving around video faster
 - [ ] switch main vid to using a store tather than passing props and events around?
-- [ ] convey when ttranscript is partially selected
+- [ ] convey when transcript is partially selected
 - [x] multiple videos
-- [ ] style wavesurfer px/sec
+- [x] style wavesurfer px/sec
+- [x] add review points to datatable
 - [ ] popup for shorcuts?
 - [ ] dynamic assign color to tags?
 - [x] fix responseive top row (e.g. no map, no transcript)
 - [x] make divs collasible?
 - [x] add and remove tags from ui?
-- [ ] load in potential tags for review
-- [ ] format times for either s or hh:mm:ss
+- [x] load in potential tags for review
+- [x] format times for either s or hh:mm:ss
+- [ ] use pandas traittypes https://github.com/jupyter-widgets/traittypes
 - [x] pip button? https://svelte.dev/repl/116237b19d094b3f8fd074cee7c00ff1?version=3.38.3
 - [ ] convert this to svelte https://www.npmjs.com/package/react-annotation-tool
 - [ ] updates from cookiecutter with cruft https://github.com/cruft/cruft
-- [ ] emulate disabled rather than use for inputs (clearer ux for locking)
 - [ ] stores pollute global namespace, multiple widgets conflict
 - [ ] fork wavesurfer and use timingsrc?
 - [ ] better datatable? https://vincjo.fr/svelte-simple-datatables/#/
