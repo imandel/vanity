@@ -25,6 +25,22 @@
 
 	$: toggleHideSaved(hideSaved)
 
+
+
+	$: if(wavesurfer && $curKeypoint.start){
+		if(activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){
+				activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
+			} else if(!activeRegion){
+				activeRegion = wavesurfer.addRegion({
+							start: $curKeypoint.start,
+							end: $curKeypoint.end,
+							color: 'rgba(255, 255, 0, 0.4)',
+							id: $curKeypoint.id});
+				activeRegion = activeRegion;
+				previousRegion = activeRegion;
+			}
+		}
+
 	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
 		wavesurfer.load(vid)
@@ -82,7 +98,9 @@
 								color: color,
 								saved: saved,
 								tags: [],
-								comments:''
+								comments:'',
+								author: keypoint.author || ''
+
 							}
 						};
 				outObj[keypoint.id]=region
@@ -95,28 +113,12 @@
 	const regionsToKeypoints = (regions) => {
 		return Object.entries(regions).filter(([id,region]) => region.data && region.data.saved)
 									  .flatMap(([id,region])=>{
-											const { start, end, data:{tags=[]},data:{comments} } = region
-											const shared = {id, start, end, src:$curKeypoint.src, author:$curKeypoint.author}
+											const { start, end, data:{tags=[]},data:{comments},data:{author=''} } = region
+											const shared = {id, start, end, author, src:$curKeypoint.src}
 											const tagValues = tags.map(tag => Object.assign({value:tag, type:'tag'}, shared))
 											return [...tagValues, Object.assign({value:comments, type:'comment'}, shared)]
 										})
 	}
-
-
-
-	$: if(wavesurfer && $curKeypoint.start){
-		if(activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){
-				activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
-			} else if(!activeRegion){
-				activeRegion = wavesurfer.addRegion({
-							start: $curKeypoint.start,
-							end: $curKeypoint.end,
-							color: 'rgba(255, 255, 0, 0.4)',
-							id: $curKeypoint.id});
-				activeRegion = activeRegion;
-				previousRegion = activeRegion;
-			}
-		}
 
 	export const tagAction = (action) => {
 		actionState=true;
@@ -174,7 +176,8 @@
 				color: 'rgba(255, 200, 0, 0.4)',
 				tags:  $curKeypoint.tags,
 				comments: $curKeypoint.comments,
-				saved: true
+				saved: true,
+				author: $curKeypoint.author || ''
 			}
 		})
 		if(hideSaved){activeRegion.element.style.visibility='hidden'}
