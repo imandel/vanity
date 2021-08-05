@@ -136,4 +136,4 @@ The [introduction file](./examples/introduction.ipynb) has a test example you sh
 - [ ] collapse cols in datatable
 
 ### backend
-- [ ] python-validator for df
+- [x] python-validator for df

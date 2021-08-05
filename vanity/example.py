@@ -18,9 +18,18 @@ import json
 
 
 # todo: take in df, check cols, types, tidy, and null issues. add random ID (python_alksfjao131) if not given
-def pandas_validator(df):
+def pandas_validator(df, src):
 
-    cols = ['start', 'end', 'type', 'value', 'author', 'src']
+    optional_cols = ['author', 'src']
+    if 'author' not in df.columns:
+        warn(f'Author not specified. Marking author as "unknown".')
+        df['author'] = 'unknown'
+
+    if 'src' not in df.columns:
+        warn(f'Source not specified. Saving with value from inputs: {src}')
+        df['src'] = src
+
+    cols = ['start', 'end', 'type', 'value', 'id']
     for col in cols:
         if col not in df.columns: raise ValueError(f"missing {col} in dataframe columns")
 
@@ -116,13 +125,13 @@ class MapView(DOMWidget):
 
         if df is not None:
             if isinstance(df, pd.DataFrame):
-                self.df = pandas_validator(df)
+                self.df = pandas_validator(df, self.src)
             elif Path(df).is_file():
                 df_path = Path(df)
                 if  '.csv' in df_path.suffix:
-                    self.df = pandas_validator(pd.read_csv(df_path, na_values=['nan'], keep_default_na=False))
+                    self.df = pandas_validator(pd.read_csv(df_path, na_values=['nan'], keep_default_na=False), self.src)
                 elif '.json' in df_path.suffix:
-                    self.df = pandas_validator(pd.read_json(df_path))
+                    self.df = pandas_validator(pd.read_json(df_path), self.src)
             self._keypoints= self.df.to_dict(orient='records')
         else:
             self._keypoints = []
@@ -146,18 +155,18 @@ class MapView(DOMWidget):
 
         if review is not None:
             if isinstance(review, pd.DataFrame):
-                self.review = pandas_validator(review)
+                self.review = pandas_validator(review, self.src)
             elif Path(review).is_file():
                 review_path = Path(review)
                 if  '.csv' in review_path.suffix:
-                    self.review = pandas_validator(pd.read_csv(review_path, na_values=['nan'], keep_default_na=False)).to_dict(orient='records')
+                    self.review = pandas_validator(pd.read_csv(review_path, na_values=['nan'], keep_default_na=False), self.src).to_dict(orient='records')
                 elif '.json' in review_path.suffix:
-                    self.review = pandas_validator(pd.read_json(review_path)).to_dict(orient='records')
+                    self.review = pandas_validator(pd.read_json(review_path), self.src).to_dict(orient='records')
 
 
 
     def update_dataframe(self, new_df):
-        self.df = pandas_validator(new_df)
+        self.df = pandas_validator(new_df, self.src)
         self._keypoints = self.df.to_dict(orient='records')
         self.kp = self.df.to_dict(orient='records')
         self.send({"method": "custom", "type": "keypoints_updated"})
