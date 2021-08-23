@@ -4,6 +4,7 @@ const {
   createReadStream,
 } = require('fs');
 const luxon = require('luxon');
+const gjv = require("geojson-validation");
 
 async function adjustTimestamps(data) {
     const startTime = luxon.DateTime.fromISO(data[Object.keys(data).length - 1].date).minus(data[Object.keys(data).length - 1].cts);
@@ -68,6 +69,13 @@ async function run(gpsFile) {
       newFormat.features[0].geometry.coordinates.push([sample.value[1], sample.value[0], sample.value[2]]);
       secondsFromStart = secondsFromStart + frameDur;
     }
+
+    if(gjv.valid(newFormat)){
+        console.log("this is valid GeoJSON!");
+    } else {
+        console.log('format is invalid');
+    }
+
     await writeFileSync(`test_geojson.geojson`, JSON.stringify(newFormat));
 
 }
