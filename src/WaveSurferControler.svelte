@@ -19,13 +19,12 @@
 	export let hideSaved = false;
 	export let keypoints
 	export let review
+	export let peaksSrc;
 	let actionState = false;
 	// todo fix this
 	// export let locked;
 	let toggleHideSaved = () => {}
-
 	$: toggleHideSaved(hideSaved)
-
 	$: if(wavesurfer && $curKeypoint.start){
 		if(activeRegion && (activeRegion.start !== $curKeypoint.start || activeRegion.end !== $curKeypoint.end) ){
 				activeRegion.update({start: $curKeypoint.start, end: $curKeypoint.end})
@@ -42,10 +41,30 @@
 
 	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
-		wavesurfer.load(vid)
+		console.log(peaksSrc)
+		fetch(peaksSrc)
+			.then(response => {
+			    if (!response.ok) {
+			        throw new Error("HTTP error " + response.status);
+			    }
+			    return response.json();
+			})
+			.then(peaks => {
+			    console.log('loaded peaks! sample_rate: ' + peaks.sample_rate);
+
+			    // load peaks into wavesurfer.js
+			    wavesurfer.load(vid, peaks.data);
+			})
+			.catch((e) => {
+			    console.error('error', e);
+			});
+		// wavesurfer.load(vid)
 	}
 
-	export const updateZoom = (pxSec) => {wavesurfer.zoom(pxSec)}
+	export const updateZoom = (pxSec) => {
+		wavesurfer.zoom(pxSec)
+		width = waveform.querySelector('wave').scrollWidth
+	}
 
 	export const selectNextTag = (direction) => {
 		let sorted;
@@ -227,8 +246,9 @@
 	      // hideScrollbar: true,
 	      plugins: [
 	      CursorPlugin.create({
-	      	showTime: true,
+	      	showTime: true,    
             opacity: 1,
+            formatTimeCallback: (time)=>{return new Date(time*1000).toISOString().substr(11, 8)},
             customShowTimeStyle: {
                 'background-color': '#000',
                 color: '#fff',
@@ -245,8 +265,8 @@
 			syncKeypoints()
 			activeRegion=null
 			// TODO: this is a hacky fix, do better
-			wavesurfer.zoom(1)
-			wavesurfer.zoom(0)
+			updateZoom(1)
+			updateZoom(0)
 			toggleHideSaved = (shown) => {
 				if(shown){
 					Object.values(wavesurfer.regions.list).filter((region) => region?.data?.saved && region!==activeRegion).forEach((region)=>region.element.style.visibility='hidden')

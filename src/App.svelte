@@ -10,10 +10,13 @@
   import Tagbox from './Tagbox.svelte'
   import Controls from './Controls.svelte'
   import DataTable from './DataTable.svelte'
+  // import SimplePlot from './SimplePlot.svelte'
   export let model;
   if($curKeypoint.end){curKeypoint.resetKeypoint()}
   let gps = createValue(model, 'gps', '')
   let vidSrc= createValue(model, 'src', '')
+  let peaksSrc = createValue(model, 'peaks', '')
+  console.log($peaksSrc)
   let transcriptSrc = createValue(model, 'transcript', '');
   let transcriptLang = createValue(model, 'transcript_lang', '')
   let mapStyle = createValue(model, 'map_style', '')
@@ -41,6 +44,8 @@
   let position = 0;
   let volume;
   let updateZoom;
+  let width;
+  let updateWidth = () => {};
   const updateTiming = (timestamp) =>{
     ({velocity, position} =  $timingObject.query());
     requestAnimationFrame(updateTiming)
@@ -197,6 +202,7 @@
       <Map gpsPath={$gps} mapStyle={$mapStyle} mapLoaded={mapLoaded} bind:position/>
     {/if}
   </div>
+  <!-- <SimplePlot bind:width bind:updateWidth/> -->
   <WaveSurferControler bind:keypoints={$keypoints}
                        bind:review={$review}
                        bind:onTimelineDataLoad 
@@ -206,12 +212,15 @@
                        bind:updateZoom
                        bind:hideSaved
                        bind:setActiveRegion
+                       bind:width
+                       peaksSrc={$peaksSrc}
                        />
         <Controls bind:velocity 
                 bind:position 
                 bind:volume 
                 bind:updatePos
                 bind:updateZoom
+                bind:updateWidth
                 bind:hideSaved/>
   <div class='bottom-row'>
     <div>

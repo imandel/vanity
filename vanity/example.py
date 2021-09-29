@@ -37,6 +37,7 @@ class MapView(DOMWidget):
     _view_module_version = Unicode(module_version).tag(sync=True)
 
     src = Unicode("").tag(sync=True)
+    peaks = Unicode("").tag(sync=True)
     gps = Unicode("").tag(sync=True)
     map_style = Unicode("").tag(sync=True)
     transcript = Unicode("").tag(sync=True)
@@ -61,10 +62,11 @@ class MapView(DOMWidget):
         if content['event'] == 'map_loaded':
             if not self.save_tempfiles:
                 tempPath = Path(content['value'])
-                tempPath.unlink()
+                # tempPath.unlink()
 
     def __init__(self, 
                  src, 
+                 peaks,
                  author=None,
                  gps=None, 
                  map_style=None,
@@ -85,8 +87,8 @@ class MapView(DOMWidget):
         super().__init__()
         self.on_msg(self._handle_custom_msg)
 
-
         self.src = src
+        self.peaks = peaks
         self.tags = tags
         self.views = views
         self.save_tempfiles = save_tempfiles

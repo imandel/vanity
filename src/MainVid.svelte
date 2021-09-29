@@ -30,7 +30,7 @@
 		console.log('vid loaded')
 		dispatch('durationLoaded', vid)
 		setTimingsrc(vid, $timingObject);
-		vid.textTracks[0].mode='hidden'
+		if (vid.textTracks[0]){vid.textTracks[0].mode='hidden'}
 
 	}
 

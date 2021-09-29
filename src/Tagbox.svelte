@@ -1,8 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { curKeypoint, keypointDefined} from './stores';
-
-	// export let activeRegion
+	
 	export let locked = new Set();
 	export let tags;
 	export let velocity;
