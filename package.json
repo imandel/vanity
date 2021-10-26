@@ -1,7 +1,7 @@
 {
-  "name": "vanity",
+  "name": "vanity-widget",
   "version": "0.1.0",
-  "description": "A Custom Jupyter Widget Library",
+  "description": "A widget library for vanity viewer",
   "keywords": [
     "jupyter",
     "jupyterlab",
