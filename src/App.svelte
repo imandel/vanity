@@ -44,8 +44,8 @@
   let position = 0;
   let volume;
   let updateZoom;
-  let width;
-  let updateWidth = () => {};
+  // let width;
+  // let updateWidth = () => {};
   const updateTiming = (timestamp) =>{
     ({velocity, position} =  $timingObject.query());
     requestAnimationFrame(updateTiming)
@@ -74,6 +74,12 @@
   let timeline;
   let widget;
 
+  const sendBackendMsg = (event, msg) => {
+    console.log('sending: ', event);
+    model.send({event: event, value: msg});
+  }  
+
+// replace with sendBackendMsg
   const mapLoaded = (gpsPath) => {
     console.log('map loaded');
     model.send({event: 'map_loaded', value: gpsPath});
@@ -155,7 +161,7 @@
     widget.onkeydown =  e => onKeypress(e) 
     // https://www.grizzly-hills.com/2020/08/05/jupyter-widgets-sending-custom-event-to-frontend-from-backend/
     model.on('msg:custom', handleBackendMsg);
-    model.send({event:'thing'})
+    // model.send({event:'thing'})
     requestAnimationFrame(updateTiming);
   })
 
@@ -199,7 +205,11 @@
       <Transcript bind:onCuesLoad/>
     {/if}
     {#if $gps}
-      <Map gpsPath={$gps} mapStyle={$mapStyle} mapLoaded={mapLoaded} bind:position/>
+      <Map gpsPath={$gps} 
+           mapStyle={$mapStyle} 
+           mapLoaded={mapLoaded} 
+           bind:position
+           />
     {/if}
   </div>
   <!-- <SimplePlot bind:width bind:updateWidth/> -->
@@ -212,7 +222,7 @@
                        bind:updateZoom
                        bind:hideSaved
                        bind:setActiveRegion
-                       bind:width
+                       sendBackendMsg = {sendBackendMsg}
                        peaksSrc={$peaksSrc}
                        />
         <Controls bind:velocity 
@@ -220,7 +230,6 @@
                 bind:volume 
                 bind:updatePos
                 bind:updateZoom
-                bind:updateWidth
                 bind:hideSaved/>
   <div class='bottom-row'>
     <div>

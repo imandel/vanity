@@ -17,9 +17,11 @@
 	let previousRegion;
 	let mouseover = false;
 	export let hideSaved = false;
-	export let keypoints
-	export let review
+	export let keypoints;
+	export let review;
 	export let peaksSrc;
+	export let width;
+	export let sendBackendMsg
 	let actionState = false;
 	// todo fix this
 	// export let locked;
@@ -41,16 +43,16 @@
 
 	export const onTimelineDataLoad = async (viddata) => {
 		vid = viddata
-		console.log(peaksSrc)
-		fetch(peaksSrc)
+		if(peaksSrc){
+			console.log(peaksSrc)
+			fetch(peaksSrc)
 			.then(response => {
 			    if (!response.ok) {
 			        throw new Error("HTTP error " + response.status);
 			    }
 			    return response.json();
-			})
-			.then(peaks => {
-			    console.log('loaded peaks! sample_rate: ' + peaks.sample_rate);
+			}).then(peaks => {
+			    console.log('loaded peaks!');
 
 			    // load peaks into wavesurfer.js
 			    wavesurfer.load(vid, peaks.data);
@@ -58,7 +60,11 @@
 			.catch((e) => {
 			    console.error('error', e);
 			});
-		// wavesurfer.load(vid)
+		} else {
+			wavesurfer.load(vid)
+
+		}
+		
 	}
 
 	export const updateZoom = (pxSec) => {
@@ -263,6 +269,13 @@
 		wavesurfer.on('waveform-ready', ()=>{
 			console.log('ready')
 			syncKeypoints()
+			if(!peaksSrc){
+			wavesurfer.exportPCM(1024, 10000, false)
+				.then((peaks)=> {
+						const srcArray = new URL(vid.src).pathname.split('/')
+						sendBackendMsg('peaks_loaded', {src: srcArray[srcArray.length -1 ], data: peaks})
+				});
+			}
 			activeRegion=null
 			// TODO: this is a hacky fix, do better
 			updateZoom(1)

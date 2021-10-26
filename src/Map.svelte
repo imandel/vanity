@@ -219,7 +219,8 @@
            // 'visibility': 'none'
        }
     });
-    setTimeout(()=>mapLoaded(gpsPath), 1000)
+    // for saving temp files, come back to this later TODO
+    // setTimeout(()=>mapLoaded(gpsPath), 1000)
 
     mapRef.on('mouseenter', 'staticLine', (e) => {
       mapRef.getCanvasContainer().style.cursor = 'crosshair'
